@@ -244,7 +244,7 @@ function chartFc(){
     o+=txt(cx,y0+h+16,l.replace(' Jun',' Haz').replace(' Jul',' Tem'),{anchor:'middle',size:9.5,fill:i===1?C.brand2:C.dim});
   });
   const cx=x0+g*1+g/2;
-  o+=txt(cx,y0+h-8,'×0,02',{anchor:'middle',size:12,w:700,fill:C.brand});
+  o+=txt(cx,y0+h-18,'×0,02',{anchor:'middle',size:12,w:700,fill:C.brand});
   o+=txt(x0,y0+h+34,'30 Haziran: 24.040 desi tahmin — ortalama 1.110.177',{size:10.5,fill:C.dim});
   return svg(W,H,o)+`<div class="legend"><span><i style="background:#33415a"></i>Aynı haftagünü ortalaması</span>
     <span><i style="background:${C.ok}"></i>Bizim tahminimiz</span></div>`}
@@ -433,6 +433,26 @@ function chartClean(){
     o+=txt(x0+w,y+42,NF.format(r[1]-r[2])+' elendi  (%'+nf(100*(r[1]-r[2])/r[1],1)+')',{size:10,anchor:'end',fill:C.dim});
     o+=txt(x0,y+60,r[4],{size:10,fill:C.dim,mono:false});
   });
+  return svg(W,H,o)}
+
+/* ── çalışma süresi / 100 dk tavanı ── */
+function chartRuntime(){
+  const W=430,H=230,x0=8,w=W-16,cap=6000;      // 100 dk = 6000 sn
+  const rows=[['Referans veri seti',150,C.brand],['Farklı yıl · 4 günlük ufuk',171,C.blue],
+              ['Farklı hafta · %125 hacim',143,C.blue]];
+  let o=txt(x0,16,'Bölüm 10 zaman aşımı tavanı — 100 dk (6.000 sn)',{size:11,w:700,fill:C.muted});
+  o+=bar(x0,26,w,20,'#1b2432',5);
+  o+=txt(x0+w-8,40,'6.000 sn',{size:10.5,anchor:'end',fill:C.dim});
+  rows.forEach((r,i)=>{
+    const y=70+i*46, bw=Math.max(3,w*r[1]/cap);
+    o+=txt(x0,y-6,r[0],{size:11,fill:C.muted,mono:false});
+    o+=bar(x0,y,w,18,'#141c28',5);
+    o+=bar(x0,y,bw,18,r[2],5);
+    o+=txt(x0+bw+10,y+13.5,r[1]+' sn',{size:12,w:700,fill:r[2]});
+    o+=txt(x0+w-4,y+13.5,'tavanın %'+nf(100*r[1]/cap,1),{size:10,anchor:'end',fill:C.dim});
+  });
+  o+=txt(x0,H-6,'Üç senaryoda da çıkış kodu 0, 0 hakem ihlali, beyan/hakem farkı 0,0000 ₺',
+        {size:10.5,fill:C.ok,mono:false});
   return svg(W,H,o)}
 
 /* ── maliyet akış şeması ── */
@@ -756,6 +776,7 @@ add('Final uyumu',`
     <tr><td class="mono">6</td><td>Manifest</td><td class="ok">var</td></tr>
     <tr><td class="mono">7</td><td>Gömülü tarih yok</td><td class="ok">ufuk girdiden türetilir</td></tr>
     <tr><td class="mono">8</td><td>Yalnız entegrasyon</td><td class="ok">0 farklı hücre</td></tr>
+    <tr><td class="mono">9</td><td>requirements.txt · internet yok</td><td class="ok">pandas + openpyxl</td></tr>
     <tr class="hi"><td class="mono">10</td><td>100 dk · çıktı üretilmeli · kod 0</td><td class="brand">iki ayrı güvenlik</td></tr>
   </table></div>
   <div class="col">
@@ -763,7 +784,7 @@ add('Final uyumu',`
       <li><b>Kademeli yayın</b> — geçerli ilk plan (Stage 0) elde edilir edilmez diske yazılır; her kabul edilen aşama dosyayı <b>atomik</b> günceller. Süreç Stage 2 ortasında öldürüldüğünde bile diskte şemaya birebir uyan geçerli bir plan bulundu.</li>
       <li><b>Sert süre sınırı</b> — her arama aşaması ayrı daemon iş parçacığında, kalan bütçeyle çalışır. Sınır dolarsa aşama terk edilir, önceki plan korunur, süreç <b>çıkış kodu 0</b> ile biter.</li>
     </ul></div>
-    <div class="card tight"><h3>Ölçülen</h3><p class="sub">Referans veri setinde uçtan uca <b>~150 sn</b> — 100 dakikalık tavanın kırkta biri. Temiz sanal ortamda da doğrulandı.</p></div>
+    <div class="card" style="flex:1"><h3>Ölçülen çalışma süresi</h3><div class="chart" data-c="runtime"></div></div>
   </div>
 </div></div>`,
 `Final aşamasında kodumuz bize önceden bildirilmeyen bir haftalık veri setiyle çalıştırılacak. Teknik gereksinimler dokümanı 11 bölüm ve her bölüm test edilebilir bir gereksinim tanımlıyor.
@@ -857,7 +878,7 @@ Teşekkürler, sorularınızı bekliyoruz.`,
 const CH={ladder:chartLadder,history:chartHistory,cal:chartCal,fc:chartFc,bt:chartBt,
           fleet:chartFleet,chains:()=>chartChains('Stage 2'),fill:chartFill,mix:chartMix,
           milkf:chartMilkFunnel,pickf:chartPickFunnel,clean:chartClean,flow:chartFlow,
-          rules:chartRules,pickstop:chartPickStop};
+          rules:chartRules,pickstop:chartPickStop,runtime:chartRuntime};
 
 const stage=document.getElementById('stage');
 SL.forEach((s,i)=>{
