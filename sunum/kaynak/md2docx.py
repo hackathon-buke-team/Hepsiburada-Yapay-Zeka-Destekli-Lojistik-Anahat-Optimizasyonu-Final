@@ -117,9 +117,19 @@ def _field(paragraph, instruction: str, placeholder: str = "") -> None:
 
 
 def _update_fields_on_open(document) -> None:
+    """İçindekiler tablosunu Word açılışta güncellesin.
+
+    CT_Settings şemasında ``w:updateFields``, ``w:compat``ten **önce** gelir;
+    sona eklemek Word'ün "okunamayan içerik" uyarısına yol açabilir.
+    """
     settings = document.settings.element
     el = OxmlElement("w:updateFields")
     el.set(qn("w:val"), "true")
+    for anchor in ("w:compat", "w:rsids", "w:themeFontLang"):
+        node = settings.find(qn(anchor))
+        if node is not None:
+            node.addprevious(el)
+            return
     settings.append(el)
 
 
