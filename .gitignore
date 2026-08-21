@@ -22,3 +22,6 @@ Desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# --- Codex izole calisma alanlari ---
+/.worktrees/
