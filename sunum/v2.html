@@ -457,9 +457,9 @@ function chartRuntime(){
 
 /* ── maliyet akış şeması ── */
 function chartFlow(){
-  const W=880,H=200;
-  const boxes=[['Talep hazır','09:00 / 17:00',C.ok],['Çıkış elleçleme','⌈desi × 0,01⌉ dk',C.blue],
-               ['Yolculuk','matristen, ⌈dk⌉',C.purple],['Varış elleçleme','⌈desi × 0,01⌉ dk',C.blue],
+  const W=880,H=216;
+  const boxes=[['Talep hazır','09:00 / 17:00',C.ok],['Çıkış elleçleme','ceil(desi × 0,01) dk',C.blue],
+               ['Yolculuk','matristen, ceil(dk)',C.purple],['Varış elleçleme','ceil(desi × 0,01) dk',C.blue],
                ['Teslim','SLA burada durur',C.brand]];
   const bw=150,gap=(W-boxes.length*bw)/(boxes.length-1),y=48,bh=72;
   let o='';
@@ -474,8 +474,9 @@ function chartFlow(){
       <path d="M0,0 L7,3.5 L0,7 z" fill="${C.line}"/></marker></defs>`;
   o+=`<line x1="0" y1="26" x2="${W}" y2="26" stroke="${C.brand}" stroke-width="1.5" stroke-dasharray="5 4"/>`;
   o+=txt(6,20,'SLA saati  →  başlangıç: talep tamamlanma anı   ·   bitiş: nihai varış elleçlemesinin bitişi',{size:11.5,w:600,fill:C.brand2});
-  o+=txt(0,H-22,'Kullanım süresi = ilk yükleme başlangıcından son indirme bitişine kadar TEK sürekli pencere — bekleme ve elleçleme dâhil (Jüri S3, S12)',{size:11.5,fill:C.muted});
-  o+=txt(0,H-4,'Toplam Maliyet = (Saatlik Kira × Kullanım Süresi) + (Mesafe × Km Başı Maliyet) + Geciken Desi × ⌈Gecikme Saati⌉ × 0,40 ₺',{size:12,w:700,fill:'#dfe7f2'});
+  o+=txt(0,H-38,'Kullanım süresi = ilk yükleme başlangıcından son indirme bitişine kadar',{size:11.5,fill:C.muted});
+  o+=txt(0,H-22,'TEK sürekli pencere — bekleme ve elleçleme dâhil (Jüri S3, S9, S12)',{size:11.5,fill:C.muted});
+  o+=txt(0,H-2,'Toplam Maliyet = (Saatlik Kira × Kullanım Süresi) + (Mesafe × Km Başı Maliyet) + Geciken Desi × ceil(Saat) × 0,40 ₺',{size:11.5,w:700,fill:'#dfe7f2'});
   return svg(W,H,o)}
 
 /* ══════════════ slaytlar ══════════════ */
