@@ -194,7 +194,7 @@ Rol başına en az 2 sonlu örnek yoksa güvenli `1,0` değerine düşer.
 | 2 Tem (Per) | 978.038 | 953.021 | ×1,03 |
 | 3 Tem (Cum) | 859.444 | 897.773 | ×0,96 |
 | 4 Tem (Cmt) | 591.542 | 619.547 | ×0,96 |
-| 5 Tem (Paz) | 57.454 | 86.435 | ×0,67 |
+| 5 Tem (Paz) | 57.454 | 86.435 | ×0,66 |
 
 Fark tek bir günde toplanıyor. 29 Haziran ay sonundan bir önceki gün (bastırılmış),
 30 Haziran ay sonu (çökmüş), 1 Temmuz toparlanma (yükselmiş). Kalan dört gün düz

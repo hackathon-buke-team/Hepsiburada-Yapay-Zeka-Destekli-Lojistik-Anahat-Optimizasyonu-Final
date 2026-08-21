@@ -11,6 +11,23 @@ TEKNOFEST 2026 · Hepsiburada · Takım Büke · Final aşaması jüri sunumu.
 | `dokumanlar/` | Jüri için hazırlanan Word dökümanları (`.docx`) ve markdown kaynakları. |
 | `kaynak/` | Sunumu ve dökümanları yeniden üreten betikler. |
 
+## Word dökümanları — ne hangisinde
+
+| Belge | Ne işe yarar | Uzunluk |
+|---|---|---:|
+| **00 — Sunum Konuşma Notları** | `v2.html`'deki 17 slayttan otomatik üretildi, birebir senkron. Süre planı (toplam 15:15), "süre aşarsak" atlama önceliği, ezberlenecek 10 sayı, slayt slayt metin, 10 dakikalık hazırlık listesi. | ~3.400 kelime |
+| **01 — Algoritma ve Teknik Rapor** | Uçtan uca teknik anlatım: maliyet modeli ve zaman aritmetiği, veri katmanı, tahmin modeli, Stage 0–3 optimizasyon merdiveni, hakem simülatörü, final entegrasyon katmanı, ölçülmüş sonuçlar, ölçülmüş çıkmaz sokaklar, bilinen sınırlar. | ~12.800 kelime · 26 tablo |
+| **02 — Jüri Soru-Cevap Hazırlık Kitabı** | **96 soru**, dokuz kategoride (problem/maliyet, tahmin, Stage 0, Stage 1-2-3, doğrulama, kural uyumu, final backtest gereksinimleri, zor sorular, karşılama taktikleri). Her soru için kısa cevap + detay + kanıt + tuzak notu. | ~12.400 kelime |
+| **03 — Teknik Gereksinim Uyum Matrisi** | Final Backtest dokümanının Bölüm 1–11'i madde madde: jüri ne istedi → biz ne yaptık → kanıt → risk. Bölüm 11 kontrol listesi, şartname uyumu, jüri Q&A eşlemesi, çıktı şema tuzakları, genelleştirilebilirlik kanıtı. | ~11.400 kelime · 21 tablo |
+| **04 — Sunum Akışı ve Konuşma Metni** | 21 slaytlık genişletilmiş akış: slaytta ne var, konuşma metni, vurgu sayıları, olası ara soru. Demo senaryosu ve hazırlık listesi dahil. | ~6.900 kelime |
+
+> Belgelerdeki her sayısal iddia bağımsız bir doğrulama turundan geçirildi; ölçülemeyen
+> veya kaynağı bulunamayan değerler düzeltildi. Doğrulama sırasında bulunup düzeltilen
+> hatalar arasında SLA düzeltme katmanının etkisi (+14.391,60 TL → **+2.399,60 TL**),
+> kayan nokta artefaktı örneği (CPython'da `4.6*60` tam 276'dır; gerçek örnek
+> `8.05*60 = 483,00000000000006`), hakem ihlal mesajı sayısı (36 → **33**) ve
+> 5 Temmuz oranının yuvarlanması (0,67 → **0,66**) vardır.
+
 ## v2.html — kullanım
 
 | Tuş | İşlev |
