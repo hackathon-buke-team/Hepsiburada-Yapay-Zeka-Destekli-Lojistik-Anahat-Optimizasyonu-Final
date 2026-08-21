@@ -1,0 +1,24 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# --- Önceki aşama deposunun git geçmişi ---
+# stage-2-step-3 kendi başına bir git deposuydu. Bu depoya dosyalarıyla
+# birlikte dahil edebilmek için .git dizini .git-yedek adına taşındı.
+# Geri almak için:  mv stage-2-step-3/.git-yedek stage-2-step-3/.git
+stage-2-step-3/.git-yedek/
+
+# --- İşletim sistemi ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Editör ---
+.vscode/
+.idea/
+*.swp

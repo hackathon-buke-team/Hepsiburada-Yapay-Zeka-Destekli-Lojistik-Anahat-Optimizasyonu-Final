@@ -1,0 +1,9 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+outputs/
+.venv/
+.superpowers/
+
+# Claude Code yerel ajan yapılandırması
+.claude/

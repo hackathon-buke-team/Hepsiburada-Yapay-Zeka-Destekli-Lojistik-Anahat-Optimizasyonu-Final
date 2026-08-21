@@ -1,0 +1,3 @@
+# Yalnızca geliştirme/test içindir; değerlendirme çalıştırması gerektirmez.
+-r requirements.txt
+pytest>=8.0

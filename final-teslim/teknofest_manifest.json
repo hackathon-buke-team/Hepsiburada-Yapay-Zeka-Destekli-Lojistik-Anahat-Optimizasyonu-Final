@@ -1,0 +1,16 @@
+{
+  "takim_id": "BASVURU_NUMARANIZI_YAZIN",
+  "takim_adi": "Büke",
+  "python_surumu": "3.11",
+  "kurulum_komutlari": [
+    "pip install -r requirements.txt"
+  ],
+  "calistirma_komutu": "python main.py",
+  "girdi_ortam_degiskeni": "TEKNOFEST_INPUT_FILE",
+  "girdi_yedek_yolu": "data/one_week_backtest.xlsx",
+  "cikti_klasoru": "out/",
+  "beklenen_ciktilar": [
+    "Tasima-plani.xlsx"
+  ],
+  "notlar": "main.py yalnızca optimizasyon boru hattını çalıştırır; talep tahmini modülü çağrılmaz (Bölüm 2). Girdi önce TEKNOFEST_INPUT_FILE ortam değişkeninden, bulunamazsa data/one_week_backtest.xlsx yolundan okunur; her iki yöntem de desteklenmektedir. Ufuk (tarih aralığı) girdi dosyasının Tarih kolonundan dinamik olarak türetilir, kodda gömülü takvim tarihi yoktur. Statik referans veriler (araç filosu, hat/mesafe matrisi, elleçleme ve tır kapasiteleri, kiralık araçlar) datas/ klasöründedir ve teslim paketindeki hâliyle kullanılır. Geliştirme veri setiyle (4.046 talep satırı / ~4,98M desi) ölçülen uçtan uca süre yaklaşık 2,5 dakikadır. Çıktı, geçerli ilk plan elde edilir edilmez yazılır ve her kabul edilen aşamada atomik olarak güncellenir; ayrıca arama aşamaları TEKNOFEST_TIME_BUDGET_MIN (varsayılan 100, Bölüm 10 ile aynı) ile sınırlanır, böylece zaman aşımı hiçbir koşulda aşılmaz. Referans: run.py, yarışmanın önceki aşamasında teslim edilen tahmin+optimizasyon hattının değiştirilmemiş hâlidir ve değerlendirmede çalıştırılmaz; tests/ ve tools/ klasörleri de değerlendirme koşusunun parçası değildir."
+}
