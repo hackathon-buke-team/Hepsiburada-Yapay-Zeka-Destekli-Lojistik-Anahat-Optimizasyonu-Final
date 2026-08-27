@@ -25,3 +25,16 @@ Desktop.ini
 
 # --- Codex izole calisma alanlari ---
 /.worktrees/
+
+# --- Vercel ---
+.vercel/
+
+# --- Node ---
+node_modules/
+*.tsbuildinfo
+
+# --- Word gecici kilit dosyalari ---
+~$*.docx
+
+# --- Panel derlenmis ikili cikti (15 MB, desktop/build_exe.py ile yeniden uretilir) ---
+panel/dist-exe/

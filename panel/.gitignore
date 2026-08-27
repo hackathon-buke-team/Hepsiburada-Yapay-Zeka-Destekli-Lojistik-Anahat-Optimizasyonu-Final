@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-tek/
+dist-exe/
+desktop/.stage/
+desktop/__pycache__/
+.vercel
+*.local

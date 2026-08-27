@@ -1,0 +1,27 @@
+{
+  "name": "hb-anahat-panosu",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Anahat Sevkiyat Panosu — Takım Büke · TEKNOFEST 2026 Hepsiburada",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --port 4173",
+    "data": "python kaynak/build_panel_data.py",
+    "build:tek": "vite build --mode tek",
+    "build:exe": "python desktop/build_exe.py"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-singlefile": "^2.0.3"
+  }
+}

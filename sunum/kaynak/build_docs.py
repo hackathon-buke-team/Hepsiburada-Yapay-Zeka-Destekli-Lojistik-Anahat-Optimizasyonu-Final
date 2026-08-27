@@ -15,6 +15,9 @@ TITLES = {
     "02-juri-soru-cevap-kitabi":       ("02 - Juri Soru-Cevap Hazirlik Kitabi", "Beklenen jüri soruları ve kanıtlı cevaplar"),
     "03-teknik-gereksinim-uyum-matrisi": ("03 - Teknik Gereksinim Uyum Matrisi", "Jüri ne istedi, biz ne yaptık, kanıt"),
     "04-sunum-konusma-metni":          ("04 - Sunum Akisi ve Konusma Metni",    "Slayt akışı ve genişletilmiş konuşma metni"),
+    "05-talep-tahmini-teknik-rapor":   ("05 - Talep Tahmini Teknik Rapor",      "Tahmin hedefi, ön işleme ve model"),
+    "06-on-yazi":                      ("06 - On Yazi",                         "Teslim paketine ön yazı"),
+    "07-sade-anlatim":                 ("07 - Sade Anlatim",                    "Model ve algoritmanın jargonsuz anlatımı"),
 }
 
 

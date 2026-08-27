@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Büke · Anahat Optimizasyonu · Final Sunumu</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -97,12 +98,49 @@ pre{margin:0;font:400 13px/1.6 var(--mono);color:#c7d3e4;background:rgba(0,0,0,.
   border:1px solid var(--line);border-radius:10px;padding:14px 16px;white-space:pre;overflow:auto}
 pre b{color:var(--brand2);font-weight:600}
 
+/* --- takim --- */
+.team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;flex:1;min-height:0}
+.mem{align-items:center;text-align:center;justify-content:center;gap:0;padding:22px 14px 20px}
+.mem .ph{width:210px;height:210px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:#e9edf3;
+  box-shadow:0 18px 40px rgba(0,0,0,.52), 0 0 0 1px rgba(255,255,255,.14), 0 0 0 7px rgba(255,96,0,.07)}
+.mem .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.mem .nm{font:600 18px/1.25 var(--sans);color:var(--ink);letter-spacing:-.018em;white-space:nowrap;margin-top:22px}
+.mem .un{font:400 12.5px/1.35 var(--sans);color:var(--muted);margin-top:9px}
+.mem .dp{font:400 12.5px/1.35 var(--sans);color:var(--dim);margin-top:3px}
+.mem .deg{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:7px 12px;border-radius:999px;
+  font:600 10.5px/1 var(--mono);letter-spacing:.07em;white-space:nowrap;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted)}
+.mem .deg i{width:6px;height:6px;border-radius:50%;background:var(--dim);flex:0 0 auto}
+.mem .deg.on{border-color:rgba(255,96,0,.42);background:rgba(255,96,0,.11);color:var(--brand2)}
+.mem .deg.on i{background:var(--brand);box-shadow:0 0 0 3px rgba(255,96,0,.18)}
+
 /* --- chrome --- */
 #bar{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));z-index:40;transition:width .3s ease}
-#hud{position:fixed;right:18px;bottom:14px;z-index:40;font:600 12px/1 var(--mono);color:var(--dim);
-  display:flex;gap:12px;align-items:center}
-#hud b{color:var(--brand)}
-#hud kbd{border:1px solid var(--line);border-radius:5px;padding:3px 6px;color:var(--dim);background:rgba(255,255,255,.03)}
+#hud{position:fixed;right:26px;bottom:20px;z-index:40;color:var(--dim);
+  font:600 17px/1 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em;
+  display:flex;gap:7px;align-items:baseline;user-select:none}
+#hud b{color:var(--brand);font-size:23px;font-weight:700}
+
+/* --- kenar gezinme okları: yalnız üzerine gelince --- */
+.nav{position:fixed;top:50%;transform:translateY(-50%);z-index:42;width:52px;height:52px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(12,18,28,.82);backdrop-filter:blur(6px);
+  color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0;
+  opacity:0;pointer-events:none;transition:opacity .2s ease,color .16s ease,border-color .16s ease,transform .16s ease}
+.nav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#navp{left:26px} #navn{right:26px}
+body.navon .nav{opacity:1;pointer-events:auto}
+body.navon .nav:hover{color:var(--brand);border-color:rgba(255,96,0,.55);background:rgba(20,14,10,.9)}
+#navp:hover{transform:translateY(-50%) translateX(-3px)}
+#navn:hover{transform:translateY(-50%) translateX(3px)}
+.nav[disabled]{opacity:0!important;pointer-events:none}
+
+/* --- kapak logosu --- */
+.hblogo{height:34px;width:auto;flex:0 0 auto;align-self:flex-start;display:block;
+  margin-bottom:24px;opacity:.95}
+/* --- köşe logosu: kapak dışındaki her slaytta --- */
+.cnrlogo{position:absolute;top:30px;right:34px;height:19px;width:auto;
+  opacity:.5;pointer-events:none;z-index:2}
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:46vh;overflow:auto;z-index:50;
   background:rgba(6,9,14,.97);border-top:2px solid var(--brand);padding:18px 26px 22px;
   transform:translateY(101%);transition:transform .28s ease}
@@ -119,23 +157,195 @@ pre b{color:var(--brand2);font-weight:600}
 #toc li{font:400 14px/2 var(--sans);color:var(--muted);cursor:pointer;break-inside:avoid}
 #toc li:hover{color:var(--brand2)}
 #toc li b{color:var(--ink);font-weight:600}
+/* --- tıklanabilir öğeler --- */
+.pophint{font:600 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin-left:14px;vertical-align:3px;white-space:nowrap}
+.card[data-pop]{position:relative;cursor:pointer;transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.card[data-pop]:hover{border-color:rgba(87,166,255,.55);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.card[data-pop]::after{content:"";position:absolute;right:13px;top:13px;width:7px;height:7px;border-radius:50%;
+  background:var(--blue);opacity:.5;transition:opacity .18s ease}
+.card[data-pop]:hover::after{opacity:1}
+ul.tick li[data-pop]{cursor:pointer;transition:color .16s ease}
+ul.tick li[data-pop]:hover{color:#c4d2e6}
+ul.tick li[data-pop]::after{content:"";position:absolute;left:-9px;right:-9px;top:-4px;bottom:-4px;border-radius:9px;
+  background:transparent;transition:background .16s ease;pointer-events:none}
+ul.tick li[data-pop]:hover::after{background:rgba(255,255,255,.055)}
+
+/* --- pop-up --- */
+#pop{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:26px;
+  visibility:hidden;pointer-events:none}
+#pop.on{visibility:visible;pointer-events:auto}
+#pop .bd{position:absolute;inset:0;background:rgba(4,7,12,.82);backdrop-filter:blur(7px);
+  opacity:0;transition:opacity .22s ease}
+#pop.on .bd{opacity:1}
+#pop .win{position:relative;width:min(1400px,96vw);max-height:93vh;overflow:auto;
+  background:radial-gradient(900px 420px at 92% -25%,rgba(255,96,0,.10),transparent 62%),linear-gradient(165deg,#101825,#0a0f18);
+  border:1px solid #243040;border-radius:20px;box-shadow:0 40px 130px rgba(0,0,0,.75);padding:26px 34px 30px;
+  opacity:0;transform:scale(.95) translateY(16px);
+  transition:opacity .26s ease,transform .3s cubic-bezier(.18,.82,.26,1)}
+#pop.on .win{opacity:1;transform:none}
+#pop .x{position:absolute;right:16px;top:15px;width:31px;height:31px;border-radius:9px;border:1px solid var(--line);
+  background:rgba(255,255,255,.04);color:var(--muted);font:400 17px/1 var(--sans);cursor:pointer}
+#pop .x:hover{color:var(--ink);border-color:var(--brand)}
+#pop .ph{font:700 27px/1.16 var(--sans);letter-spacing:-.022em;color:var(--ink);margin:0 0 18px;
+  text-transform:none;padding-right:44px}
+.pcols{display:flex;gap:24px;align-items:flex-start}
+.pside{flex:0 0 300px;display:flex;flex-direction:column;gap:10px}
+.pmain{flex:1;min-width:0}
+.pstat{border:1px solid var(--line);border-radius:12px;padding:12px 15px;background:rgba(255,255,255,.028)}
+.pstat .v{font:700 21px/1 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pstat .v.sm{font:600 15px/1.35 var(--sans);letter-spacing:0}
+.pstat .v .u{font:500 12.5px/1 var(--sans);color:var(--dim);letter-spacing:0}
+.pstat .l{font:500 11.5px/1.35 var(--sans);color:var(--muted);margin-top:6px}
+.pnote{font:400 14px/1.62 var(--sans);color:var(--muted);margin:15px 0 0}
+.pnote+.pnote{margin-top:9px}
+.pmain>.pnote:first-child{margin-top:0}
+.pstack+.mp-leg,.pbars+.mp-leg{margin-top:13px}
+.pnote b{color:var(--ink);font-weight:600}
+.pnote.hl{border-left:2px solid var(--brand);padding-left:12px}
+.pdef{border:1px solid rgba(87,166,255,.26);background:rgba(87,166,255,.065);border-radius:13px;
+  padding:12px 16px;font:400 14px/1.6 var(--sans);color:#b6c6db;margin:0 0 18px}
+.pdef b{color:var(--blue);font-weight:600}
+.pdef em{font-style:normal;color:var(--ink);font-weight:600}
+.pmap{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.015);padding:4px 6px}
+.pmap svg{width:100%;height:auto;display:block}
+/* dar en-boy oranlı grafikler tam genişlikte aşırı uzuyor: ortala ve sınırla */
+.pmap.mid{max-width:660px;margin-left:auto;margin-right:auto}
+.pmap.wide{max-width:960px;margin-left:auto;margin-right:auto}
+
+/* --- pop-up bar listesi --- */
+.pbars{display:grid;grid-template-columns:repeat(var(--c,2),max-content minmax(90px,1fr) max-content);
+  row-gap:11px;column-gap:14px;align-items:center}
+.pbars.one{--c:1}
+.pbars .r{display:contents}
+.pbars:not(.one) .r:nth-child(even) .n{padding-left:16px}
+.pbars .n{font:500 13px/1.3 var(--sans);color:var(--muted);white-space:nowrap}
+.pbars .t{height:11px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;min-width:90px}
+.pbars .t i{display:block;height:100%;border-radius:6px;width:0;
+  background:linear-gradient(90deg,var(--blue),#93c6ff);animation:pbgrow .62s cubic-bezier(.2,.85,.3,1) forwards}
+@keyframes pbgrow{to{width:var(--w)}}
+.pbars .q{font:600 12.5px/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;
+  text-align:right;white-space:nowrap;min-width:58px}
+.pbars .hi .n,.pbars .hi .q{color:var(--brand2)}
+.pbars .hi .t i{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.pbars .z .n,.pbars .z .q{color:var(--warn)}
+.pbars .z .t{background:rgba(255,197,61,.14)}
+
+/* --- pop-up yiginli bar --- */
+.pstack{display:grid;grid-template-columns:max-content 1fr max-content;row-gap:13px;column-gap:16px;align-items:center}
+.pstack .r{display:contents}
+.pstack .n{font:500 13px/1.3 var(--sans);color:var(--muted);white-space:nowrap}
+.pstack .t{height:16px;border-radius:8px;overflow:hidden;display:flex;background:rgba(255,255,255,.06)}
+.pstack .t i{display:block;height:100%;width:0;flex:0 0 auto;
+  animation:pbgrow .7s cubic-bezier(.2,.85,.3,1) forwards}
+.pstack .q{font:600 12.5px/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;
+  text-align:right;white-space:nowrap}
+
+/* --- pop-up harita --- */
+.tr-land{fill:rgba(87,166,255,.05);stroke:rgba(87,166,255,.28);stroke-width:1.2;stroke-linejoin:round}
+.mp-dot{opacity:0;transform-box:fill-box;transform-origin:center;animation:mpin .42s cubic-bezier(.2,1.35,.4,1) forwards}
+@keyframes mpin{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:scale(1)}}
+.mp-lab{font:600 10.5px/1 var(--mono);fill:#9db0c8;opacity:0;animation:mpfade .4s ease forwards;
+  paint-order:stroke;stroke:rgba(8,11,17,.88);stroke-width:3px;stroke-linejoin:round}
+.ch-num{font:700 9.5px/1 var(--mono);fill:#0a0f18}
+.ch-name{font:700 12.5px/1 var(--sans);fill:#f0f5fb;paint-order:stroke;stroke:rgba(8,11,17,.92);
+  stroke-width:3.4px;stroke-linejoin:round}
+.ch-sub{font:500 10px/1 var(--mono);fill:#ffa14a;paint-order:stroke;stroke:rgba(8,11,17,.92);
+  stroke-width:3.4px;stroke-linejoin:round}
+.ch-load{font:600 10px/1 var(--mono);fill:#9db0c8;paint-order:stroke;stroke:rgba(8,11,17,.88);
+  stroke-width:3.4px;stroke-linejoin:round}
+@keyframes mpfade{to{opacity:1}}
+.mp-lane{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:mpdraw .6s ease forwards}
+@keyframes mpdraw{to{stroke-dashoffset:0}}
+.mp-leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;padding-left:4px}
+.mp-leg span{display:inline-flex;align-items:center;gap:7px;font:500 11.5px/1 var(--mono);color:var(--muted)}
+.mp-leg i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.mp-leg i.d{width:9px;height:9px;border-radius:50%}
+.mp-leg i.sq{width:10px;height:10px;border-radius:3px}
+
+/* ══════════════ slayt içi giriş animasyonu ══════════════
+   Slayt aktifleştiğinde kartlar/satırlar sırayla belirir. `.active` sınıfı
+   her geçişte kaldırılıp yeniden eklendiği için animasyon her seferinde
+   baştan çalışır; grafiklerdeki SVG <animate> de go() içinde yeniden kurulur.
+   Böylece 6. slayttan sonrası da canlı gelir. */
+@keyframes slidein{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:none}}
+@keyframes slidefade{from{opacity:0}to{opacity:1}}
+@keyframes slidewipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.slide.active .body > *{animation:slidein .46s cubic-bezier(.18,.82,.26,1) both}
+.slide.active .body > *:nth-child(1){animation-delay:.05s}
+.slide.active .body > *:nth-child(2){animation-delay:.15s}
+.slide.active .body > *:nth-child(3){animation-delay:.25s}
+.slide.active .body > *:nth-child(4){animation-delay:.35s}
+.slide.active .body .g2>*,.slide.active .body .g3>*,.slide.active .body .g4>*,
+.slide.active .body .g5>*,.slide.active .body .row>*{animation:slidein .44s cubic-bezier(.18,.82,.26,1) both}
+.slide.active .body .g2>*:nth-child(2),.slide.active .body .g3>*:nth-child(2),
+.slide.active .body .g4>*:nth-child(2),.slide.active .body .row>*:nth-child(2){animation-delay:.11s}
+.slide.active .body .g3>*:nth-child(3),.slide.active .body .g4>*:nth-child(3){animation-delay:.20s}
+.slide.active .body .g4>*:nth-child(4){animation-delay:.29s}
+.slide.active .kicker{animation:slidefade .5s ease both}
+.slide.active h2{animation:slidein .5s cubic-bezier(.18,.82,.26,1) both}
+
+/* satır satır beliren listeler ve tablolar */
+.slide.active ul.tick li{animation:slidein .42s cubic-bezier(.18,.82,.26,1) both}
+.slide.active ul.tick li:nth-child(1){animation-delay:.16s}
+.slide.active ul.tick li:nth-child(2){animation-delay:.25s}
+.slide.active ul.tick li:nth-child(3){animation-delay:.34s}
+.slide.active ul.tick li:nth-child(4){animation-delay:.43s}
+.slide.active ul.tick li:nth-child(5){animation-delay:.52s}
+.slide.active ul.tick li:nth-child(6){animation-delay:.61s}
+.slide.active table.anim tbody tr{animation:slidein .4s cubic-bezier(.18,.82,.26,1) both}
+.slide.active table.anim tbody tr:nth-child(1){animation-delay:.22s}
+.slide.active table.anim tbody tr:nth-child(2){animation-delay:.34s}
+.slide.active table.anim tbody tr:nth-child(3){animation-delay:.46s}
+.slide.active table.anim tbody tr:nth-child(4){animation-delay:.58s}
+.slide.active table.anim tbody tr:nth-child(5){animation-delay:.70s}
+.slide.active table.anim tbody tr:nth-child(6){animation-delay:.82s}
+.slide.active table.anim tbody tr:nth-child(7){animation-delay:.94s}
+.slide.active table.anim tbody tr:nth-child(8){animation-delay:1.06s}
+.slide.active table.anim tbody tr:nth-child(9){animation-delay:1.18s}
+.slide.active .chips .chip{animation:slidein .4s cubic-bezier(.18,.82,.26,1) both}
+.slide.active .chips .chip:nth-child(1){animation-delay:.32s}
+.slide.active .chips .chip:nth-child(2){animation-delay:.40s}
+.slide.active .chips .chip:nth-child(3){animation-delay:.48s}
+.slide.active .chips .chip:nth-child(4){animation-delay:.56s}
+.slide.active .chips .chip:nth-child(5){animation-delay:.64s}
+.slide.active .kpi .v{animation:slidefade .6s ease both;animation-delay:.18s}
+.slide.active pre{animation:slidefade .6s ease both;animation-delay:.3s}
+
+/* tıklanabilir grafik kartı — kart gövdesinin tamamı pop-up açar */
+.card[data-pop] .chart,.card[data-pop] pre{pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  .slide.active .body > *,.slide.active .body .g2>*,.slide.active .body .g3>*,
+  .slide.active .body .g4>*,.slide.active .body .g5>*,.slide.active .body .row>*,
+  .slide.active ul.tick li,.slide.active table.anim tbody tr,.slide.active .chips .chip,
+  .slide.active .kicker,.slide.active h2,.slide.active .kpi .v,.slide.active pre{animation:none!important}
+}
+
 @media print{
   html,body{overflow:visible;background:#fff}
   #stage{position:static;display:block}
   .slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;margin:0 auto 10mm}
-  #bar,#hud,#notes,#toc{display:none}
+  #bar,#hud,#notes,#toc,#pop,.pophint,.nav{display:none}
 }
 </style>
 </head>
 <body>
 <div id="bar"></div>
 <div id="stage"></div>
-<div id="hud"><span><b id="cur">1</b> / <span id="tot">1</span></span><kbd>←→</kbd><kbd>N notlar</kbd><kbd>O içindekiler</kbd></div>
+<div id="hud"><b id="cur">1</b><span>/</span><span id="tot">1</span></div>
+<button class="nav" id="navp" title="Önceki slayt (←)" aria-label="Önceki slayt">
+  <svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+<button class="nav" id="navn" title="Sonraki slayt (→)" aria-label="Sonraki slayt">
+  <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
 <div id="notes"><h4>Konuşma metni</h4><div class="txt" id="ntxt"></div><div class="use" id="nuse"></div></div>
 <div id="toc" class="off"><h4>Slayt haritası — hangi sayfada ne var</h4><ol id="tocl"></ol></div>
+<div id="pop"><div class="bd"></div><div class="win"><button class="x" title="Kapat (Esc)">✕</button>
+  <p class="kicker" id="popk"></p><div class="ph" id="poph"></div><div id="popb"></div></div></div>
 
 <script>
 const D = __DATA__;
+const NET = __NET__;
 
 /* ══════════════ yardımcılar ══════════════ */
 const NF = new Intl.NumberFormat('tr-TR');
@@ -165,24 +375,69 @@ function bar(x,y,w,h,fill,r=5){
   if(h<=0.5) h=0.5;
   return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.min(r,w/2,h/2)}" fill="${fill}"/>`}
 
+/* ── animasyonlu çizim yardımcıları ──────────────────────────────────
+   Grafikler slayta her girişte yeniden kurulduğu için (bkz. replay())
+   bu <animate> öğeleri de her seferinde baştan çalışır. */
+const AD=.55;                                   /* varsayılan süre (sn) */
+/* tabandan yukarı büyüyen sütun */
+function abar(x,y,w,h,fill,r=5,d=0,dur=AD){
+  if(h<=0.5) h=0.5;
+  const base=y+h, rr=Math.min(r,w/2,h/2);
+  return `<rect x="${x}" y="${base}" width="${w}" height="0" rx="${rr}" fill="${fill}">
+    <animate attributeName="y" from="${base}" to="${y}" dur="${dur}s" begin="${d}s"
+      fill="freeze" calcMode="spline" keySplines=".2 .85 .3 1" keyTimes="0;1"/>
+    <animate attributeName="height" from="0" to="${h}" dur="${dur}s" begin="${d}s"
+      fill="freeze" calcMode="spline" keySplines=".2 .85 .3 1" keyTimes="0;1"/></rect>`}
+/* soldan sağa uzayan yatay bar */
+function awide(x,y,w,h,fill,r=5,d=0,dur=AD){
+  const rr=Math.min(r,h/2);
+  return `<rect x="${x}" y="${y}" width="0" height="${h}" rx="${rr}" fill="${fill}">
+    <animate attributeName="width" from="0" to="${Math.max(w,0.6)}" dur="${dur}s" begin="${d}s"
+      fill="freeze" calcMode="spline" keySplines=".2 .85 .3 1" keyTimes="0;1"/></rect>`}
+/* soldan sağa çizilen çoklu çizgi */
+function aline(pts,stroke,sw,d=0,dur=1.1,len=2600){
+  return `<polyline points="${pts}" fill="none" stroke="${stroke}" stroke-width="${sw}"
+    stroke-linejoin="round" pathLength="${len}" stroke-dasharray="${len}" stroke-dashoffset="${len}">
+    <animate attributeName="stroke-dashoffset" from="${len}" to="0" dur="${dur}s" begin="${d}s"
+      fill="freeze" calcMode="spline" keySplines=".25 .1 .25 1" keyTimes="0;1"/></polyline>`}
+/* gecikmeli beliren metin / öğe */
+function afade(inner,d=0,dur=.4){
+  return `<g opacity="0">${inner}<animate attributeName="opacity" from="0" to="1"
+    dur="${dur}s" begin="${d}s" fill="freeze"/></g>`}
+
 /* ── yığılmış sütun: araç maliyeti + SLA ── */
 function chartLadder(){
   const W=880,H=380,x0=88,y0=18,w=W-x0-24,h=H-y0-62;
   const max=17.2e6, bw=w/4*0.5, gap=w/4;
   let o=grid(x0,y0,w,h,4,v=>nf(v*17.2,1)+' M');
+  const top=[];                                  /* zirve noktaları — iniş çizgisi için */
   STG.forEach((k,i)=>{
-    const s=S(k), cx=x0+gap*i+gap/2-bw/2;
+    const s=S(k), cx=x0+gap*i+gap/2-bw/2, d=i*.42;
     const hv=s.vehicle_cost/max*h, hs=s.sla_penalty/max*h;
-    o+=bar(cx,y0+h-hv,bw,hv,i===3?C.brand:'#7a4a2e',0);
-    o+=bar(cx,y0+h-hv-hs,bw,hs,i===3?C.warn:'#6b5a2a',5);
-    o+=txt(cx+bw/2,y0+h-hv-hs-13,nf(s.total_cost/1e6,2)+' M ₺',{anchor:'middle',size:15,w:700,fill:i===3?'#fff':C.muted});
-    o+=txt(cx+bw/2,y0+h+22,k,{anchor:'middle',size:12.5,w:600,fill:i===3?C.brand:C.muted});
-    o+=txt(cx+bw/2,y0+h+40,['temel plan','aynı-hat onarım','milk-run','yük alma'][i],{anchor:'middle',size:11,fill:C.dim});
+    o+=abar(cx,y0+h-hv,bw,hv,i===3?C.brand:'#7a4a2e',0,d,.6);
+    o+=abar(cx,y0+h-hv-hs,bw,hs,i===3?C.warn:'#6b5a2a',5,d+.18,.5);
+    o+=afade(txt(cx+bw/2,y0+h-hv-hs-13,nf(s.total_cost/1e6,2)+' M ₺',
+      {anchor:'middle',size:15,w:700,fill:i===3?'#fff':C.muted}),d+.5);
+    o+=afade(txt(cx+bw/2,y0+h+22,k,{anchor:'middle',size:12.5,w:600,fill:i===3?C.brand:C.muted})+
+      txt(cx+bw/2,y0+h+40,['temel plan','aynı-hat onarım','milk-run','yük alma'][i],
+        {anchor:'middle',size:11,fill:C.dim}),d+.3);
+    top.push([cx+bw/2,y0+h-hv-hs]);
     if(i>0){
-      const p=S(STG[i-1]).total_cost, d=(s.total_cost-p)/p*100;
-      o+=txt(cx+bw/2,y0+h+58,nf(d,1)+'%',{anchor:'middle',size:12,w:700,fill:C.ok});
+      const p=S(STG[i-1]).total_cost, dd=(s.total_cost-p)/p*100;
+      o+=afade(txt(cx+bw/2,y0+h+58,nf(dd,1)+'%',{anchor:'middle',size:12,w:700,fill:C.ok}),d+.62);
     }
   });
+  /* zirveleri birleştiren iniş çizgisi: merdivenin "inişi" görünür olsun */
+  o+=aline(top.map(p=>p[0]+','+(p[1]-13)).join(' '),'rgba(61,214,140,.55)',1.6,.55,1.5,1400);
+  /* toplam düşüşü gösteren ok */
+  const dTot=(S('Stage 3').total_cost-S('Stage 0').total_cost)/S('Stage 0').total_cost*100;
+  o+=afade(`<path d="M${top[0][0]+34},${top[0][1]-30} L${top[3][0]-34},${top[3][1]-30}"
+      stroke="${C.ok}" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#ldA)"/>
+    <defs><marker id="ldA" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 z" fill="${C.ok}"/></marker></defs>`+
+    txt((top[0][0]+top[3][0])/2,top[0][1]-38,nf(dTot,2)+'%  ·  '+
+      M(S('Stage 0').total_cost-S('Stage 3').total_cost)+'₺ tasarruf',
+      {anchor:'middle',size:12.5,w:700,fill:C.ok}),2.0);
   return svg(W,H,o)+`<div class="legend"><span><i style="background:${C.brand}"></i>Araç maliyeti</span>
     <span><i style="background:${C.warn}"></i>SLA cezası</span><span><i style="background:${C.ok}"></i>bir önceki aşamaya göre</span></div>`}
 
@@ -221,10 +476,10 @@ function chartCal(){
   const max=1.35, bh=h/rows.length*0.52;
   let o='';
   rows.forEach((r,i)=>{
-    const y=y0+h/rows.length*i+h/rows.length/2-bh/2, bw=Math.max(2,w*r[1]/max);
-    o+=bar(x0,y,bw,bh,r[2],4);
-    o+=txt(x0-10,y+bh/2+4,r[0],{anchor:'end',size:11.5,fill:i===1?C.brand2:C.muted,w:i===1?700:500});
-    o+=txt(x0+bw+8,y+bh/2+4,'×'+nf(r[1],4),{size:12,w:700,fill:i===1?C.brand:C.muted});
+    const y=y0+h/rows.length*i+h/rows.length/2-bh/2, bw=Math.max(2,w*r[1]/max), d=.15+i*.16;
+    o+=awide(x0,y,bw,bh,r[2],4,d,.62);
+    o+=afade(txt(x0-10,y+bh/2+4,r[0],{anchor:'end',size:11.5,fill:i===1?C.brand2:C.muted,w:i===1?700:500}),d);
+    o+=afade(txt(x0+bw+8,y+bh/2+4,'×'+nf(r[1],4),{size:12,w:700,fill:i===1?C.brand:C.muted}),d+.5);
   });
   o+=`<line x1="${x0+w/max}" y1="${y0}" x2="${x0+w/max}" y2="${y0+h}" stroke="${C.line}" stroke-dasharray="4 4"/>`;
   return svg(W,H,o)}
@@ -237,15 +492,16 @@ function chartFc(){
   const g=w/n, bw=g*0.3;
   let o=grid(x0,y0,w,h,3,v=>nf(v*max/1e6,1)+'M');
   f.labels.forEach((l,i)=>{
-    const cx=x0+g*i+g/2;
+    const cx=x0+g*i+g/2, d=.1+i*.1;
     const h1=h*f.dow_mean[i]/max, h2=h*f.forecast[i]/max;
-    o+=bar(cx-bw-2,y0+h-h1,bw,h1,'#33415a',3);
-    o+=bar(cx+2,y0+h-h2,bw,h2,i===1?C.brand:C.ok,3);
-    o+=txt(cx,y0+h+16,l.replace(' Jun',' Haz').replace(' Jul',' Tem'),{anchor:'middle',size:9.5,fill:i===1?C.brand2:C.dim});
+    o+=abar(cx-bw-2,y0+h-h1,bw,h1,'#33415a',3,d,.5);
+    o+=abar(cx+2,y0+h-h2,bw,h2,i===1?C.brand:C.ok,3,d+.12,.5);
+    o+=afade(txt(cx,y0+h+16,l.replace(' Jun',' Haz').replace(' Jul',' Tem'),
+      {anchor:'middle',size:9.5,fill:i===1?C.brand2:C.dim}),d);
   });
   const cx=x0+g*1+g/2;
-  o+=txt(cx,y0+h-18,'×0,02',{anchor:'middle',size:12,w:700,fill:C.brand});
-  o+=txt(x0,y0+h+34,'30 Haziran: 24.040 desi tahmin — ortalama 1.110.177',{size:10.5,fill:C.dim});
+  o+=afade(txt(cx,y0+h-18,'×0,02',{anchor:'middle',size:12,w:700,fill:C.brand}),1.0);
+  o+=afade(txt(x0,y0+h+34,'30 Haziran: 24.040 desi tahmin — ortalama 1.110.177',{size:10.5,fill:C.dim}),1.15);
   return svg(W,H,o)+`<div class="legend"><span><i style="background:#33415a"></i>Aynı haftagünü ortalaması</span>
     <span><i style="background:${C.ok}"></i>Bizim tahminimiz</span></div>`}
 
@@ -257,13 +513,13 @@ function chartBt(){
   let o=grid(x0,y0,w,h,3,v=>nf(v*max,2));
   keys.forEach((k,i)=>{
     series.forEach((s,j)=>{
-      const v=D.backtest[k][s[0]], bh=h*v/max;
+      const v=D.backtest[k][s[0]], bh=h*v/max, d=.12+i*.32+j*.14;
       const x=x0+g*i+g/2+(j-1)*(bw+6)-bw/2;
-      o+=bar(x,y0+h-bh,bw,bh,s[2],3);
-      o+=txt(x+bw/2,y0+h-bh-7,nf(v,4).replace('0,','0,'),{anchor:'middle',size:10,w:700,fill:j===2?C.brand2:C.dim});
+      o+=abar(x,y0+h-bh,bw,bh,s[2],3,d,.5);
+      o+=afade(txt(x+bw/2,y0+h-bh-7,nf(v,4),{anchor:'middle',size:10,w:700,fill:j===2?C.brand2:C.dim}),d+.45);
     });
-    o+=txt(x0+g*i+g/2,y0+h+18,k.split(' ').slice(0,2).join(' '),{anchor:'middle',size:11,w:600,fill:C.muted});
-    o+=txt(x0+g*i+g/2,y0+h+34,k.split(' ').slice(2).join(' '),{anchor:'middle',size:10,fill:C.dim});
+    o+=afade(txt(x0+g*i+g/2,y0+h+18,k.split(' ').slice(0,2).join(' '),{anchor:'middle',size:11,w:600,fill:C.muted})+
+      txt(x0+g*i+g/2,y0+h+34,k.split(' ').slice(2).join(' '),{anchor:'middle',size:10,fill:C.dim}),.1+i*.32);
   });
   return svg(W,H,o)+`<div class="legend"><span><i style="background:#33415a"></i>Naive</span>
     <span><i style="background:${C.blue}"></i>DOW medyanı</span><span><i style="background:${C.brand}"></i>Bizim model</span></div>`}
@@ -274,12 +530,12 @@ function chartFleet(){
   const max=1400, g=w/4, bw=g*0.44;
   let o=grid(x0,y0,w,h,4,v=>nf(v*max,0));
   STG.forEach((k,i)=>{
-    const s=S(k), bh=h*s.routes/max, x=x0+g*i+g/2-bw/2;
-    o+=bar(x,y0+h-bh,bw,bh,i===3?C.brand:'#33415a',5);
-    o+=txt(x+bw/2,y0+h-bh-8,NF.format(s.routes),{anchor:'middle',size:14,w:700,fill:i===3?C.brand2:C.muted});
-    o+=txt(x+bw/2,y0+h+18,'S'+i,{anchor:'middle',size:11.5,w:600,fill:C.dim});
+    const s=S(k), bh=h*s.routes/max, x=x0+g*i+g/2-bw/2, d=.1+i*.22;
+    o+=abar(x,y0+h-bh,bw,bh,i===3?C.brand:'#33415a',5,d,.55);
+    o+=afade(txt(x+bw/2,y0+h-bh-8,NF.format(s.routes),{anchor:'middle',size:14,w:700,fill:i===3?C.brand2:C.muted}),d+.5);
+    o+=afade(txt(x+bw/2,y0+h+18,'S'+i,{anchor:'middle',size:11.5,w:600,fill:C.dim}),d);
   });
-  o+=txt(x0,y0+h+38,'1.269 → 665 fiziksel araç  ·  −%47,6',{size:11.5,w:600,fill:C.ok});
+  o+=afade(txt(x0,y0+h+38,'1.269 → 665 fiziksel araç  ·  −%47,6',{size:11.5,w:600,fill:C.ok}),1.1);
   return svg(W,H,o)}
 
 /* ── zincir dağılımı (donut) ── */
@@ -289,20 +545,29 @@ function chartChains(stage){
   const items=[['1 bacak',c['1'],'#33415a'],['2 durak',c['2'],C.blue],['3 durak',c['3'],C.purple],['4 durak',c['4'],C.brand]];
   const tot=items.reduce((a,b)=>a+b[1],0);
   let a0=-Math.PI/2,o='';
-  items.forEach(it=>{
+  items.forEach((it,i)=>{
     const a1=a0+2*Math.PI*it[1]/tot, big=(a1-a0)>Math.PI?1:0;
-    const p=(rr,a)=>[cx+rr*Math.cos(a),cy+rr*Math.sin(a)];
-    const [x1,y1]=p(R,a0),[x2,y2]=p(R,a1),[x3,y3]=p(r,a1),[x4,y4]=p(r,a0);
-    o+=`<path d="M${x1},${y1} A${R},${R} 0 ${big} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${big} 0 ${x4},${y4} Z" fill="${it[2]}" stroke="#080b11" stroke-width="2"/>`;
+    /* koordinatlar merkeze göre: taban transform translate, üstüne additive scale
+       eklenince dilim merkezinden büyümüş olur */
+    const q=(rr,a)=>[(rr*Math.cos(a)).toFixed(1),(rr*Math.sin(a)).toFixed(1)];
+    const [x1,y1]=q(R,a0),[x2,y2]=q(R,a1),[x3,y3]=q(r,a1),[x4,y4]=q(r,a0);
+    const dl=(.1+i*.17).toFixed(2);
+    o+=`<g opacity="0" transform="translate(${cx} ${cy})">
+      <path d="M${x1},${y1} A${R},${R} 0 ${big} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${big} 0 ${x4},${y4} Z"
+        fill="${it[2]}" stroke="#080b11" stroke-width="2"/>
+      <animate attributeName="opacity" from="0" to="1" dur=".34s" begin="${dl}s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="scale" additive="sum" from=".62" to="1"
+        dur=".46s" begin="${dl}s" fill="freeze"
+        calcMode="spline" keySplines=".16 .9 .28 1" keyTimes="0;1"/></g>`;
     a0=a1;
   });
-  o+=txt(cx,cy-2,NF.format(tot),{anchor:'middle',size:26,w:700,fill:'#fff'});
-  o+=txt(cx,cy+18,'fiziksel araç',{anchor:'middle',size:10.5,fill:C.dim});
+  o+=afade(txt(cx,cy-2,NF.format(tot),{anchor:'middle',size:26,w:700,fill:'#fff'})+
+    txt(cx,cy+18,'fiziksel araç',{anchor:'middle',size:10.5,fill:C.dim}),.85);
   items.forEach((it,i)=>{
     const y=52+i*44;
-    o+=`<rect x="262" y="${y-10}" width="11" height="11" rx="3" fill="${it[2]}"/>`;
-    o+=txt(282,y,it[0],{size:12,fill:C.muted});
-    o+=txt(W-14,y,NF.format(it[1]),{size:13,w:700,anchor:'end',fill:it[2]});
+    o+=afade(`<rect x="262" y="${y-10}" width="11" height="11" rx="3" fill="${it[2]}"/>`+
+      txt(282,y,it[0],{size:12,fill:C.muted})+
+      txt(W-14,y,NF.format(it[1]),{size:13,w:700,anchor:'end',fill:it[2]}),.25+i*.17);
   });
   return svg(W,H,o)}
 
@@ -315,13 +580,13 @@ function chartFill(){
   STG.forEach((k,i)=>{
     const cdf=S(k).fill_cdf;
     const pts=cdf.map((v,j)=>`${x0+w*j/40},${y0+h-h*v/100}`).join(' ');
-    o+=`<polyline points="${pts}" fill="none" stroke="${cols[i]}" stroke-width="${i===3?2.6:1.6}" opacity="${i===3?1:.75}"/>`;
+    o+=`<g opacity="${i===3?1:.75}">`+aline(pts,cols[i],i===3?2.6:1.6,.1+i*.26,1.05,1200)+'</g>';
   });
-  o+=txt(x0,y0+h+18,'0%',{size:10,fill:C.dim});
-  o+=txt(x0+w/2,y0+h+18,'doluluk oranı',{anchor:'middle',size:10.5,fill:C.dim});
-  o+=txt(x0+w,y0+h+18,'100%',{anchor:'end',size:10,fill:C.dim});
-  o+=txt(x0+8,y0+16,'eğri ne kadar sağdaysa o kadar iyi',{size:11,fill:C.dim});
-  o+=txt(x0+w-6,y0+h-6,'%79,03 ort.',{anchor:'end',size:12,w:700,fill:C.brand2});
+  o+=afade(txt(x0,y0+h+18,'0%',{size:10,fill:C.dim})+
+    txt(x0+w/2,y0+h+18,'doluluk oranı',{anchor:'middle',size:10.5,fill:C.dim})+
+    txt(x0+w,y0+h+18,'100%',{anchor:'end',size:10,fill:C.dim})+
+    txt(x0+8,y0+16,'eğri ne kadar sağdaysa o kadar iyi',{size:11,fill:C.dim}),.15);
+  o+=afade(txt(x0+w-6,y0+h-6,'%79,03 ort.',{anchor:'end',size:12,w:700,fill:C.brand2}),1.5);
   return svg(W,H,o)+`<div class="legend">${STG.map((k,i)=>`<span><i style="background:${cols[i]}"></i>${k} · ort. %${nf(S(k).avg_fill,2)}</span>`).join('')}</div>`}
 
 /* ── araç türü karması ── */
@@ -333,52 +598,64 @@ function chartMix(){
   STG.forEach((k,i)=>{
     const m=S(k).vehicle_mix; let acc=0;
     const x=x0+g*i+g/2-bw/2;
-    types.forEach(t=>{
+    types.forEach((t,j)=>{
       const v=m[t[0]]||0, bh=h*v/max;
-      o+=bar(x,y0+h-acc-bh,bw,bh,t[1],0);
+      o+=abar(x,y0+h-acc-bh,bw,bh,t[1],0,.1+i*.2+j*.07,.5);
       acc+=bh;
     });
-    o+=txt(x+bw/2,y0+h+18,'S'+i,{anchor:'middle',size:11.5,w:600,fill:C.dim});
+    o+=afade(txt(x+bw/2,y0+h+18,'S'+i,{anchor:'middle',size:11.5,w:600,fill:C.dim}),.1+i*.2);
   });
-  o+=txt(x0,y0+h+36,'Kamyonet 950 → 233   ·   Kamyon 196 → 304   ·   Tır 99 sabit',{size:10.5,fill:C.dim});
+  o+=afade(txt(x0,y0+h+36,'Kamyonet 950 → 233   ·   Kamyon 196 → 304   ·   Tır 99 sabit',{size:10.5,fill:C.dim}),1.1);
   return svg(W,H,o)+`<div class="legend">${types.map(t=>`<span><i style="background:${t[1]}"></i>${t[0]}</span>`).join('')}</div>`}
 
 /* ── arama hunisi ── */
 function funnel(rows,W,H,opt){
   opt=opt||{};
-  const pctW=opt.pct?54:6, x0=8, gapY=13, w=W-16-pctW;
-  const bh=Math.min(46,(H-8)/rows.length-gapY);
+  const pctW=opt.pct?54:6, x0=8, gapY=opt.sub?30:13, w=W-16-pctW;
+  const bh=Math.min(opt.sub?40:46,(H-8)/rows.length-gapY);
   const max=Math.max(...rows.map(r=>r[1]));      // satırlar azalan sırada olmak zorunda değil
   const LW=12.5*0.62, VW=14*0.62;
   let o='';
   rows.forEach((r,i)=>{
-    const y=6+i*(bh+gapY);
+    const y=6+i*(bh+gapY), d=.12+i*.3;
     const label=r[0], val=NF.format(r[1]);
     const lw=label.length*LW, vw=val.length*VW;
     const raw=Math.min(w, w*Math.pow(r[1]/max,.30));
     const inside=raw>=14+lw+18+vw+14;
     const bw=Math.max(24, inside?raw:Math.max(14+lw+14, Math.min(raw, w-vw-22)));
-    o+=bar(x0,y,bw,bh,r[2]||C.brand,6);
-    o+=txt(x0+14,y+bh/2+5,label,{size:12.5,w:600,fill:'#eef3fa'});
-    if(inside) o+=txt(x0+bw-14,y+bh/2+5,val,{size:14,w:700,anchor:'end',fill:'#fff'});
-    else       o+=txt(x0+bw+11,y+bh/2+5,val,{size:14,w:700,fill:r[2]===C.brand?C.brand2:'#cfd9e6'});
+    o+=awide(x0,y,bw,bh,r[2]||C.brand,6,d,.62);
+    o+=afade(txt(x0+14,y+bh/2+5,label,{size:12.5,w:600,fill:'#eef3fa'}),d+.2);
+    if(inside) o+=afade(txt(x0+bw-14,y+bh/2+5,val,{size:14,w:700,anchor:'end',fill:'#fff'}),d+.5);
+    else       o+=afade(txt(x0+bw+11,y+bh/2+5,val,{size:14,w:700,fill:r[2]===C.brand?C.brand2:'#cfd9e6'}),d+.5);
     if(opt.pct&&i>0){
       const pct=100*r[1]/rows[i-1][1];
-      o+=txt(W-6,y+bh/2+4,'%'+nf(pct,pct<1?3:1),{size:10.5,anchor:'end',fill:C.dim});
+      o+=afade(txt(W-6,y+bh/2+4,'%'+nf(pct,pct<1?3:1),{size:10.5,anchor:'end',fill:C.dim}),d+.6);
     }
+    /* bir üst adımdan bu adıma inen ince bağlantı — "eleme" hissi */
+    if(i>0) o+=afade(`<path d="M${x0+18},${y-gapY} L${x0+18},${y}" stroke="${C.line}"
+      stroke-width="1.2" fill="none"/>`,d);
+    if(r[3]) o+=afade(txt(x0+2,y+bh+15,r[3],{size:9.8,fill:C.dim,mono:false}),d+.3);
   });
   return svg(W,H,o)}
 function chartMilkFunnel(){
-  return funnel([['Çoklu kombinasyon',D.milkrun.triples_evaluated,'#3d536f'],
-                 ['İkili kombinasyon',D.milkrun.pairs_evaluated,'#33465f'],
-                 ['Aday grup',D.milkrun.groups_considered,'#2b3a52'],
-                 ['Kabul edilen zincir',D.milkrun.chains_accepted,C.brand]],430,236)}
+  return funnel([['Çoklu kombinasyon',D.milkrun.triples_evaluated,'#3d536f',
+                  '3 ve 4 araçlık alt küme — sıralamasıyla birlikte denendi'],
+                 ['İkili kombinasyon',D.milkrun.pairs_evaluated,'#33465f',
+                  'aynı gruptaki her araç çifti tek tek fiyatlandı'],
+                 ['Aday grup',D.milkrun.groups_considered,'#2b3a52',
+                  'aynı merkezden aynı dakikada kalkan araç kümesi'],
+                 ['Kabul edilen zincir',D.milkrun.chains_accepted,C.brand,
+                  'hem tasarruf pozitif hem hakem 0 ihlal']],430,300,{sub:1})}
 function chartPickFunnel(){
-  return funnel([['İncelenen çift',D.pickup.pairs_examined,'#2b3a52'],
-                 ['Kârlı aday',D.pickup.profitable_candidates,'#3d536f'],
-                 ['Çakışmasız kabul',D.pickup.pickups_accepted,C.brand]],430,190,{pct:true})}
+  return funnel([['İncelenen çift',D.pickup.pairs_examined,'#2b3a52',
+                  '227 hedef rota × 340 donör araç — her eşleşme fiyatlandı'],
+                 ['Kârlı aday',D.pickup.profitable_candidates,'#3d536f',
+                  'yük almanın kazancı, eklediği elleçleme süresinden büyük'],
+                 ['Çakışmasız kabul',D.pickup.pickups_accepted,C.brand,
+                  'aynı donörü iki rota isteyince biri elenir']],430,238,{pct:true,sub:1})}
 
-/* ── 17 hakem kuralı ızgarası ── */
+/* ── 17 hakem kuralı — tek sütun liste + "0 ihlal" şeridi ──
+   Slaytta yalnız bu tablo var; genişliği tüm karta yayılır. */
 function chartRules(){
   const R=['bacak zinciri sürekliliği','aynı bacakta tekrarlı talep ID','araç kapasite aşımı',
     'matriste olmayan hat','zincirde araç tipi tutarlılığı','önceki işlem bitmeden yükleme',
@@ -386,31 +663,60 @@ function chartRules(){
     'teslim bütünlüğü Σdesi','SLA cezası hesabı','kiralık rota dışına çıkamaz',
     'kiralık ≤ 1 bacak/gün','zorunlu kiralık çıkış sayısı','elleçleme kapasitesi (gece yarısı bölmeli)',
     'tır ziyaret kapasitesi','plandaki her ID tahminde var mı'];
-  const W=430,H=250,cols=1,rowH=(H-6)/R.length;
+  const W=1200,H=520,HB=64,y0=HB+16,rowH=(H-y0-4)/R.length;
+  const LX=430, RX=W-104;                      /* noktalı bağlantının uçları */
   let o='';
+
+  /* ── vurgu şeridi: hiç ihlal yok ── */
+  o+=afade(`<rect x="0" y="0" width="${W}" height="${HB}" rx="12"
+      fill="rgba(61,214,140,.07)" stroke="rgba(61,214,140,.38)" stroke-width="1.3"/>`,.04);
+  o+=afade(txt(24,HB/2+13,'0',{size:38,w:700,fill:C.ok,mono:false})+
+    txt(56,HB/2+2,'İHLAL',{size:14,w:700,fill:C.ok})+
+    txt(56,HB/2+18,'17 kuralın 17\u2019si de geçti',{size:11,fill:C.dim,mono:false})+
+    txt(W-24,HB/2-2,'beyan / hakem farkı',{anchor:'end',size:11,fill:C.dim,mono:false})+
+    txt(W-24,HB/2+16,'0,0000 \u20ba',{anchor:'end',size:15,w:700,fill:C.ok}),.1);
+
   R.forEach((r,i)=>{
-    const y=4+i*rowH;
-    o+=`<rect x="0" y="${y}" width="13" height="${rowH-3}" rx="3" fill="${C.ok}" opacity=".85"/>`;
-    o+=txt(20,y+rowH/2+2.5,(i+1)+'. '+r,{size:10.2,fill:C.muted,mono:false});
+    const y=y0+i*rowH, cy=y+rowH/2, d=.16+i*.045;
+    o+=afade(`<rect x="0" y="${(y+2).toFixed(1)}" width="13" height="${(rowH-6).toFixed(1)}" rx="3"
+        fill="${C.ok}" opacity=".85"/>`+
+      txt(26,cy+5,(i+1)+'.',{size:12.5,fill:C.dim,mono:1})+
+      txt(58,cy+5,r,{size:14.5,fill:C.muted,mono:false})+
+      `<line x1="${LX}" y1="${cy}" x2="${RX}" y2="${cy}" stroke="rgba(255,255,255,.07)"
+         stroke-width="1" stroke-dasharray="1.5 6"/>`+
+      txt(W-2,cy+5,'\u2713 geçti',{size:13,anchor:'end',fill:C.ok,w:700,mono:false}),d,.34);
   });
   return svg(W,H,o)}
 
 /* ── yük alma durağı şeması ── */
 function chartPickStop(){
   const W=430,H=158,base=96;
-  let o=txt(215,14,'B’de alınan yük — varışı rotanın zaten uğradığı bir durak (C)',
-            {anchor:'middle',size:11,w:700,fill:C.brand2});
-  o+=`<path d="M160,${base-16} C196,${base-58} 262,${base-58} 296,${base-16}" fill="none"
-       stroke="${C.brand}" stroke-width="2" marker-end="url(#ar2)"/>`;
+  let o=afade(txt(215,14,'B’de alınan yük — varışı rotanın zaten uğradığı bir durak (C)',
+            {anchor:'middle',size:11,w:700,fill:C.brand2}),.1);
   o+=`<defs><marker id="ar2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="${C.brand}"/></marker></defs>`;
-  o+=`<line x1="24" y1="${base}" x2="406" y2="${base}" stroke="${C.line}" stroke-width="2"/>`;
+  /* rota ekseni soldan sağa çizilir */
+  o+=`<line x1="24" y1="${base}" x2="24" y2="${base}" stroke="${C.line}" stroke-width="2">
+      <animate attributeName="x2" from="24" to="406" dur=".7s" begin=".15s" fill="freeze"/></line>`;
   const stops=[[24,'A','çıkış',C.dim],[160,'B','indir + yükle',C.brand],[300,'C','indir',C.dim],[406,'D','indir',C.dim]];
-  stops.forEach(([x,l,cap,c])=>{
-    o+=`<circle cx="${x}" cy="${base}" r="7" fill="${c}" stroke="#080b11" stroke-width="2"/>`;
-    o+=txt(x,base+22,l,{anchor:'middle',size:12,w:700,fill:c});
-    o+=txt(x,base+37,cap,{anchor:'middle',size:9.5,fill:C.dim});
+  stops.forEach(([x,l,cap,c],i)=>{
+    const d=(.22+i*.19).toFixed(2);
+    o+=`<g opacity="0" transform="translate(${x} ${base})">
+      <circle r="7" fill="${c}" stroke="#080b11" stroke-width="2"/>
+      ${l==='B'?`<circle r="7" fill="none" stroke="${C.brand}" stroke-width="1.6" opacity=".8">
+        <animate attributeName="r" values="7;16;7" dur="2.2s" begin="1.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".8;0;.8" dur="2.2s" begin="1.4s" repeatCount="indefinite"/></circle>`:''}
+      <animate attributeName="opacity" from="0" to="1" dur=".3s" begin="${d}s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="scale" additive="sum" from=".3" to="1"
+        dur=".42s" begin="${d}s" fill="freeze" calcMode="spline" keySplines=".16 .9 .28 1" keyTimes="0;1"/></g>`;
+    o+=afade(txt(x,base+22,l,{anchor:'middle',size:12,w:700,fill:c})+
+      txt(x,base+37,cap,{anchor:'middle',size:9.5,fill:C.dim}),+d+.12);
   });
-  o+=txt(215,H-3,'kapasiteden x+y düşer  ·  TirLedger’da 1 ziyaret, 2 değil',{anchor:'middle',size:10.5,fill:C.ok});
+  /* B'den C'ye giden yük alma yayı en son çizilir — anlatının vurgusu burada */
+  o+=`<path d="M160,${base-16} C196,${base-58} 262,${base-58} 296,${base-16}" fill="none"
+       stroke="${C.brand}" stroke-width="2" marker-end="url(#ar2)"
+       pathLength="100" stroke-dasharray="100" stroke-dashoffset="100">
+      <animate attributeName="stroke-dashoffset" from="100" to="0" dur=".62s" begin="1.05s" fill="freeze"/></path>`;
+  o+=afade(txt(215,H-3,'kapasiteden x+y düşer  ·  TirLedger’da 1 ziyaret, 2 değil',{anchor:'middle',size:10.5,fill:C.ok}),1.6);
   return svg(W,H,o)}
 
 /* ── veri temizleme ── */
@@ -423,68 +729,1015 @@ function chartClean(){
                'desi = 0 satırlar Excel’de kalır, optimizasyona girmez']];
   let o='';
   rows.forEach((r,i)=>{
-    const y=26+i*100, fw=w*r[2]/r[1];
+    const y=26+i*100, fw=w*r[2]/r[1], d=.15+i*.35;
     o+=txt(x0,y-9,r[0],{size:11.5,w:700,fill:'#dfe7f2'});
     o+=txt(x0+w,y-9,'toplam '+NF.format(r[1]),{size:10.5,anchor:'end',fill:C.dim});
     o+=bar(x0,y,w,26,'#1b2432',6);
-    o+=bar(x0,y,fw,26,r[3],6);
-    o+=txt(x0+10,y+17.5,NF.format(r[2]),{size:12.5,w:700,fill:'#0a0f16'});
-    o+=txt(x0+2,y+42,'kullanılan',{size:10,fill:r[3]});
-    o+=txt(x0+w,y+42,NF.format(r[1]-r[2])+' elendi  (%'+nf(100*(r[1]-r[2])/r[1],1)+')',{size:10,anchor:'end',fill:C.dim});
-    o+=txt(x0,y+60,r[4],{size:10,fill:C.dim,mono:false});
+    o+=awide(x0,y,fw,26,r[3],6,d,.7);
+    o+=afade(txt(x0+10,y+17.5,NF.format(r[2]),{size:12.5,w:700,fill:'#0a0f16'}),d+.55);
+    o+=afade(txt(x0+2,y+42,'kullanılan',{size:10,fill:r[3]})+
+      txt(x0+w,y+42,NF.format(r[1]-r[2])+' elendi  (%'+nf(100*(r[1]-r[2])/r[1],1)+')',{size:10,anchor:'end',fill:C.dim})+
+      txt(x0,y+60,r[4],{size:10,fill:C.dim,mono:false}),d+.6);
   });
   return svg(W,H,o)}
 
-/* ── çalışma süresi / 100 dk tavanı ── */
-function chartRuntime(){
-  const W=430,H=230,x0=8,w=W-16,cap=6000;      // 100 dk = 6000 sn
-  const rows=[['Referans veri seti',150,C.brand],['Farklı yıl · 4 günlük ufuk',171,C.blue],
-              ['Farklı hafta · %125 hacim',143,C.blue]];
-  let o=txt(x0,16,'Bölüm 10 zaman aşımı tavanı — 100 dk (6.000 sn)',{size:11,w:700,fill:C.muted});
-  o+=bar(x0,26,w,20,'#1b2432',5);
-  o+=txt(x0+w-8,40,'6.000 sn',{size:10.5,anchor:'end',fill:C.dim});
-  rows.forEach((r,i)=>{
-    const y=70+i*46, bw=Math.max(3,w*r[1]/cap);
-    o+=txt(x0,y-6,r[0],{size:11,fill:C.muted,mono:false});
-    o+=bar(x0,y,w,18,'#141c28',5);
-    o+=bar(x0,y,bw,18,r[2],5);
-    o+=txt(x0+bw+10,y+13.5,r[1]+' sn',{size:12,w:700,fill:r[2]});
-    o+=txt(x0+w-4,y+13.5,'tavanın %'+nf(100*r[1]/cap,1),{size:10,anchor:'end',fill:C.dim});
+/* ── maliyet formülü: terimler renk kodlu, altında bu seferin sayıları ──
+   Aynı renkler alttaki zaman ekseninde de kullanılır; hangi terimin
+   nereden geldiği tek bakışta görünsün. */
+function chartFormula(){
+  const T=NET.trip, W=880,H=152;
+  const hrs=T.use/60, vc=hrs*T.rate_h, kc=T.km*T.rate_km;
+  /* [etiket, formül, sayı, renk, genişlik payı] */
+  const terms=[
+    ['ARAÇ · SÜRE','Saatlik Kira × Kullanım Süresi',
+     nf(T.rate_h,2)+' ₺/sa × '+nf(hrs,2)+' sa',nf(vc,2)+' ₺',C.brand,.36],
+    ['ARAÇ · MESAFE','Mesafe × Km Başı Maliyet',
+     T.km+' km × '+nf(T.rate_km,0)+' ₺',nf(kc,2)+' ₺',C.blue,.30],
+    ['SLA CEZASI','Geciken Desi × ceil(Saat) × 0,40 ₺',
+     'gecikme yok',nf(0,2)+' ₺',C.warn,.34]];
+  const x0=0, w=W-236, gap=11, Y=22, BH=100;
+  let o=txt(0,12,'TOPLAM MALİYET  =  ÜÇ TERİMİN TOPLAMI',{size:10,w:700,fill:C.dim});
+  let acc=0;
+  terms.forEach((t,i)=>{
+    const bw=w*t[5]-gap, x=x0+acc; acc+=w*t[5];
+    const d=.12+i*.22;
+    o+=afade(`<rect x="${x}" y="${Y}" width="${bw.toFixed(1)}" height="${BH}" rx="11"
+        fill="${t[4]}14" stroke="${t[4]}55" stroke-width="1.1"/>`+
+      txt(x+14,Y+20,t[0],{size:9.5,w:700,fill:t[4]})+
+      txt(x+14,Y+43,t[1],{size:12,w:600,fill:'#e3ebf6',mono:false})+
+      txt(x+14,Y+66,t[2],{size:10.5,fill:C.muted})+
+      txt(x+bw-14,Y+88,t[3],{size:14,w:700,fill:t[4],anchor:'end'}),d);
+    if(i<terms.length-1)
+      o+=afade(txt(x+bw+gap/2,Y+BH/2+6,'+',{anchor:'middle',size:17,w:700,fill:C.dim}),d+.1);
   });
-  o+=txt(x0,H-6,'Üç senaryoda da çıkış kodu 0, 0 hakem ihlali, beyan/hakem farkı 0,0000 ₺',
-        {size:10.5,fill:C.ok,mono:false});
+  o+=afade(txt(w+6,Y+BH/2+7,'=',{size:20,w:700,fill:C.dim,anchor:'middle'})+
+    `<rect x="${w+20}" y="${Y}" width="${W-w-20}" height="${BH}" rx="11"
+      fill="rgba(255,96,0,.09)" stroke="rgba(255,96,0,.4)" stroke-width="1.2"/>`+
+    txt(W-14,Y+20,'TOPLAM',{size:9.5,w:700,fill:C.brand,anchor:'end'})+
+    txt(W-14,Y+55,nf(T.cost,2)+' ₺',{anchor:'end',size:24,w:700,fill:C.brand})+
+    txt(W-14,Y+76,T.v+' seferinin maliyeti',{anchor:'end',size:9.5,fill:C.dim})+
+    txt(W-14,Y+90,'Excel çıktısıyla birebir',{anchor:'end',size:9.5,fill:C.ok}),.85);
+  o+=afade(txt(0,H-4,'Bu üç terim dışında hiçbir maliyet kalemi yoktur: sabit ücret, boş dönüş, bekleme ücreti ya da ceza katsayısı yok.',
+    {size:10,fill:C.faint,mono:false}),1.1);
   return svg(W,H,o)}
 
-/* ── maliyet akış şeması ── */
+/* ── kullanım süresi: nihai plandan gerçek bir seferin zaman ekseni ────
+   Anlatının çekirdeği: kullanım süresi parçalı değil, TEK SÜREKLİ pencere.
+   Yükleme başlar başlamaz sayaç işler; son indirme bitene kadar durmaz.
+   Yalnız iki katman var: akan şerit ve altındaki saat ekseni. */
 function chartFlow(){
-  const W=880,H=216;
-  const boxes=[['Talep hazır','09:00 / 17:00',C.ok],['Çıkış elleçleme','ceil(desi × 0,01) dk',C.blue],
-               ['Yolculuk','matristen, ceil(dk)',C.purple],['Varış elleçleme','ceil(desi × 0,01) dk',C.blue],
-               ['Teslim','SLA burada durur',C.brand]];
-  const bw=150,gap=(W-boxes.length*bw)/(boxes.length-1),y=48,bh=72;
-  let o='';
-  boxes.forEach((b,i)=>{
-    const x=i*(bw+gap);
-    o+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="10" fill="rgba(255,255,255,.04)" stroke="${b[2]}" stroke-width="1.4"/>`;
-    o+=txt(x+bw/2,y+30,b[0],{anchor:'middle',size:13,w:700,fill:'#e8eff8'});
-    o+=txt(x+bw/2,y+50,b[1],{anchor:'middle',size:10.5,fill:C.dim});
-    if(i<boxes.length-1) o+=`<path d="M${x+bw+6},${y+bh/2} L${x+bw+gap-8},${y+bh/2}" stroke="${C.line}" stroke-width="2" marker-end="url(#ar)"/>`;
+  const T=NET.trip, W=880, H=184;
+  const segs=[['Çıkış elleçleme',T.hload,C.blue,'ceil('+nf(T.desi)+' × 0,01 dk/desi) = '+T.hload+' dk'],
+              ['Yolculuk',T.travel,C.purple,T.km+' km · ceil = '+T.travel+' dk'],
+              ['Varış elleçleme',T.hunload,C.blue,'ceil('+nf(T.desi)+' × 0,01 dk/desi) = '+T.hunload+' dk']];
+  /* jeton yarıçapı kadar iç boşluk bırak — viewBox kenarında kırpılmasın */
+  const tot=T.use, X0=10, X1=W-10, SW=X1-X0, y=20, bh=48;
+  const t0=17*60, mm=m=>String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+  const px=m=>X0+m/tot*SW;
+  /* TEK ortak zaman çizelgesi: her <animate> begin="0s" + aynı dur ile başlar,
+     gecikme keyTimes içine gömülür. Aksi hâlde begin ofsetli döngüler ilk
+     turdan sonra birbirinden kayar ve dolgular jetonla uyumsuz kalırdı. */
+  const DUR=9, hold=1.1, R=(DUR-hold)/DUR;        /* sn — bir tur / yol payı */
+  let o='', acc=0;
+
+  /* kullanım süresi kuşağı — tek sürekli pencere */
+  o+=afade(`<rect x="${X0}" y="${y-10}" width="${SW}" height="${bh+20}" rx="12"
+       fill="rgba(255,96,0,.05)" stroke="rgba(255,96,0,.34)" stroke-width="1.2"/>`,.05);
+
+  segs.forEach((g,i)=>{
+    const x=px(acc), w=g[1]/tot*SW, din=.12+i*.14;
+    const k0=(acc/tot*R), k1=((acc+g[1])/tot*R);
+    const kt =k0>0?`0;${k0.toFixed(4)};${k1.toFixed(4)};1`:`0;${k1.toFixed(4)};1`;
+    const vl =(k0>0?'0;':'')+`0;${w.toFixed(1)};${w.toFixed(1)}`;
+    o+=afade(`<rect x="${x}" y="${y}" width="${w}" height="${bh}" rx="7" fill="rgba(255,255,255,.04)"
+         stroke="${C.line}" stroke-width="1"/>`,din);
+    /* base width=0: animasyon başlamadan önce dolgu görünmesin */
+    o+=`<rect x="${x}" y="${y}" width="0" height="${bh}" rx="7" fill="${g[2]}" opacity=".22">
+        <animate attributeName="width" values="${vl}" keyTimes="${kt}"
+          dur="${DUR}s" begin="0s" repeatCount="indefinite" calcMode="linear"/></rect>`;
+    o+=afade(txt(x+w/2,y+18,g[0],{anchor:'middle',size:12.5,w:700,fill:'#e8eff8'})+
+      txt(x+w/2,y+bh+32,g[1]+' dk',{anchor:'middle',size:11.5,w:700,fill:g[2],mono:1})+
+      txt(x+w/2,y+bh+47,g[3],{anchor:'middle',size:9.5,fill:C.dim,mono:1}),din+.1);
+    acc+=g[1];
+    if(i<segs.length-1) o+=afade(`<line x1="${px(acc)}" y1="${y-2}" x2="${px(acc)}" y2="${y+bh+2}"
+      stroke="${C.line}" stroke-width="1"/>`,din+.1);
   });
-  o+=`<defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-      <path d="M0,0 L7,3.5 L0,7 z" fill="${C.line}"/></marker></defs>`;
-  o+=`<line x1="0" y1="26" x2="${W}" y2="26" stroke="${C.brand}" stroke-width="1.5" stroke-dasharray="5 4"/>`;
-  o+=txt(6,20,'SLA saati  →  başlangıç: talep tamamlanma anı   ·   bitiş: nihai varış elleçlemesinin bitişi',{size:11.5,w:600,fill:C.brand2});
-  o+=txt(0,H-38,'Kullanım süresi = ilk yükleme başlangıcından son indirme bitişine kadar',{size:11.5,fill:C.muted});
-  o+=txt(0,H-22,'TEK sürekli pencere — bekleme ve elleçleme dâhil (Jüri S3, S9, S12)',{size:11.5,fill:C.muted});
-  o+=txt(0,H-2,'Toplam Maliyet = (Saatlik Kira × Kullanım Süresi) + (Mesafe × Km Başı Maliyet) + Geciken Desi × ceil(Saat) × 0,40 ₺',{size:11.5,w:700,fill:'#dfe7f2'});
+
+  /* zaman ekseni */
+  [[0,'17:00','talep hazır · SLA saati başlar',C.ok],
+   [T.hload,mm(t0+T.hload),'araç yola çıkar',C.blue],
+   [T.hload+T.travel,mm(t0+T.hload+T.travel),'varış',C.purple],
+   [tot,mm(t0+tot),'teslim · SLA saati durur',C.brand]].forEach((k,i,a)=>{
+    const x=px(k[0]), an=i===0?'start':(i===a.length-1?'end':'middle');
+    o+=afade(`<circle cx="${x}" cy="${y+bh+72}" r="3.6" fill="${k[3]}"/>`+
+      txt(x,y+bh+92,k[1],{anchor:an,size:12.5,w:700,fill:'#e8eff8',mono:1})+
+      txt(x,y+bh+106,k[2],{anchor:an,size:9.5,fill:C.dim}),.55+i*.12);
+  });
+
+  /* akan yük jetonu — dolgularla aynı çizelgede */
+  o+=`<g><circle r="8.5" fill="rgba(255,161,74,.28)"/><circle r="4.8" fill="${C.brand2}"/>
+      <animateTransform attributeName="transform" type="translate" dur="${DUR}s"
+        begin="0s" repeatCount="indefinite" calcMode="linear"
+        values="${X0},${y+34}; ${X1},${y+34}; ${X1},${y+34}"
+        keyTimes="0;${R.toFixed(4)};1"/></g>`;
   return svg(W,H,o)}
+
+/* ══════ takım fotoğrafları (kaynak/foto/*.jpg, derlemede gömülür) ══════ */
+const PH = __PHOTOS__;
+
+/* ══════════════ Türkiye haritası ══════════════ */
+/* Eş dikdörtgen izdüşüm; 39° enleminde boylam düzeltmesi. */
+const GB={lo0:25.8,lo1:45.2,la0:35.6,la1:42.3,W:1000};
+GB.H=Math.round(GB.W*(GB.la1-GB.la0)/((GB.lo1-GB.lo0)*Math.cos(39*Math.PI/180)));
+const gx=lo=>(lo-GB.lo0)/(GB.lo1-GB.lo0)*GB.W;
+const gy=la=>(GB.la1-la)/(GB.la1-GB.la0)*GB.H;
+
+/* basitleştirilmiş kıyı/sınır noktaları — "boylam,enlem" */
+const TR_A=`29.12,41.20 29.60,41.18 30.30,41.13 31.12,41.09 31.42,41.28 31.80,41.49 32.38,41.75 33.00,41.90
+33.76,41.98 34.30,41.96 34.75,41.97 35.15,42.03 35.28,41.70 35.60,41.62 36.15,41.30 36.42,41.38
+36.78,41.42 37.30,41.10 37.90,41.02 38.40,40.93 39.10,40.98 39.72,40.98 40.30,41.02 41.02,41.30
+41.55,41.52 42.60,41.58 43.05,41.25 43.45,41.10 43.60,40.55 43.55,40.10 44.10,40.03 44.80,39.72
+44.42,39.40 44.30,38.90 44.42,38.35 44.10,37.90 44.60,37.55 44.80,37.32 44.10,37.30 43.30,37.36
+42.80,37.32 42.35,37.12 41.50,37.10 40.70,37.10 39.80,36.85 38.80,36.72 37.90,36.68 37.10,36.68
+36.75,36.82 36.62,36.35 36.30,36.00 36.10,35.85 35.92,36.06 36.10,36.45 35.90,36.56 35.55,36.62
+35.05,36.72 34.62,36.78 34.20,36.60 34.05,36.30 33.55,36.16 33.20,36.08 32.80,36.30 32.30,36.22
+31.60,36.53 31.10,36.75 30.75,36.88 30.60,36.60 30.45,36.30 30.10,36.30 29.70,36.18 29.30,36.30
+29.10,36.55 28.85,36.68 28.45,36.75 28.10,36.65 27.42,36.72 27.90,37.02 27.28,37.05 27.55,37.35
+27.28,37.62 27.20,37.95 26.90,38.20 26.35,38.32 26.75,38.70 26.72,39.05 26.68,39.30 26.06,39.48
+26.20,39.75 26.15,39.98 26.40,40.00 26.70,40.28 27.30,40.42 27.95,40.36 28.50,40.38 29.10,40.43
+28.88,40.52 29.28,40.68 29.62,40.70 29.86,40.76 29.72,40.79 29.42,40.79 29.20,40.88 29.10,40.99
+29.12,41.06`;
+const TR_T=`26.05,41.75 26.55,41.85 27.20,42.06 27.55,42.00 28.03,41.98 28.30,41.55 28.75,41.35 29.08,41.22
+29.01,40.97 28.72,40.94 28.28,40.99 27.95,40.96 27.51,40.92 27.25,40.83 27.15,40.60 26.70,40.55
+26.30,40.28 26.18,40.05 26.30,40.18 26.72,40.55 26.55,40.66 26.08,40.73 26.32,41.15 26.55,41.60
+26.30,41.72`;
+const geoPath=s=>'M'+s.trim().split(/\s+/).map(p=>{const q=p.split(',');
+  return gx(+q[0]).toFixed(1)+','+gy(+q[1]).toFixed(1)}).join('L')+'Z';
+
+/* etiket kaçırma: ad -> [dx, dy, text-anchor] */
+const LAB={'İstanbul':[0,-13,'middle'],'Tekirdağ':[-11,4,'end'],'Kocaeli':[11,4,'start'],
+  'Yalova':[-11,6,'end'],'Zonguldak':[11,4,'start'],'Bilecik':[11,4,'start'],
+  'Eskişehir':[11,5,'start'],'Kütahya':[-11,4,'end'],'Balıkesir':[-11,4,'end'],
+  'Manisa':[-11,4,'end'],'Denizli':[-11,4,'end'],'Isparta':[11,4,'start'],
+  'Karaman':[0,19,'middle'],'Mersin':[11,6,'start'],'Sivas':[0,-13,'middle'],
+  'Erzincan':[0,-13,'middle'],'Şanlıurfa':[0,19,'middle'],'Mardin':[11,6,'start']};
+
+const XY = NET.centres.map(c=>[gx(c.lon),gy(c.lat)]);
+const HMAX = Math.max(...NET.centres.map(c=>c.h));
+
+/* o.lanes: [{rows,color,w,op,delay,step}]  ·  o.dot: (merkez,i)->{r,fill,ring}  ·  o.dotDelay */
+function mapSVG(o){
+  o=o||{};
+  let s='<path class="tr-land" d="'+geoPath(TR_A)+'"/><path class="tr-land" d="'+geoPath(TR_T)+'"/>';
+  (o.lanes||[]).forEach(set=>{
+    s+='<g>'+set.rows.map((l,i)=>{
+      const a=XY[l[0]],b=XY[l[1]],dx=b[0]-a[0],dy=b[1]-a[1];
+      const cx=(a[0]+b[0])/2-dy*0.11, cy=(a[1]+b[1])/2+dx*0.11;
+      const col=typeof set.color==='function'?set.color(l):set.color;
+      return '<path class="mp-lane" pathLength="1" d="M'+a[0].toFixed(1)+','+a[1].toFixed(1)+
+             'Q'+cx.toFixed(1)+','+cy.toFixed(1)+' '+b[0].toFixed(1)+','+b[1].toFixed(1)+
+             '" stroke="'+col+'" stroke-width="'+(set.w||1)+'" opacity="'+(set.op||.7)+
+             '" style="animation-delay:'+Math.round(set.delay+i*set.step)+'ms"/>';
+    }).join('')+'</g>';
+  });
+  const dot=o.dot||(()=>({r:5,fill:C.blue}));
+  const d0=o.dotDelay===undefined?0:o.dotDelay;
+  s+=NET.centres.map((c,i)=>{
+    const p=XY[i], k=dot(c,i), lb=LAB[c.n]||[11,4,'start'], t=Math.round(d0+i*45);
+    return '<g transform="translate('+p[0].toFixed(1)+','+p[1].toFixed(1)+')">'+
+      (k.ring?'<circle class="mp-dot" r="'+(k.r+4).toFixed(1)+'" fill="none" stroke="'+k.ring+
+              '" stroke-width="1.7" style="animation-delay:'+t+'ms"/>':'')+
+      '<circle class="mp-dot" r="'+k.r.toFixed(1)+'" fill="'+k.fill+
+      '" style="animation-delay:'+t+'ms"/>'+
+      '<text class="mp-lab" x="'+lb[0]+'" y="'+lb[1]+'" text-anchor="'+lb[2]+
+      '" style="animation-delay:'+(t+130)+'ms">'+c.n+'</text></g>';
+  }).join('');
+  return '<div class="pmap"><svg viewBox="0 0 '+GB.W+' '+GB.H+'" preserveAspectRatio="xMidYMid meet">'+
+         s+'</svg></div>'+(o.legend?leg(o.legend):'');
+}
+
+/* ══════════════ pop-up ══════════════ */
+const ps=(v,l,cls)=>'<div class="pstat"><div class="v '+(cls||'')+'">'+v+'</div><div class="l">'+l+'</div></div>';
+const pcols=(side,main)=>'<div class="pcols"><div class="pside">'+side+'</div><div class="pmain">'+main+'</div></div>';
+const leg=items=>'<div class="mp-leg">'+items.map(t=>'<span><i class="'+(t[2]||'')+
+  '" style="background:'+t[0]+'"></i>'+t[1]+'</span>').join('')+'</div>';
+const note=(t,cls)=>'<p class="pnote '+(cls||'')+'">'+t+'</p>';
+const pdef=t=>'<p class="pdef">'+t+'</p>';
+
+/* nihai plandan gerçek bir uğramalı zincir — harita üzerinde döngüsel animasyon */
+const CHLAB={'Mersin':[-15,4,'end'],'Şanlıurfa':[0,34,'middle'],'Mardin':[15,4,'start'],
+             'Erzincan':[15,0,'start'],'Sivas':[-15,0,'end']};
+function chainSVG(){
+  const ch=NET.chain, nm=NET.centres.map(c=>c.n);
+  const P=ch.stops.map(st=>XY[nm.indexOf(st.n)]);
+  let d='M'+P[0][0].toFixed(1)+','+P[0][1].toFixed(1);
+  const mid=[], len=[];
+  for(let i=1;i<P.length;i++){
+    const a=P[i-1],b=P[i],dx=b[0]-a[0],dy=b[1]-a[1];
+    const cx=(a[0]+b[0])/2-dy*0.13, cy=(a[1]+b[1])/2+dx*0.13;
+    d+='Q'+cx.toFixed(1)+','+cy.toFixed(1)+' '+b[0].toFixed(1)+','+b[1].toFixed(1);
+    const mx=0.25*a[0]+0.5*cx+0.25*b[0], my=0.25*a[1]+0.5*cy+0.25*b[1];
+    const h=Math.hypot(dx,dy)||1;                 /* egrinin ters tarafina 16 birim */
+    mid.push([mx+dy/h*21, my-dx/h*21]);
+    len.push(Math.hypot(dx,dy));
+  }
+  const tot=len.reduce((a,b)=>a+b,0), cum=[0];
+  len.forEach(l=>cum.push(cum[cum.length-1]+l/tot));
+  const n=len.length, T=0.19, W=(1-n*T)/n, kp=['0'], kt=['0'];
+  let t=0;
+  for(let i=0;i<n;i++){
+    t+=T; kp.push(cum[i+1].toFixed(4)); kt.push(t.toFixed(4));
+    t+=W; kp.push(cum[i+1].toFixed(4)); kt.push(Math.min(t,1).toFixed(4));
+  }
+  let s='<path class="tr-land" d="'+geoPath(TR_A)+'"/><path class="tr-land" d="'+geoPath(TR_T)+'"/>';
+  s+=NET.centres.map((c,i)=>ch.stops.some(x=>x.n===c.n)?'':
+     '<circle cx="'+XY[i][0].toFixed(1)+'" cy="'+XY[i][1].toFixed(1)+
+     '" r="2.6" fill="rgba(87,166,255,.3)"/>').join('');
+  s+='<path id="chp" d="'+d+'" fill="none" stroke="#ff6000" stroke-width="2.6" '+
+     'stroke-linecap="round" opacity=".82"/>';
+  s+=mid.map((m,i)=>'<text class="ch-load" x="'+m[0].toFixed(1)+'" y="'+m[1].toFixed(1)+
+     '" text-anchor="middle">'+nf(ch.stops[i].load)+' desi yolda</text>').join('');
+  s+=ch.stops.map((st,i)=>{
+    const p=P[i], lb=CHLAB[st.n]||[15,0,'start'];
+    const sub=i===0?nf(st.load)+' desi · '+st.parts+' parça yüklendi'
+                   :nf(st.drop)+' desi · '+st.parts+' parça bırakıldı';
+    return '<g transform="translate('+p[0].toFixed(1)+','+p[1].toFixed(1)+')">'+
+      '<circle r="11.5" fill="rgba(255,96,0,.16)"/>'+
+      '<circle r="7.6" fill="#ff8a3d" stroke="#0a0f18" stroke-width="1.4"/>'+
+      '<text class="ch-num" y="3.3" text-anchor="middle">'+(i+1)+'</text>'+
+      '<text class="ch-name" x="'+lb[0]+'" y="'+(lb[1]-1)+'" text-anchor="'+lb[2]+'">'+st.n+
+      '  <tspan class="ch-load">'+st.t+'</tspan></text>'+
+      '<text class="ch-sub" x="'+lb[0]+'" y="'+(lb[1]+12)+'" text-anchor="'+lb[2]+'">'+sub+'</text>'+
+      '</g>';
+  }).join('');
+  s+='<g><circle r="10.5" fill="rgba(255,161,74,.3)"/>'+
+     '<circle r="5.6" fill="#ffc53d" stroke="#0a0f18" stroke-width="1.6"/>'+
+     '<animateMotion dur="11s" repeatCount="indefinite" calcMode="linear" keyPoints="'+
+     kp.join(';')+'" keyTimes="'+kt.join(';')+'">'+
+     '<mpath href="#chp" xlink:href="#chp"/></animateMotion></g>';
+  return '<div class="pmap"><svg viewBox="0 0 '+GB.W+' '+GB.H+
+    '" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink">'+s+'</svg></div>';
+}
+function pbars(rows,cols){
+  const mx=Math.max(...rows.map(r=>r.v));
+  return '<div class="pbars'+(cols===1?' one':'')+'">'+rows.map((r,i)=>'<div class="r '+(r.c||'')+'">'+
+    '<div class="n">'+r.n+'</div><div class="t"><i style="--w:'+
+    (mx?Math.max(r.v/mx*100,1.5):0).toFixed(1)+'%;animation-delay:'+(i*28)+'ms"></i></div>'+
+    '<div class="q">'+r.q+'</div></div>').join('')+'</div>';
+}
+/* rows: {n, q, segs:[{v,col}]} — segmentler ortak ölçeğe göre yığılır */
+function pstack(rows){
+  const mx=Math.max(...rows.map(r=>r.segs.reduce((a,g)=>a+g.v,0)));
+  return '<div class="pstack">'+rows.map((r,i)=>'<div class="r">'+
+    '<div class="n">'+r.n+'</div><div class="t">'+r.segs.map((g,j)=>g.v?
+      '<i style="--w:'+(g.v/mx*100).toFixed(2)+'%;background:'+g.col+
+      ';animation-delay:'+(i*90+j*130)+'ms"></i>':'').join('')+'</div>'+
+    '<div class="q">'+r.q+'</div></div>').join('')+'</div>';
+}
+const byH=()=>NET.centres.map(c=>c);
+const byT=()=>NET.centres.slice().sort((a,b)=>b.t-a.t||b.h-a.h);
+const KOC=NET.centres.findIndex(c=>c.n==='Kocaeli');
+const SEEN=NET.lanes.filter(l=>l[4]), UNSEEN=NET.lanes.filter(l=>!l[4]);
+const S0=S('Stage 0'), S3=S('Stage 3');
+
+/* ── 24 saatlik çıkış dağılımı: dakika çözünürlüğünün kanıtı ──────────── */
+function clockChart(){
+  const K=NET.clock, W=860, H=190, mx=Math.max(...K.hours);
+  const X0=8, SW=W-16, bw=SW/24-5, base=H-42;
+  let o='';
+  o+=`<rect x="${X0}" y="16" width="${(SW/24)*6}" height="${base-16}" rx="8"
+       fill="rgba(177,140,255,.07)" stroke="rgba(177,140,255,.25)" stroke-width="1"/>`;
+  o+=txt(X0+(SW/24)*3,32,'gece 00–06',{anchor:'middle',size:10.5,w:700,fill:C.purple});
+  o+=txt(X0+(SW/24)*3,46,nf(K.night)+' sefer',{anchor:'middle',size:10.5,fill:C.dim});
+  K.hours.forEach((v,h)=>{
+    const x=X0+h*(SW/24)+2.5, hh=v/mx*(base-58);
+    const col=h<6?C.purple:(h>=17&&h<21?C.brand:C.blue);
+    o+=`<rect x="${x.toFixed(1)}" y="${base}" width="${bw.toFixed(1)}" height="0" rx="3" fill="${col}" opacity=".85">
+        <animate attributeName="height" from="0" to="${hh.toFixed(1)}" dur=".5s"
+          begin="${(h*0.045).toFixed(2)}s" fill="freeze"/>
+        <animate attributeName="y" from="${base}" to="${(base-hh).toFixed(1)}" dur=".5s"
+          begin="${(h*0.045).toFixed(2)}s" fill="freeze"/></rect>`;
+    if(h%3===0) o+=txt(x+bw/2,base+16,String(h).padStart(2,'0'),{anchor:'middle',size:10,fill:C.dim});
+    if(v>=mx*0.4) o+=txt(x+bw/2,base-hh-6,nf(v),{anchor:'middle',size:10,w:700,fill:col});
+  });
+  o+=`<line x1="${X0}" y1="${base}" x2="${X0+SW}" y2="${base}" stroke="${C.line}" stroke-width="1"/>`;
+  o+=txt(X0,H-8,'planımızdaki '+nf(K.legs)+' aracın çıkış saati · saat başına',{size:10.5,fill:C.dim});
+  return '<div class="pmap">'+svg(W,H,o)+'</div>';
+}
+/* dakikaların 60'a yayılımı — :00'da kümelenmiyor */
+function minuteChart(){
+  const K=NET.clock, W=860, H=104, mx=Math.max(...K.mins);
+  const X0=8, SW=W-16, bw=SW/60-2, base=H-30;
+  let o='';
+  K.mins.forEach((v,m)=>{
+    const x=X0+m*(SW/60)+1, hh=Math.max(v/mx*(base-14),1.5);
+    o+=`<rect x="${x.toFixed(1)}" y="${base}" width="${bw.toFixed(1)}" height="0" rx="2"
+         fill="${m===0?C.brand:C.ok}" opacity="${m===0?'.95':'.72'}">
+        <animate attributeName="height" from="0" to="${hh.toFixed(1)}" dur=".45s"
+          begin="${(m*0.012).toFixed(3)}s" fill="freeze"/>
+        <animate attributeName="y" from="${base}" to="${(base-hh).toFixed(1)}" dur=".45s"
+          begin="${(m*0.012).toFixed(3)}s" fill="freeze"/></rect>`;
+    if(m%10===0) o+=txt(x+bw/2,base+15,':'+String(m).padStart(2,'0'),{anchor:'middle',size:10,fill:C.dim});
+  });
+  o+=`<line x1="${X0}" y1="${base}" x2="${X0+SW}" y2="${base}" stroke="${C.line}" stroke-width="1"/>`;
+  o+=txt(X0,H-4,'60 dakika değerinin 60’ı da kullanılıyor · yalnız '+nf(K.on_hour)+
+         ' sefer (%'+nf(K.on_hour/K.legs*100,1)+') tam saatte',{size:10.5,fill:C.dim});
+  return '<div class="pmap" style="margin-top:12px">'+svg(W,H,o)+'</div>';
+}
+
+/* ── 179 günlük hacim: büyük çizgi grafiği ────────────────────────────
+   Takvim ızgarası "hangi güne denk geldiğini" gösterir ama büyüklükleri
+   okumak zordur. Asıl anlatı burada: düz zaman ekseni üzerinde hacim,
+   altında hangi günün hangi rejime ait olduğunu gösteren bir şerit. */
+const TR_AY6=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+function histBig(){
+  const A=NET.cal, d=A.days, n=d.length, max=Math.max(...d);
+  const W=880,H=330,x0=62,y0=24,w=W-x0-16,h=H-y0-84;
+  const px=i=>x0+w*i/(n-1), py=v=>y0+h-h*v/max;
+  const base=new Date(A.start+'T00:00:00');
+  const dayAt=i=>{const t=new Date(base);t.setDate(t.getDate()+i);return t};
+
+  let o=grid(x0,y0,w,h,4,v=>nf(v*max/1e6,1)+' M');
+
+  /* ay şeritleri — dönümleri görünür kıl */
+  let m=-1, mStart=0;
+  const months=[];
+  for(let i=0;i<n;i++){
+    const mm=dayAt(i).getMonth();
+    if(mm!==m){ if(m>=0) months.push([mStart,i-1,m]); m=mm; mStart=i; }
+  }
+  months.push([mStart,n-1,m]);
+  months.forEach((mo,k)=>{
+    if(k%2===0) o+=`<rect x="${px(mo[0]).toFixed(1)}" y="${y0}"
+      width="${(px(mo[1])-px(mo[0])).toFixed(1)}" height="${h}" fill="rgba(255,255,255,.017)"/>`;
+    o+=txt((px(mo[0])+px(mo[1]))/2,y0-8,TR_AY6[mo[2]],{anchor:'middle',size:10.5,w:700,fill:C.dim});
+  });
+
+  /* medyan çizgisi */
+  const my=py(A.median);
+  o+=`<line x1="${x0}" y1="${my.toFixed(1)}" x2="${x0+w}" y2="${my.toFixed(1)}"
+       stroke="rgba(61,214,140,.5)" stroke-width="1.2" stroke-dasharray="6 5"/>`;
+  const mlab='normal gün medyanı '+nf(A.median)+' desi';
+  o+=`<rect x="${(x0+5).toFixed(1)}" y="${(my-18).toFixed(1)}" width="${mlab.length*6.2+12}"
+       height="15" rx="4" fill="rgba(8,11,17,.9)"/>`;
+  o+=txt(x0+11,my-7,mlab,{size:10,fill:C.ok});
+
+  /* alan + çizgi */
+  const pts=d.map((v,i)=>`${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+  o+=`<defs><linearGradient id="ghb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${C.blue}" stop-opacity=".42"/>
+      <stop offset="1" stop-color="${C.blue}" stop-opacity="0"/></linearGradient>
+      <clipPath id="ghc"><rect x="${x0}" y="${y0}" width="0" height="${h}">
+        <animate attributeName="width" from="0" to="${w}" dur="1.5s" begin=".2s" fill="freeze"/></rect></clipPath></defs>`;
+  o+=`<g clip-path="url(#ghc)"><polygon points="${x0},${y0+h} ${pts} ${x0+w},${y0+h}" fill="url(#ghb)"/>
+      <polyline points="${pts}" fill="none" stroke="${C.blue}" stroke-width="1.7" stroke-linejoin="round"/></g>`;
+
+  /* ay sonu günleri: çöküşün kendisi */
+  A.flag.forEach((f,i)=>{
+    if(f!==2) return;
+    const t=dayAt(i);
+    if(t.getDate()<25) return;                        /* yalnız ayın son günü */
+    const last=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();
+    if(t.getDate()!==last) return;
+    o+=afade(`<line x1="${px(i).toFixed(1)}" y1="${y0}" x2="${px(i).toFixed(1)}" y2="${y0+h}"
+        stroke="${C.brand}" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+      <circle cx="${px(i).toFixed(1)}" cy="${py(d[i]).toFixed(1)}" r="4.6" fill="${C.brand}"
+        stroke="#080b11" stroke-width="1.8"/>`,1.4+i/n*.5);
+  });
+
+  /* rejim şeridi: her günün hangi rejime ait olduğu */
+  const ry=y0+h+16;
+  o+=txt(x0-8,ry+9,'rejim',{anchor:'end',size:9,fill:C.faint});
+  o+=`<rect x="${x0}" y="${ry}" width="${w}" height="12" rx="3" fill="rgba(87,166,255,.14)"/>`;
+  A.flag.forEach((f,i)=>{
+    if(!f) return;
+    o+=afade(`<rect x="${(px(i)-1.4).toFixed(1)}" y="${ry}" width="${Math.max(2.8,w/n)}"
+      height="12" rx="1.6" fill="${f===2?C.brand:C.warn}"/>`,1.7+i/n*.4);
+  });
+
+  o+=afade(txt(x0,ry+30,'01 Oca 2026',{size:10,fill:C.faint})+
+    txt(x0+w,ry+30,'28 Haz 2026',{size:10,anchor:'end',fill:C.faint})+
+    txt(x0+w/2,ry+30,'179 gün · kesintisiz',{anchor:'middle',size:10,fill:C.faint}),1.9);
+
+  return '<div class="pmap">'+svg(W,H,o)+'</div>'+
+    leg([['rgba(87,166,255,.75)','günlük toplam desi'],
+         ['rgba(61,214,140,.6)','normal gün medyanı'],
+         [C.brand,'ayın son iki günü','d'],
+         [C.warn,'resmî tatil','d']]);
+}
+
+/* ── rejim karşılaştırması: aynı veriye üç ayrı grup olarak bak ─────── */
+function regimeChart(){
+  const A=NET.cal, d=A.days;
+  const base=new Date(A.start+'T00:00:00');
+  const dayAt=i=>{const t=new Date(base);t.setDate(t.getDate()+i);return t};
+  const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0};
+  const norm=[],hol=[],me1=[],me0=[];
+  d.forEach((v,i)=>{
+    const t=dayAt(i), last=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();
+    if(A.flag[i]===2) (t.getDate()===last?me0:me1).push(v);
+    else if(A.flag[i]===1) hol.push(v);
+    else norm.push(v);
+  });
+  const rows=[['Normal gün',med(norm),norm.length,C.blue],
+              ['Resmî tatil',med(hol),hol.length,C.warn],
+              ['Ay sonu −1 gün',med(me1),me1.length,'#ff8a3d'],
+              ['Ayın son günü',med(me0),me0.length,C.brand]];
+  const W=430,H=210,x0=112,y0=20,w=W-x0-72,h=H-y0-26;
+  const max=Math.max(...rows.map(r=>r[1]))*1.02, bh=h/rows.length*0.5;
+  let o=txt(0,10,'GÜNLÜK TOPLAM DESİ — GRUP MEDYANI',{size:9,w:700,fill:C.faint});
+  rows.forEach((r,i)=>{
+    const y=y0+h/rows.length*i+h/rows.length/2-bh/2;
+    const bw=Math.max(2,w*r[1]/max), d2=.15+i*.18;
+    o+=awide(x0,y,bw,bh,r[3],4,d2,.65);
+    o+=afade(txt(x0-9,y+bh/2+4,r[0],{anchor:'end',size:11,fill:i===3?C.brand2:C.muted,w:i===3?700:500})+
+      txt(x0-9,y+bh/2+16,r[2]+' gün',{anchor:'end',size:8.5,fill:C.faint}),d2);
+    const inside=bw>78;
+    o+=afade(txt(inside?x0+bw-9:x0+bw+8,y+bh/2+4,nf(r[1]),
+        {size:11,w:700,fill:inside?'#0a0f16':r[3],anchor:inside?'end':'start'})+
+      txt(W-2,y+bh/2+4,'%'+nf(100*r[1]/rows[0][1],1),{anchor:'end',size:10.5,fill:C.dim}),d2+.55);
+  });
+  return svg(W,H,o)}
+
+/* ── 179 günlük takvim ısı haritası ───────────────────────────────────── */
+function calHeat(){
+  const A=NET.cal, W=860, cell=21, gap=3.4, pad=30;
+  const weeks=Math.ceil((A.dow0+A.days.length)/7), H=pad+7*(cell+gap)+34;
+  const DOW=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  const AY=['Oca','Şub','Mar','Nis','May','Haz'];
+  const x0=(W-weeks*(cell+gap))/2+16;
+  let o='';
+  DOW.forEach((d,i)=>o+=txt(x0-8,pad+i*(cell+gap)+cell*0.72,d,{anchor:'end',size:9.5,fill:C.dim}));
+  let month=-1;
+  A.days.forEach((v,i)=>{
+    const p=A.dow0+i, wk=Math.floor(p/7), dw=p%7;
+    const x=x0+wk*(cell+gap), y=pad+dw*(cell+gap);
+    const t=Math.min(v/(A.median*1.6),1), f=A.flag[i];
+    const fill=f?(f===2?'#ff6000':'#ffc53d'):`rgba(87,166,255,${(0.10+0.85*t).toFixed(3)})`;
+    o+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell}" height="${cell}" rx="4"
+         fill="${fill}" opacity="0"><animate attributeName="opacity" from="0"
+         to="${f?'.92':'1'}" dur=".4s" begin="${(i*0.009).toFixed(3)}s" fill="freeze"/></rect>`;
+    const d=new Date(A.start); d.setDate(d.getDate()+i);
+    if(d.getMonth()!==month){ month=d.getMonth();
+      o+=txt(x,pad-9,AY[month],{size:10,w:700,fill:C.muted}); }
+  });
+  const ly=pad+7*(cell+gap)+18;
+  o+=txt(x0,ly,'renk koyulaştıkça günlük desi artar  ·  normal gün medyanı '+nf(A.median)+' desi',
+         {size:10.5,fill:C.dim});
+  [['#ffc53d','resmî tatil'],['#ff6000','ay sonu (son iki gün)']].forEach((k,i)=>{
+    const x=x0+430+i*150;
+    o+=`<rect x="${x}" y="${ly-9}" width="11" height="11" rx="3" fill="${k[0]}"/>`;
+    o+=txt(x+16,ly,k[1],{size:10.5,fill:C.dim});
+  });
+  return '<div class="pmap">'+svg(W,H,o)+'</div>';
+}
+
+/* ── dışlanan 23 tarih: gerekçesi ve normal güne oranıyla ─────────────
+   Her satır "neden dışlandı"yı açıkça söyler. Üç kategori var ve
+   ikisine birden giren 2 tarih toplamı 25'ten 23'e indirir. */
+function exclInfo(){
+  /* iso'dan ayın son / sondan bir önceki gün ayrımını çıkar */
+  return NET.excluded.map(e=>{
+    const d=new Date(e.iso+'T00:00:00');
+    const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    const meKind=!e.me?'':(d.getDate()===last?'ayın son günü':'ayın sondan bir önceki günü');
+    const cat=e.me&&e.h?'iki':(e.h?'tatil':'aysonu');
+    const why=e.me&&e.h?(e.h+' + '+meKind)
+             :(e.h?e.h:meKind);
+    return {...e,cat,why,meKind};
+  });
+}
+function exclChart(){
+  const E=exclInfo(), W=880, rowH=19, HEAD=54, H=E.length*rowH+HEAD+22;
+  const X0=340, SW=W-X0-92;
+  const COL={tatil:'#ffc53d',aysonu:'#ff6000',iki:'#b18cff'};
+  const nT=E.filter(e=>e.cat==='tatil').length, nA=E.filter(e=>e.cat==='aysonu').length,
+        nI=E.filter(e=>e.cat==='iki').length;
+
+  /* başlık: aritmetiğin kendisi */
+  let o=txt(0,13,'15 resmî tatil  +  10 ay sonu günü  =  25 kayıt',{size:11,w:700,fill:C.muted});
+  o+=txt(0,30,'−2 tarih ikisine birden giriyor (30 ve 31 Mayıs: hem Kurban Bayramı hem ay sonu)',
+         {size:10,fill:C.dim});
+  o+=txt(0,45,'=  '+E.length+' ayrı takvim tarihi',{size:11,w:700,fill:C.brand2});
+  o+=txt(X0,45,'NORMAL GÜNÜN YÜZDESİ  →  %100 = medyan gün ('+nf(NET.cal.median)+' desi)',
+         {size:9.5,w:700,fill:C.dim});
+  o+=`<line x1="0" y1="${HEAD-2}" x2="${W}" y2="${HEAD-2}" stroke="${C.line}" stroke-width="1"/>`;
+  o+=`<line x1="${X0+SW}" y1="${HEAD+2}" x2="${X0+SW}" y2="${H-18}" stroke="rgba(255,255,255,.18)"
+       stroke-width="1" stroke-dasharray="3 3"/>`;
+
+  E.forEach((e,i)=>{
+    const y=HEAD+6+i*rowH, w=Math.max(e.r*SW,1.6), col=COL[e.cat], d=(.1+i*.042).toFixed(2);
+    o+=afade(txt(0,y+9,e.d,{size:10.5,w:700,fill:'#dfe7f2'})+
+      `<rect x="42" y="${y+1}" width="7" height="11" rx="2" fill="${col}"/>`+
+      txt(56,y+9,e.why,{size:9.5,fill:C.muted,mono:false}),+d);
+    o+=`<rect x="${X0}" y="${y}" width="0" height="12" rx="3" fill="${col}" opacity=".82">
+        <animate attributeName="width" from="0" to="${Math.min(w,SW).toFixed(1)}" dur=".5s"
+         begin="${d}s" fill="freeze" calcMode="spline" keySplines=".2 .85 .3 1" keyTimes="0;1"/></rect>`;
+    o+=afade(txt(X0+SW+8,y+10,'%'+nf(e.r*100,1),{size:10.5,w:700,fill:col}),+d+.45);
+  });
+  return '<div class="pmap">'+svg(W,H,o)+'</div>'+
+    leg([[COL.tatil,'yalnız resmî tatil — '+nT+' tarih','sq'],
+         [COL.aysonu,'yalnız ay sonu — '+nA+' tarih','sq'],
+         [COL.iki,'ikisi birden — '+nI+' tarih','sq']]);
+}
+const SLA_OK='rgba(61,214,140,.78)', SLA_2='rgba(255,140,40,.85)';
+const BANDS=[[0,300,'0 – 300 km'],[300,600,'300 – 600 km'],[600,900,'600 – 900 km'],[900,1e9,'900 km ve üzeri']]
+  .map(b=>{const r=NET.lanes.filter(l=>l[2]>=b[0]&&l[2]<b[1]);
+           const a=r.filter(l=>l[3]===1).length, c=r.length-a;
+           return {n:b[2],q:(a?a+' × 1 gün':'')+(a&&c?'  ·  ':'')+(c?c+' × 2 gün':''),
+                   segs:[{v:a,col:SLA_OK},{v:c,col:SLA_2}]};});
+
+const POP={
+c18:{k:'Ağ yapısı',t:'18 transfer merkezi — hepsi hem çıkış hem varış',b:()=>pdef('<b>Transfer merkezi nedir?</b> Yüklerin toplandığı, aktarıldığı ve dağıtıldığı lojistik düğüm. Bu problemde 18 merkez var ve hepsi eşit yetenekte — depo / fabrika / mağaza ayrımı yok: her merkez hem <em>gönderici</em>, hem <em>alıcı</em>, hem de <em>aktarma</em> noktası olabilir.')+pcols(
+  ps(nf(2986868)+' <span class="u">desi/gün</span>','Toplam günlük elleçleme kapasitesi')+
+  ps('513.171','En yüksek — Yalova (toplamın %17,2\'si)','blue')+
+  ps('36.869','En düşük — Denizli (Yalova\'nın 1/14\'ü)','warn')+
+  ps('7 merkez','Tır kapasitesi sıfır — tır hiç giremez','brand'),
+  mapSVG({dot:c=>({r:3.4+7.2*Math.sqrt(c.h/HMAX),fill:c.t?C.blue:'#ff8a3d',
+                           ring:c.t?null:'rgba(255,96,0,.75)'}),
+          legend:[[C.blue,'nokta büyüklüğü = elleçleme kapasitesi','d'],
+                  ['#ff8a3d','tır kapasitesi sıfır (7 merkez)','d']]})+
+  note('Şartname merkezleri <b>depo / fabrika / mağaza</b> diye ayırmaz: 18 merkezin her biri hem çıkış hem varış hem de aktarma noktası olabilir. Ağın tamamı bu 18 düğümden ibarettir.')+
+  note('Elleçleme kapasitesi <b>merkez başına günlüktür</b> ve gelen–giden ayrımı yapmaz; aynı gün o merkeze uğrayan her araç aynı kotayı yer. Kapasite dağılımı çok dengesiz: en büyük merkez en küçüğün 14 katı.','hl'))},
+
+c306:{k:'Ağ yapısı',t:'306 yönlü hat — 18 × 17 tam matris',b:()=>pdef('<b>Yönlü hat nedir?</b> İki merkez arasındaki tek yönlü doğrudan bağlantı. İstanbul→Yalova ile Yalova→İstanbul <em>ayrı iki hattır</em>: mesafeleri aynı olsa da üzerlerindeki talep ve akış birbirinden bağımsızdır.')+pcols(
+  ps('204 hat','SLA 1 gün — teslim ertesi güne kadar','ok')+
+  ps('102 hat','SLA 2 gün — genelde uzun mesafe','brand')+
+  ps('60 – 1.548 km','Mesafe aralığı (ortalama 628 km)','sm blue')+
+  ps('İstanbul → Yalova','En kısa hat (60 km) · en uzun: Tekirdağ → Mardin (1.548 km)','sm'),
+  mapSVG({lanes:[{rows:NET.lanes,color:l=>l[3]===1?'rgba(61,214,140,.42)':'rgba(255,140,40,.46)',
+                  w:.95,op:1,delay:0,step:7}],
+          dotDelay:2400,dot:()=>({r:4.2,fill:C.blue}),
+          legend:[['rgba(61,214,140,.8)','SLA 1 gün — 204 hat'],
+                  ['rgba(255,140,40,.85)','SLA 2 gün — 102 hat']]})+
+  note('Her merkez diğer 17 merkezin hepsine doğrudan bağlı: 18 × 17 = <b>306 yönlü hat</b>. Hatlar yönlüdür — İstanbul→Yalova ile Yalova→İstanbul iki ayrı hattır.')+
+  note('Mesafe ve SLA <b>simetriktir</b> (her iki yön için aynı); asimetrik olan <b>taleptir</b>. Eğriler gidiş ile dönüşü ayırt etmek için zıt yönde bükülmüştür. Bir sefer bu hatlardan yalnız birini kullanmak zorunda değildir — uğramalı rotalar birden çok hattı zincirler.','hl'))},
+
+c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli varışlı',b:()=>pdef('<b>OD çifti nedir?</b> <em>Origin–Destination</em>, yani çıkış–varış çifti: bir talebin nereden nereye gideceğini tanımlar. Ağımızda her OD çifti bir yönlü hatta karşılık gelir; 306 hattın 289’unda geçmişte en az bir kez gerçek talep görülmüş.')+pcols(
+  ps('66.024 satır','179 günlük geçmiş talep (1 Oca – 28 Haz 2026)')+
+  ps('289 / 306','Geçmişte en az bir kez talep görülen hat','blue')+
+  ps('17 hat','Hiç talep görülmemiş — hepsi Kocaeli varışlı','warn')+
+  ps('17 / 17','Kocaeli <b>çıkışlı</b> hatların tamamında talep var','ok'),
+  mapSVG({lanes:[{rows:SEEN,color:'rgba(87,166,255,.32)',w:.9,op:1,delay:0,step:4},
+                 {rows:UNSEEN,color:'#ff4d6d',w:2,op:1,delay:1500,step:60}],
+          dotDelay:2700,dot:(c,i)=>({r:i===KOC?7:4,fill:i===KOC?'#ff4d6d':C.blue,
+                                     ring:i===KOC?'rgba(255,77,109,.7)':null}),
+          legend:[['rgba(87,166,255,.6)','geçmişte talep görülen 289 hat'],
+                  ['#ff4d6d','hiç talep görülmemiş 17 hat → hepsi Kocaeli\'ye']]})+
+  note('Kocaeli geçmiş veride <b>hiç varış talebi almamış</b>; yalnızca çıkış noktası olarak görünüyor. Bu bir veri eksikliği değil, ağın yapısal özelliği — Kocaeli bu problemde saf bir <b>gönderici / aktarma</b> merkezi.')+
+  note('Pratik sonucu: tahmin ızgaramızı 306 değil <b>289 hat</b> üzerine kuruyoruz — 289 hat × 2 tamamlanma saati × 7 gün = <b>4.046 satır</b>. Var olmayan 17 hat için model üretmeye çalışmak, tahmin hatasına sadece gürültü eklerdi.','hl'))},
+
+'k-hand':{k:'Kısıt 1 · en sert kısıt',t:'Elleçleme kapasitesi — merkez başına günlük',b:()=>pdef('<b>Elleçleme nedir?</b> Bir yükün araca <em>yüklenmesi</em> veya araçtan <em>indirilmesi</em> sırasında merkezde harcanan işlem süresi. Desi başına 0,01 dakika sürer, yükleme ve indirme ayrı ayrı sayılır. Her merkezin günlük bir elleçleme kotası vardır: kota dolduğunda o merkez o gün başka yük işleyemez.')+pcols(
+  ps('0,01 dk/desi','Elleçleme hızı — <b>yükleme ve indirme ayrı ayrı</b>','sm')+
+  ps('00:00','Kota bu saatte sıfırlanır; devreden bakiye yok','blue')+
+  ps('3.000 / 7.000','23:30\'da başlayan 10.000 desilik işlem böyle bölünür','sm brand')+
+  ps('2.986.868','18 merkezin toplam günlük kapasitesi (desi)'),
+  pbars(byH().map(c=>({n:c.n,v:c.h,q:nf(c.h),c:c.h===HMAX?'hi':''})))+
+  note('<b>Gece yarısı kuralı:</b> 10.000 desilik bir elleçleme 100 dakika sürer. 23:30\'da başlarsa 30 dakikası bugüne, 70 dakikası yarına düşer — kota da aynı <b>oranda</b> bölünür: 3.000 desi bugünden, 7.000 desi yarından. Bu kuralı hakem simülatörümüzde birebir uyguladık.')+
+  note('Bunu en sert kısıt yapan şey: kota <b>gün</b> bazlı ama plan <b>dakika</b> bazlı. Bir aracı 23:50\'ye kaydırmak, o merkezin ertesi günkü kotasını da yer. Konsolidasyon kazancı ile kota tüketimi doğrudan çelişir.','hl'))},
+
+'k-tir':{k:'Kısıt 2',t:'Tır kapasitesi — 7 merkezde sıfır',b:()=>pdef('<b>Tır kapasitesi nedir?</b> Bir merkezin günde kaç <em>tır ziyareti</em> kaldırabileceği. Ziyaret = o merkezden çıkan ya da oraya varan her tır seferi. Fiziksel bir kısıttır — rampa, saha ve manevra alanı sınırı; tır dışındaki araç türlerini bağlamaz.')+pcols(
+  ps('69 ziyaret/gün','18 merkezin toplam tır kotası')+
+  ps('7 merkez','Kota sıfır — tır ne girebilir ne çıkabilir','warn')+
+  ps('20 ziyaret','Zorunlu kiralık tırların her gün yediği kota','brand')+
+  ps('2 / 2 · 1 / 1','Tekirdağ ve Balıkesir kotası kiralıklarca <b>tamamen</b> dolu','sm warn'),
+  pbars(byT().map(c=>({n:c.n,v:c.t,q:c.t,c:c.t===0?'z':''})))+
+  note('Kota <b>günlük toplam ziyaret</b> sayısıdır: bir tır seferi hem çıkış merkezinin hem varış merkezinin kotasından birer adet düşer. Kotası sıfır olan yedi merkez — <b>Bilecik, Sivas, Isparta, Kütahya, Karaman, Zonguldak, Denizli</b> — tır trafiğine tamamen kapalıdır.')+
+  note('İşin can sıkıcı tarafı: <b>zorunlu kiralık tırlar da bu kotayı tüketir.</b> Günde 10 kiralık tır seferi, 20 ziyaret demek. İstanbul\'un 10\'luk kotasının 8\'i, Yalova\'nın 4\'ünün 3\'ü daha plan başlamadan yenmiş oluyor; Tekirdağ ve Balıkesir\'de spot tıra hiç yer kalmıyor.','hl'))},
+
+'k-fleet':{k:'Kısıt 3',t:'Kiralık filo — 12 rota, her gün 14 araç',b:()=>pdef('<b>Kiralık filo nedir?</b> Şartnamenin bize önceden verdiği, <em>sabit rotalarda her gün çalışmak zorunda olan</em> araç havuzu. Maliyeti plandan bağımsız olarak oluşur: ne iptal edebilir, ne rotasını değiştirebilir, ne de yolda başka bir merkeze uğratabiliriz.')+pcols(
+  ps('12 rota','Sabit, değiştirilemez rota listesi','sm')+
+  ps('10 tır + 4 kamyon','Günde 14 araç — talep olmasa da çıkar','sm brand')+
+  ps('126 sefer','Planımızın 9 çıkış tarihinde toplam zorunlu sefer','blue')+
+  ps('Uğrama ve dönüş <b>yasak</b>','Kiralık araç tek bacak gider, orada kalır','sm warn'),
+  '<table><thead><tr><th>Çıkış</th><th>Varış</th><th>Tür</th><th class="n">Araç/gün</th></tr></thead><tbody>'+
+  NET.rented.map(r=>'<tr'+(r[3].trim()==='Tır'?' class="hi"':'')+'><td>'+r[0]+'</td><td>'+r[1]+
+    '</td><td>'+r[3]+'</td><td class="n">'+r[2]+'</td></tr>').join('')+
+  '</tbody></table>'+
+  note('Kiralık filo maliyeti <b>batık</b>: plan bu araçları kaldıramaz, sadece <b>doldurabilir</b>. Boş giden bir kiralık araç, ödenmiş ama kullanılmamış kapasitedir — bu yüzden optimizasyon merdiveninde ilk iş, uygun yükleri kiralıklara bindirmek.')+
+  note('Kiralık araçlar aynı zamanda iki kısıtı birden yer: hem tır kotasını (günde 20 ziyaret) hem varış merkezlerinin elleçleme kotasını. Yani plan onlarla <b>başlamak</b> zorunda; spot araçlar ancak artakalan kapasiteyle çalışabilir.','hl'))},
+
+'k-sla':{k:'Kısıt 4',t:'SLA — hat başına 1 veya 2 gün, tavanı yok',b:()=>pdef('<b>SLA nedir?</b> <em>Service Level Agreement</em> — hizmet seviyesi taahhüdü. Burada: bir talebin, tamamlanma anından itibaren kaç gün içinde nihai varış merkezine <em>teslim edilmiş olması</em> gerektiği. Bu süreyi aşmak yasak değildir; gecikilen her saat için ceza ödenir.')+pcols(
+  ps('204 / 102','SLA 1 gün olan / 2 gün olan hat sayısı','sm')+
+  ps('773 km ↔ 782 km','Eşik: altındaki her hat 1 gün, üstündeki her hat 2 gün','sm blue')+
+  ps('desi × ⌈saat⌉ × 0,40 ₺','Gecikme cezası — saat bir üst tam saate yuvarlanır','sm brand')+
+  ps('2.400 ₺','6.000 desilik yük 1 saat gecikirse','warn')+
+  ps('Gizli tavan <b>yok</b>','Ceza yasak değil — sadece pahalı','sm ok'),
+  pstack(BANDS)+leg([[SLA_OK,'SLA 1 gün — 204 hat'],[SLA_2,'SLA 2 gün — 102 hat']])+
+  note('SLA tamamen <b>mesafeye bağlı</b>: 773 km’ye kadar olan hatların hepsi 1 gün, 782 km’den uzun hatların hepsi 2 gün. Arada çakışan tek bir hat bile yok — teslim süresi, ağın coğrafyasının doğrudan bir sonucu.')+
+  note('<b>Saat nerede başlar, nerede durur:</b> talebin tamamlanma anında (09:00 veya 17:00) başlar, yükün nihai varış merkezindeki <b>elleçlemesi bittiğinde</b> durur. Aradaki her şey — yolculuk, aktarma, konsolidasyon için bekleme — sayılır.')+
+  note('Kritik nokta: şartnamede <b>"en fazla şu kadar gecikebilir"</b> diye bir kural yok. Ceza doğrusal ve hesaplanabilir, dolayısıyla bir aracı doldurmak için beklemek meşru bir <b>maliyet takasıdır</b>. Nihai planımızda SLA cezası '+M(S0.sla_penalty)+'₺\'den '+M(S3.sla_penalty)+'₺\'ye <b>çıktı</b>, buna karşılık araç maliyeti '+M(S0.vehicle_cost)+'₺\'den '+M(S3.vehicle_cost)+'₺\'ye düştü — net kazanç '+M(S0.total_cost-S3.total_cost)+'₺.','hl'))},
+
+'s-trips':{k:'Serbestlik 1',t:'Spot araçlar sınırsız sefer yapabilir',b:()=>pdef('<b>Spot araç nedir?</b> Önceden kiralanmış değil, ihtiyaç duyuldukça çağrılan ve yalnız <em>kullanıldığı süre</em> kadar ücretlendirilen araç. <b>Sefer</b> ise bir aracın tek bir çıkış–varış hareketidir.')+pcols(
+  ps('Sınır yok','Bir spot araç gün içinde kaç sefer yaparsa yapsın','sm')+
+  ps(nf(S0.spot_n)+' → '+nf(S3.spot_n),'Spot araç sayımız — Stage 0\'dan nihai plana','sm ok')+
+  ps('%'+nf(S0.avg_fill,0)+' → %'+nf(S3.avg_fill,0),'Ortalama doluluk oranı','sm ok'),
+  note('Jüri soru-cevabında netleşti: spot araçların sefer sayısına <b>kural sınırı yok</b>. İstediğimiz kadar araç çağırabilir, her aracı istediğimiz kadar çalıştırabiliriz.')+
+  note('Ama fatura bunu bedava yapmıyor: bir spot aracın <b>kullanım süresi</b>, ilk yükleme başlangıcından son indirme bitişine kadar <b>tek sürekli penceredir</b>. Bekleme de elleçleme de bu pencerenin içindedir. Yani "araç sayısını azaltmak" ile "aracı uzun süre meşgul etmek" arasında gerçek bir takas var.')+
+  note('Bu yüzden bizim optimizasyonumuz sefer sayısını değil <b>doluluğu</b> hedefliyor: aynı yükü daha az ve daha dolu araçla taşımak, aynı aracı daha çok koşturmaktan neredeyse her zaman ucuz çıkıyor. Sonuç: '+nf(S0.routes)+' rotadan '+nf(S3.routes)+' rotaya, ortalama doluluk %'+nf(S0.avg_fill,0)+'\'den %'+nf(S3.avg_fill,0)+'\'a.','hl'))},
+
+'s-milk':{k:'Serbestlik 2 · en büyük kazanç',t:'Uğrama (milk-run) — durak sayısına kural sınırı yok',b:()=>pdef('<b>Milk-run nedir?</b> Sütçünün her sabah tek turda sırayla birçok eve uğraması gibi: <em>tek bir araç</em>, tek çıkışta yüklenir ve yol boyunca birden çok merkeze uğrayarak yükünü parça parça bırakır. Alternatifi, her varış merkezi için ayrı bir araç çıkarmaktır.')+pcols(
+  ps(nf(D.milkrun.chains_accepted),'Kabul edilen uğramalı zincir','ok')+
+  ps(nf(D.milkrun.source_vehicles_replaced)+' → '+nf(D.milkrun.chains_accepted),'Bu zincirlerin yerine geçtiği araç sayısı','sm ok')+
+  ps(M(D.milkrun.desi_consolidated)+' desi','Konsolide edilen yük','sm blue')+
+  ps(M(D.milkrun.local_saving_tl)+'₺','Yalnız bu adımın yerel kazancı','sm brand'),
+  chainSVG()+
+  note('Yukarıdaki harita nihai planımızdan <b>gerçek bir zincir</b>: '+NET.chain.vehicle+' numaralı '+
+       NET.chain.type.toLowerCase()+' 30 Haziran 17:36’da Mersin’den '+nf(NET.chain.stops[0].load)+
+       ' desi ve '+NET.chain.stops[0].parts+' talep parçasıyla çıkıyor, sırayla Şanlıurfa, Mardin, Erzincan ve '+
+       'Sivas’a uğrayıp yükünü bırakıyor, 1 Temmuz 10:52’de boşalıyor. Milk-run olmasaydı bu <b>dört ayrı araç</b> demekti.')+
+  pbars([{n:'2 duraklı',v:D.milkrun.chain_size_mix['2'],q:D.milkrun.chain_size_mix['2']+' zincir'},
+         {n:'3 duraklı',v:D.milkrun.chain_size_mix['3'],q:D.milkrun.chain_size_mix['3']+' zincir'},
+         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1)+
+  note('Şartnamede durak sayısına üst sınır yok — bir spot araç istediği kadar merkeze uğrayabilir. Biz arama uzayını kontrol altında tutmak için kendimize <b>en fazla '+D.meta.max_chain_stops+' durak</b> sınırı koyduk; bu bizim seçimimiz, kuralın değil.')+
+  note('Arama hunisi: '+nf(D.milkrun.pairs_evaluated)+' ikili ve '+nf(D.milkrun.triples_evaluated)+
+       ' üçlü kombinasyon değerlendirildi, '+nf(D.milkrun.chains_accepted)+' zincir kabul edildi — her biri hakem simülatöründen geçtikten sonra.','hl'))},
+
+'s-mix':{k:'Serbestlik 3',t:'Bir araca farklı varışlı yükler birlikte yüklenebilir',b:()=>pdef('<b>Karışık yükleme nedir?</b> Aynı araçta <em>farklı varış merkezlerine</em> giden yüklerin birlikte taşınması. Araç ilk durakta yalnız oraya ait yükü indirir, geri kalanıyla yoluna devam eder — uğramayı anlamlı kılan şey tam olarak budur.')+pcols(
+  ps(nf(D.milkrun.parts_consolidated),'Birleştirilen yük parçası','ok')+
+  ps(nf(D.pickup.parts_picked_up),'Yol üstünden ek olarak alınan parça','blue')+
+  ps(M(D.pickup.desi_picked_up)+' desi','Yol üstü toplamayla taşınan yük','sm'),
+  note('Aynı araçta A→B ve A→C yükü birlikte bulunabilir: araç B\'ye uğrar, oradaki yükü indirir, kalanla C\'ye devam eder. Bu serbestlik olmasaydı uğrama zaten anlamsız olurdu — ikisi birlikte çalışır.')+
+  note('Bunun ikinci bir sonucu daha var: bir araç <b>yol üstünde yük alabilir</b>. Nihai plandaki '+nf(D.pickup.pickups_accepted)+' yol-üstü toplama, '+nf(D.pickup.donor_vehicles_removed)+' aracı tamamen gereksiz kıldı ve '+M(D.pickup.local_saving_tl)+'₺ kazandırdı.')+
+  note('Kritik detay: bir yükün <b>parçalara bölünüp farklı araçlara</b> dağıtılması da serbest. Çıktı şemasında aynı Talep ID birden fazla satırda görünebiliyor (D00460-2 gibi) — bu bir hata değil, kuralın izin verdiği bir esneklik.','hl'))},
+
+'s-min':{k:'Serbestlik 4',t:'Zaman çözünürlüğü dakika; merkezler 24 saat çalışır',
+  b:()=>pdef('<b>Zaman çözünürlüğü nedir?</b> Planın kararlarını hangi zaman biriminde verdiği. Bizde bu birim <em>dakika</em>: bir aracın çıkış anını 18:00 gibi kaba bir saate değil, 17:36 gibi tam dakikaya koyabiliyoruz.')+
+  pcols(
+  ps('24 saat','Merkezler kesintisiz çalışır; vardiya ya da mesai penceresi yok','sm ok')+
+  ps(nf(NET.clock.night)+' sefer','Nihai planımızda gece 00:00–06:00 arası yola çıkan araç','sm purple')+
+  ps('60 / 60','Dakika değerlerinin tamamı kullanılıyor','sm blue')+
+  ps('%'+nf(NET.clock.on_hour/NET.clock.legs*100,1),'Yalnız bu kadarı tam saatte çıkıyor — gerisi ara dakikalarda','sm brand')+
+  ps('55,2 dk → 56 dk','Tüm süreler bir üst tam dakikaya yuvarlanır','sm'),
+  clockChart()+minuteChart()+
+  note('Yukarıdaki iki grafik <b>iddia değil, planımızın kendisi</b>. Üstte '+nf(NET.clock.legs)+
+       ' aracın çıkış saati: akşam 17:00–20:00 yoğunluğu talebin tamamlanma anlarından geliyor, ama gece boyunca da '+
+       nf(NET.clock.night)+' araç yola çıkıyor. Şartnamede vardiya ya da gece kısıtı yok; gün kavramının tek etkisi elleçleme kotasının <b>00:00’da sıfırlanması</b>.')+
+  note('Altta aynı seferlerin <b>dakikaları</b>. Saat çözünürlüğüyle çalışan bir plan burada yalnız <b>:00</b> sütununu doldururdu; bizde 60 dakika değerinin 60’ı da dolu. Bu, aracı doldurmak için <b>çıkış anını serbestçe kaydırabilmek</b> demek — planın en değerli serbestliği.','hl'))},
+
+'d-hist':{k:'Geçmiş veri',t:'179 günün tamamı — hacim, zaman ekseninde',b:()=>
+  pdef('<b>Neye bakıyoruz?</b> 1 Ocak – 28 Haziran 2026 arası <em>her günün toplam desi hacmi</em>. Mavi eğri günlük hacim, yeşil kesikli çizgi normal bir günün medyanı. Alttaki ince şerit her günün hangi <em>rejime</em> ait olduğunu söyler: turuncu ayın son iki günü, sarı resmî tatil, mavi normal gün.')+
+  '<div class="pcols"><div class="pside">'+
+  ps(nf(D.cleaning.raw_rows),'Geçmiş talep satırı','sm')+
+  ps('179 gün','1 Ocak – 28 Haziran 2026, kesintisiz','sm blue')+
+  ps(nf(NET.cal.median),'Normal gün medyanı (desi)','sm')+
+  ps('%0,2','En düşük ay sonu — 31 Mayıs, 2.010 desi','sm warn')+
+  ps('5 / 5','Ay sonu çöküşü kaç ayda gerçekleşti','sm brand')+
+  '</div><div class="pmain">'+histBig()+
+  note('Eğrideki <b>beş derin dip</b> tesadüf değil: beşi de ayın son günü. Turuncu noktalar bunları işaretliyor — Ocak’tan Mayıs’a beş ayın beşinde, istisnasız. Aralarındaki sarı çizgiler resmî tatiller; onlar da düşük ama ay sonu kadar keskin değil.')+
+  '</div></div>'+
+  '<div class="pcols" style="margin-top:20px"><div class="pside" style="flex:0 0 430px">'+
+  regimeChart()+
+  '</div><div class="pmain">'+
+  note('Soldaki grafik aynı 179 günü <b>dört gruba</b> ayırıp her grubun medyanını karşılaştırıyor. Normal bir gün 100 kabul edilirse: resmî tatil ve ay sonundan bir önceki gün belirgin biçimde düşük, <b>ayın son günü ise neredeyse sıfır</b>. Bunlar “aykırı değer” değil — her ay tekrarlayan, öngörülebilir <b>ayrı rejimler</b>. Modelimizin ikinci katmanı tam olarak bunu ölçüyor.')+
+  note('Kritik nokta: <b>30 Haziran tahmin ufkumuzun içinde</b> ve o da bir ay sonu. Bu günü normal bir salı sayan model, tek başına orada yaklaşık <b>1,1 milyon desi</b> hata üretir — bu tek gözlem WMAPE puanını domine ederdi.','hl')+
+  '</div></div>'+
+  '<div style="margin-top:20px">'+
+  note('Aynı veri <b>takvim düzeninde</b>: her kare bir gün, sütunlar hafta, satırlar haftanın günü. Bu görünüm büyüklükleri okumaya değil, <b>örüntünün takvime nasıl oturduğunu</b> görmeye yarar — turuncu kareler ay sonlarında düzenli aralıklarla tekrar eder.')+
+  calHeat()+'</div>'},
+
+'d-clean':{k:'Veri hazırlığı',t:'Ham veriden eğitim ızgarasına — ne elendi, neden',b:()=>
+  pdef('<b>Izgara (grid) nedir?</b> Talep verisi yalnız <em>gerçekleşen</em> talepleri içerir. Model eğitmek için her (hat × tamamlanma saati × gün) kombinasyonunu, talep görülmemiş olanlar dâhil <em>desi = 0</em> olarak yazmamız gerekir — aksi hâlde model sıfırları hiç görmez ve her hücreye talep uydurur.')+
+  pcols(
+  ps(nf(D.cleaning.od_in_history)+' × 2 × 179','Hat × tamamlanma saati × gün','sm')+
+  ps(nf(D.cleaning.history_grid_rows),'Toplam eğitim ızgarası hücresi','sm blue')+
+  ps(nf(D.cleaning.training_grid_rows),'Eğitimde kullanılan hücre','sm ok')+
+  ps(nf(D.cleaning.excluded_grid_rows),'23 dışlanan tarihe ait hücre','sm warn'),
+  pbars([{n:'Eğitimde kullanılan',v:D.cleaning.training_grid_rows,q:nf(D.cleaning.training_grid_rows)+' hücre',c:''},
+         {n:'Dışlanan (23 tarih)',v:D.cleaning.excluded_grid_rows,q:nf(D.cleaning.excluded_grid_rows)+' hücre',c:'z'}],1)+
+  note('<b>Neden ızgara?</b> '+nf(D.cleaning.raw_rows)+' ham satır yalnız talep <b>olan</b> hücrelerdir. 289 hat × 2 saat × 179 gün = '+
+       nf(D.cleaning.history_grid_rows)+' hücrenin geri kalanı gerçek birer <b>sıfır</b>dır ve modelin bunları görmesi şarttır.')+
+  note('<b>Ne yapmadık:</b> outlier temizleme, log dönüşümü, ölçekleme, smoothing, trend/mevsim ayrıştırma ve harici ML kütüphanesi <b>kullanmadık</b>. Tek elediğimiz şey 23 takvim tarihi — onlar da gürültü değil, <b>başka bir rejim</b>: tatil ve ay sonu günleri normal günün istatistiğini bozar, ama kendileri düzenli ve öngörülebilirdir.','hl'))},
+
+'d-179':{k:'Veri kaynakları',t:'179 gün geçmiş · 8 veri seti',b:()=>
+  pdef('<b>Neyi neyle besliyoruz?</b> Tahmin modeli yalnız geçmiş talep verisini kullanır; kalan dosyalar optimizasyonun kısıtlarını ve maliyetlerini tanımlar. Hiçbir dış veri kaynağı, hava durumu ya da harici tahmin girdisi yoktur.')+
+  '<div class="pcols"><div class="pside">'+
+  ps('179 gün','1 Oca – 28 Haz 2026 · eksik gün yok','sm blue')+
+  ps(nf(D.cleaning.raw_rows),'Geçmiş talep satırı','sm')+
+  ps('8 dosya','Şartnamenin verdiği veri setleri','sm')+
+  ps('0','Harici / dış veri kaynağı','sm ok')+
+  '</div><div class="pmain">'+
+  '<table><thead><tr><th>Veri seti</th><th>Ne tanımlar</th><th class="n">Boyut</th></tr></thead><tbody>'+
+  [['Geçmiş talep','179 günün hat bazlı desi hacmi — tahminin tek girdisi',nf(D.cleaning.raw_rows)+' satır',0],
+   ['Şehirler arası lojistik','306 hattın mesafesi, araç türü başına süresi, SLA günü','306 hat',0],
+   ['Elleçleme kapasitesi','Merkez başına günlük işlem kotası','18 merkez',0],
+   ['Tır kapasiteleri','Merkez başına günlük tır ziyaret kotası','18 merkez',0],
+   ['Kiralık araçlar','Zorunlu 12 rota, günlük 14 araç','12 rota',0],
+   ['Araç kapasite / maliyet','4 araç türü: desi, saatlik kira, km başı maliyet','4 tür',0],
+   ['Talep tahmini','<b>Bizim çıktımız</b> — 7 günlük tahmin',nf(D.forecast_vs_dow.rows)+' satır',1],
+   ['Taşıma planı','<b>Bizim çıktımız</b> — nihai sevkiyat planı',nf(S3.plan_rows)+' satır',1]]
+   .map(r=>'<tr'+(r[3]?' class="hi"':'')+'><td>'+r[0]+'</td><td>'+r[1]+
+           '</td><td class="n">'+r[2]+'</td></tr>').join('')+
+  '</tbody></table>'+
+  note('Son iki satır <b>bizim ürettiğimiz</b> çıktılardır, girdi değil. İlk altısı şartnamenin verdiği dosyalardır ve hiçbirini değiştirmedik.','hl')+
+  '</div></div>'},
+
+'d-23':{k:'Dışlanan tarihler',t:'23 tarih — her birinin gerekçesi tek tek yazılı',b:()=>
+  pdef('<b>Dışlamak ne demek?</b> Bu 23 gün veriden <em>silinmez</em>. Yalnızca “normal bir gün ne kadar yük taşır” sorusunun cevabı hesaplanırken <em>hesaba katılmaz</em>. Sonra ayrı bir katman bu günlerin normal günden ne kadar saptığını ölçer. Yani onları <b>atmıyoruz — ayrı modelliyoruz</b>.')+
+  '<div class="pcols"><div class="pside">'+
+  ps('15 + 10 − 2 = 23','Resmî tatil + ay sonu günü − ikisine birden giren tarih','sm brand')+
+  ps('23 tarih','179 günün %12,8’i','sm warn')+
+  ps('%0,0','En düşük: 27 Mayıs — 104 desi','sm brand')+
+  ps('Yalnız eğitim','Hedef günler hiçbir koşulda elenmez','sm ok')+
+  ps('Haziran yok','Bilinçli — 29/30 Haziran tahmin ufkunun içinde','sm ok')+
+  '</div><div class="pmain">'+
+  note('<b>Neden 25 değil 23?</b> Şartname takvimi iki ayrı listeden besleniyor: 15 <b>resmî tatil</b> ve Ocak–Mayıs’ın son iki günü, yani 5 ay × 2 = 10 <b>ay sonu günü</b>. Bu iki liste iki tarihte çakışıyor: <b>30 ve 31 Mayıs</b> hem Kurban Bayramı’na hem Mayıs’ın son iki gününe denk geliyor. Aynı tarihi iki kez saymak yanlış olurdu — bu yüzden dışlanan <b>ayrı takvim tarihi sayısı 23</b>. Aşağıdaki listede bu iki tarih mor işaretli.')+
+  note('<b>Peki neden dışlıyoruz?</b> Çünkü bu günler gürültü değil, <b>başka bir rejim</b>. Normal bir salının medyanını hesaplarken aralarına bir ay sonu karışırsa medyan aşağı kayar ve model <b>her salıyı</b> olduğundan düşük tahmin etmeye başlar. Onları ayırınca iki temiz sinyal elde ediyoruz: normal günün gerçek seviyesi, ve olay günlerinin bu seviyeden sapma oranı.','hl')+
+  exclChart()+
+  note('Listede iki farklı davranış görünüyor. <b>Ayın son günü</b> neredeyse sıfıra iniyor (%0,2 – %2,6); <b>sondan bir önceki gün</b> ise yalnızca kısmen düşük (%56 – %122) — bazen normalin üstüne bile çıkıyor. Aynı ayrım bayramlarda da var: bayramın ilk günleri dip yaparken arife günleri normale yakın kalıyor. Bu yüzden modelimiz tek bir “tatil” etiketi kullanmaz; <b>ayın son günü</b> ve <b>sondan bir önceki gün</b> için ayrı katsayılar ölçer.')+
+  note('<b>Haziran neden listede yok?</b> Veri 28 Haziran’da bitiyor; Haziran’ın son iki günü olan 29–30 Haziran zaten <b>tahmin edeceğimiz günler</b>. Onları eğitimden elemek anlamsız olurdu — tam tersine, doğru tahmin etmek zorundayız. Dışlama listesinin Haziran’a uzanmaması bu yüzden bir eksiklik değil, bilinçli bir sınır.')+
+  '</div></div>'},
+
+'d-crit':{k:'Metodoloji',t:'Ne yaptık, ne yapmadık — ve neden',b:()=>
+  pdef('<b>Sızıntı (leakage) nedir?</b> Modelin, tahmin etmesi gereken günün bilgisini eğitim sırasında görmesi. Backtest sonucunu gerçekte olacağından iyi gösterir. Aşağıdaki iki kural bunu engellemek içindir.')+
+  pcols(
+  ps('Yalnız eğitim','Dışlama sadece geçmiş veriye uygulanır','sm ok')+
+  ps('Hedef gün asla','Tahmin edilecek günler hiçbir koşulda elenmez','sm ok')+
+  ps('Oca – May','Dışlama listesi bilerek Haziran’a uzanmaz','sm blue')+
+  ps('0 kütüphane','Harici ML kütüphanesi kullanılmadı','sm'),
+  '<table><thead><tr><th>Yaygın ön işleme adımı</th><th>Biz</th><th>Neden</th></tr></thead><tbody>'+
+  [['Outlier temizleme','<b class="warn">Yapmadık</b>','Uç değerler hata değil — ay sonu ve tatil, modellenmesi gereken gerçek rejimler'],
+   ['Log dönüşümü','<b class="warn">Yapmadık</b>','Hedef metrik WMAPE; log uzayında optimize etmek onu bozar'],
+   ['Ölçekleme / normalizasyon','<b class="warn">Yapmadık</b>','Model ölçeğe duyarlı bir aileden değil; kazanç sıfır, katman bir'],
+   ['Smoothing','<b class="warn">Yapmadık</b>','Ay sonu çöküşünü yumuşatmak, tam da kaçırmak istemediğimiz sinyali siler'],
+   ['Trend / mevsim ayrıştırma','<b class="warn">Yapmadık</b>','Tek güçlü mevsimsellik zaten haftanın günü + takvim etkisi'],
+   ['Takvim dışlama','<b class="ok">Yaptık</b>','Tatil ve ay sonu ayrı rejim — normal gün istatistiğinden çıkarılmalı'],
+   ['Tam ızgara (sıfırlar dâhil)','<b class="ok">Yaptık</b>','Talep görülmeyen hücre gerçek bir sıfırdır; görülmezse model her hücreye talep uydurur']]
+   .map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td style="color:var(--dim);font-size:12px">'+r[2]+'</td></tr>').join('')+
+  '</tbody></table>'+
+  note('Kısacası: veri düzenli ve <b>tek bir güçlü mevsimsellik</b> tarafından yönetiliyor. Bu durumda ağır ön işleme kazanç değil <b>risk</b> ekler — her ek katman, doğrulaması gereken yeni bir varsayımdır.','hl'))},
+
+'s-late':{k:'Serbestlik 5',t:'Teslim ufku aşılabilir — ceza ödeyip beklemek meşru',b:()=>pdef('<b>Teslim ufku nedir?</b> Bir talebin SLA’sına göre teslim edilmiş olması gereken son an. Bu anı aşmak kural ihlali değildir — <em>fiyatı belli bir seçenektir</em>: gecikilen her saat için desi başına ceza ödenir.')+pcols(
+  ps(M(S0.sla_penalty)+'₺ → '+M(S3.sla_penalty)+'₺','SLA cezamız bilerek <b>arttı</b>','sm warn')+
+  ps(M(S0.vehicle_cost)+'₺ → '+M(S3.vehicle_cost)+'₺','Araç maliyeti buna karşılık düştü','sm ok')+
+  ps('−'+M(S0.total_cost-S3.total_cost)+'₺','Net kazanç — takasın sonucu','sm brand')+
+  ps('0 ihlal','Ceza ihlal değildir; hakem her aşamada temiz','ok'),
+  pstack([{n:'Stage 0 · temel plan',q:M(S0.total_cost)+'₺',
+           segs:[{v:S0.vehicle_cost,col:'rgba(87,166,255,.75)'},{v:S0.sla_penalty,col:SLA_2}]},
+          {n:'Nihai plan',q:M(S3.total_cost)+'₺',
+           segs:[{v:S3.vehicle_cost,col:'rgba(87,166,255,.75)'},{v:S3.sla_penalty,col:SLA_2}]}])+
+  leg([['rgba(87,166,255,.85)','araç maliyeti'],[SLA_2,'SLA cezası']])+
+  note('Şartnamede <b>gizli bir SLA tavanı yok</b>: "en fazla şu kadar gecikebilir" diye bir kural yazılmamış. Gecikme yasak bir davranış değil, fiyatı belli bir seçenektir.')+
+  note('Biz de bunu bilinçli kullanıyoruz. Nihai planda SLA cezasını '+M(S3.sla_penalty-S0.sla_penalty)+
+       '₺ <b>artırdık</b>, çünkü aynı hamle araç maliyetinden '+M(S0.vehicle_cost-S3.vehicle_cost)+
+       '₺ kazandırdı. Bu bir ihlal değil, kuralların içinde kalan bir <b>maliyet takası</b> — ve hakem simülatörü her aşamada sıfır ihlal veriyor.','hl'))}
+,
+
+/* ══════════════ Stage 2 · milk-run detayları ══════════════ */
+'s2-arama':{k:'Stage 2 · arama',t:'101.795 kombinasyon denendi, 227 zincir kabul edildi',b:()=>
+  pdef('<b>Zincir nedir?</b> Aynı merkezden <em>aynı dakikada</em> kalkan k adet ayrı araç, tek bir fiziksel araca bindirilir. Araç sırayla her varış merkezine uğrar, yükün oraya ait kısmını bırakır, kalanla devam eder. <em>Kaç segment taşındığı değişmez — kaç araç kiralandığı değişir.</em>')+
+  pcols(
+  ps(nf(D.milkrun.groups_considered),'Aday grup — aynı merkez, aynı dakika','sm')+
+  ps(nf(D.milkrun.pairs_evaluated+D.milkrun.triples_evaluated),'Fiyatlandırılan kombinasyon','sm blue')+
+  ps(nf(D.milkrun.chains_accepted),'Kabul edilen zincir','sm ok')+
+  ps('%'+nf(100*D.milkrun.chains_accepted/(D.milkrun.pairs_evaluated+D.milkrun.triples_evaluated),3),'Kabul oranı — arama gerçekten eliyor','sm brand')+
+  ps(D.meta.max_chain_stops+' durak','Kendi koyduğumuz üst sınır — kuralın değil','sm warn'),
+  '<div class="pmap mid">'+chartMilkFunnel()+'</div>'+
+  note('<b>Huni neden önce genişliyor?</b> Çünkü bunlar üç ayrı şey. <b>'+nf(D.milkrun.groups_considered)+' aday grup</b>, aynı merkez-dakikada buluşan araç <i>kümeleridir</i>. Bu kümelerin içinden çıkarılabilecek <b>'+nf(D.milkrun.pairs_evaluated)+' çift</b> ve <b>'+nf(D.milkrun.triples_evaluated)+' çoklu alt küme</b> tek tek fiyatlandırılır — üstelik her alt kümenin <i>uğrama sırası</i> da ayrı bir adaydır. Sonunda kabul edilen '+nf(D.milkrun.chains_accepted)+' zincir kalır.')+
+  note('<b>Bir aday nasıl kabul edilir?</b> İki koşul birden gerekir. Birincisi: zincirin toplam maliyeti, yerine geçtiği k aracın toplamından <b>düşük</b> olmalı. İkincisi: ortaya çıkan plan hakem simülatöründen <b>0 ihlalle</b> geçmeli. İkinci koşul sağlanmazsa aday, kârlı olsa bile atılır ve resmî çıktı hiç değişmez.')+
+  note('<b>Kimlik kontrolü:</b> Stage 1 planında '+nf(S('Stage 1').routes)+' araç vardı. Kabul edilen zincirler '+nf(D.milkrun.source_vehicles_replaced)+' aracın yerine geçti ve onların yerine '+nf(D.milkrun.chains_accepted)+' araç kondu: '+nf(S('Stage 1').routes)+' − '+nf(D.milkrun.source_vehicles_replaced)+' + '+nf(D.milkrun.chains_accepted)+' = <b>'+nf(S('Stage 2').routes)+'</b>. Segment sayısı ise '+nf(S('Stage 1').segments)+'’de <b>sabit</b> kaldı — zincir yeni bacak yaratmaz, var olanları tek araca bindirir.','hl')+
+  note('<b>Neden en fazla '+D.meta.max_chain_stops+' durak?</b> Şartnamede üst sınır yok; sınır bizim. 5 duraklı zinciri kaba kuvvetle denedik: C(n,5) alt küme × 120 sıralama, 13,5 dakika CPU ve 1,3 GB bellekten sonra sonuç alınamadı. Budamalı bir arama olmadan 5 durak kapalı bir kapı — bunu açık kalem olarak yazıyoruz.'))},
+
+'s2-zincir':{k:'Stage 2 · sonuç',t:'227 zincir hangi uzunlukta ve ne kazandırdı',b:()=>
+  pdef('<b>Grafiği nasıl okumalı?</b> Halka, nihai plandaki <em>fiziksel araç</em> sayısını uzunluğa göre böler. “1 bacak” tek durağa giden sıradan bir seferdir; “4 durak” ise dört ayrı aracın işini üstlenen bir zincirdir.')+
+  pcols(
+  ps(nf(D.milkrun.chain_size_mix['2'])+' / '+nf(D.milkrun.chain_size_mix['3'])+' / '+nf(D.milkrun.chain_size_mix['4']),'2 / 3 / 4 duraklı zincir sayısı','sm')+
+  ps(nf(D.milkrun.source_vehicles_replaced)+' → '+nf(D.milkrun.chains_accepted),'Yerine geçilen araç → zincir','sm ok')+
+  ps(M(D.milkrun.desi_consolidated)+' desi','Konsolide edilen yük','sm blue')+
+  ps(nf(D.milkrun.parts_consolidated),'Birleştirilen talep parçası','sm')+
+  ps(M(D.milkrun.local_saving_tl)+'₺','Yalnız bu adımın kazancı','sm brand'),
+  chainSVG()+
+  note('Yukarıdaki harita <b>uydurma değil</b>: nihai planımızdaki '+NET.chain.vehicle+' numaralı '+NET.chain.type.toLowerCase()+'. 30 Haziran 17:36’da Mersin’den '+nf(NET.chain.stops[0].load)+' desi ve '+NET.chain.stops[0].parts+' talep parçasıyla çıkıyor; Şanlıurfa, Mardin, Erzincan ve Sivas’a sırayla uğrayıp yükünü bırakıyor; 1 Temmuz 10:52’de boşalıyor. Milk-run olmasaydı bu <b>dört ayrı araç</b> demekti.')+
+  pbars([{n:'2 duraklı',v:D.milkrun.chain_size_mix['2'],q:D.milkrun.chain_size_mix['2']+' zincir'},
+         {n:'3 duraklı',v:D.milkrun.chain_size_mix['3'],q:D.milkrun.chain_size_mix['3']+' zincir'},
+         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1)+
+  note('<b>Neden 4 duraklı zincirler 3 duraklılardan çok?</b> Çünkü arama uzunluğa değil <b>kârlılığa</b> göre seçiyor. Dört aracı tek araca bindirmek üç katına yakın kazandırır; üç duraklı zincirler ancak dördüncü bir uygun araç bulunamadığında ortaya çıkar. '+nf(D.milkrun.chain_size_mix['4'])+' adet 4 duraklı zincir tek başına '+nf(4*D.milkrun.chain_size_mix['4'])+' aracın işini görüyor.')+
+  note('<b>Zincirler hangi araç türünde?</b> '+Object.keys(D.milkrun.chain_type_mix).map(function(t){return D.milkrun.chain_type_mix[t]+' '+t.toLowerCase()}).join(' · ')+'. Tır listede <b>yok</b> ve bu bilinçli: tırı zincire katmayı ölçtük, 18.100 ₺ <b>daha kötü</b> sonuç verdi. Kamyon aynı 12.000 desi kapasitede tırdan ucuz (318,25 ₺/sa karşı 487,50 ₺/sa) ve kârlı tır adaylarının %93,6’sı tır kotası sıfır olan yedi merkez yüzünden ölüyor.','hl'))},
+
+/* ══════════════ Stage 3 · yük alma detayı ══════════════ */
+'s3-pickup':{k:'Stage 3 · yük alma',t:'Rota ortasında yük alma — ve rotanın neden uzamadığı',b:()=>
+  pdef('<b>Tier A nedir?</b> Bir zincir ara durakta yalnız <em>indirmez</em>, oradan kalkacak yükü de <em>alır</em>. Kritik kısıt bizim koyduğumuz: alınan yükün varış merkezi, rotanın <em>zaten uğrayacağı</em> bir durak olmak zorunda. Böylece rota bir metre bile uzamaz, topoloji hiç değişmez.')+
+  pcols(
+  ps(nf(D.pickup.routes_considered),'Hedef rota — Stage 2’nin zincirleri','sm')+
+  ps(nf(D.pickup.donors_available),'Donör araç — yükünü devredebilecek','sm blue')+
+  ps(nf(D.pickup.pairs_examined),'Fiyatlandırılan (rota, donör) çifti','sm')+
+  ps(nf(D.pickup.profitable_candidates)+' → '+nf(D.pickup.pickups_accepted),'Kârlı aday → çakışmasız kabul','sm ok')+
+  ps(nf(D.pickup.desi_picked_up)+' desi','Yol üstünden alınan yük · '+nf(D.pickup.parts_picked_up)+' parça','sm brand'),
+  '<div class="pmap wide">'+chartPickStop()+'</div>'+
+  note('<b>Kural dayanağı jürinin kendi cümlesi:</b> “bir araçtan x kadar yük indirilip y kadar yük yüklenirse kapasiteden x artı y kadar yük düşülür.” Bu tek cümle hem işlemin serbest olduğunu söylüyor hem de elleçleme aritmetiğini veriyor.')+
+  '<pre style="margin-top:15px">unload_end   = varış + elleçleme(inen)          <b>← SLA saati burada durur</b>\ndepart_after = unload_end + elleçleme(alınan)   <b>← araç ancak bundan sonra kalkar</b></pre>'+
+  note('<b>Buradaki sessiz hata:</b> bir yük alma durağında <b>iki ayrı zaman damgası</b> vardır. İnen kargo, indirilmesi bittiği anda teslim edilmiştir; sonradan yapılan yükleme aracı geciktirir ama <b>o teslimatı geciktirmez</b>. İkisini tek damgaya indirgemek, olmayan bir SLA cezası uydurur. Prototipimizde tam olarak bu hata yapıldı ve <b class="brand">hakem simülatörü yakaladı</b> — başka hiçbir kontrol fark etmemişti.','hl')+
+  note('<b>Neden '+nf(D.pickup.profitable_candidates)+' kârlı adaydan yalnız '+nf(D.pickup.pickups_accepted)+'’i kabul edildi?</b> Çünkü aynı donör aracı birden fazla rota istiyor. Çakışma çözümünde her donör yalnız bir kez kullanılabilir, kalanlar elenir. Kabul edilen '+nf(D.pickup.pickups_accepted)+' hamle '+nf(D.pickup.donor_vehicles_removed)+' aracı plandan tamamen sildi ve '+nf(D.pickup.local_saving_tl,2)+' ₺ kazandırdı.')+
+  note('<b>Tier B neden yok?</b> Tier B, alınan yükün varışı rotada olmasa bile rotayı <b>bir durak uzatarak</b> yükü taşımayı önerir. Bağımsız ölçümümüz ek ~66 bin ₺ gösterdi; ancak rota topolojisini değiştirdiği için hakem kurallarının çok daha geniş bir kısmını etkiliyor. Kalan sürede güvenle doğrulayamadığımız için <b>bilinçli olarak dışarıda bıraktık</b> — açık kalem olarak duruyor.'))},
+
+/* ══════════════ Filo etkisi — grafik detayları ══════════════ */
+'f-fleet':{k:'Etki · filo',t:'Fiziksel araç sayısı neden bu kadar önemli',b:()=>
+  pdef('<b>“Fiziksel araç” ne demek?</b> Faturaya giren birim. Bir araç kaç merkeze uğrarsa uğrasın <em>tek bir kullanım penceresi</em> için ücretlendirilir. Dolayısıyla araç sayısını düşürmek, aynı yükü aynı mesafede taşırken maliyeti düşürmenin en doğrudan yoludur.')+
+  pcols(
+  STG.map(function(k,i){return ps(nf(S(k).routes),k+' — '+['temel plan','aynı-hat onarım','milk-run','yük alma'][i],'sm'+(i===3?' brand':''))}).join('')+
+  ps('−%47,6',nf(S('Stage 0').routes)+' → '+nf(S('Stage 3').routes)+' fiziksel araç','sm ok'),
+  '<div class="pmap mid">'+chartFleet()+'</div>'+
+  note('<b>Segment sayısı ile araç sayısı aynı şey değildir.</b> Segment, “A’dan B’ye bir hareket” demektir ve taşınacak yük onu zorunlu kılar. Araç ise o hareketleri koşan, saatlik ücretlendirilen birimdir. Stage 2’de segment sayısı '+nf(S('Stage 1').segments)+'’de sabit kalırken araç '+nf(S('Stage 1').routes)+'’den '+nf(S('Stage 2').routes)+'’e indi: <b>aynı işi daha az araçla</b> yaptık.')+
+  '<table class="anim"><thead><tr><th>Aşama</th><th class="n">Segment</th><th class="n">Fiziksel araç</th><th class="n">Kiralık</th><th class="n">Spot</th><th class="n">Araç maliyeti</th></tr></thead><tbody>'+
+  STG.map(function(k,i){var x=S(k);return '<tr'+(i===3?' class="hi"':'')+'><td>'+k+'</td><td class="n">'+nf(x.segments)+'</td><td class="n">'+nf(x.routes)+'</td><td class="n">'+nf(x.rented_routes)+'</td><td class="n">'+nf(x.spot_routes)+'</td><td class="n">'+M(x.vehicle_cost)+'₺</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Kiralık sayısı hiç değişmiyor</b> ve bu doğru: 12 zorunlu rota × 9 çıkış tarihi = '+nf(S('Stage 0').rented_routes)+' araç her aşamada aynen duruyor, çünkü onları iptal etme yetkimiz yok. Optimizasyonun dokunabildiği tek yer spot filodur: '+nf(S('Stage 0').spot_routes)+' → '+nf(S('Stage 3').spot_routes)+'.','hl'))},
+
+'f-fill':{k:'Etki · doluluk',t:'Kümülatif doluluk eğrisi nasıl okunur',b:()=>
+  pdef('<b>Kümülatif dağılım nedir?</b> Yatay eksende bir doluluk oranı seçin; eğri size “araçların yüzde kaçı bu orandan <em>daha az</em> dolu” cevabını verir. Eğri ne kadar <em>sağa</em> yaslanmışsa o kadar çok araç yüksek dolulukta demektir.')+
+  pcols(
+  STG.map(function(k,i){return ps('%'+nf(S(k).avg_fill,2),k+' ortalama doluluk','sm'+(i===3?' ok':''))}).join('')+
+  ps(nf(S('Stage 0').spot_below_30)+' → '+nf(S('Stage 3').spot_below_30),'%30’un altında dolu spot araç','sm brand'),
+  '<div class="pmap mid">'+chartFill()+'</div>'+
+  note('<b>Somut okuma:</b> Stage 0 eğrisi %30 çizgisini yüksekten keser — '+nf(S('Stage 0').spot_routes)+' spot aracın <b>'+nf(S('Stage 0').spot_below_30)+' tanesi</b> üçte birinden az doluydu. Nihai planda bu sayı <b>'+nf(S('Stage 3').spot_below_30)+'</b>. Yarı boş bir araç, ödenmiş ama kullanılmamış kapasitedir.')+
+  note('<b>Neden %100 değil?</b> Çünkü doluluk kendi başına bir hedef değil, maliyetin bir <b>göstergesi</b>. Bir aracı sonuna kadar doldurmak için başka bir yükü saatlerce bekletmek, kazandırdığından fazla SLA cezası ödetebilir. Optimizasyon doluluğu değil <b>toplam maliyeti</b> minimize eder; %'+nf(S('Stage 3').avg_fill,2)+' bunun sonucudur, amacı değil.','hl')+
+  note('Eğrinin sağ ucundaki dik yükseliş tam dolu araçların yoğunluğunu gösterir. Kiralık filo da bu grafikte yer alır ve doluluğu bizim kontrolümüzde değildir — zorunlu rotalar talep olmasa da çıkar.'))},
+
+'f-mix':{k:'Etki · araç karması',t:'Neden kamyonet azaldı, kamyon arttı, tır hiç değişmedi',b:()=>
+  pdef('<b>Karma neden değişiyor?</b> Konsolidasyon yarı dolu küçük araçları birleştirir. İki yarı dolu kamyonetin yükü tek bir kamyona sığdığında kamyonet sayısı iki azalır, kamyon sayısı bir artar. Araç <em>sayısı</em> düşerken ortalama araç <em>boyu</em> büyür.')+
+  pcols(
+  ps(nf(S('Stage 0').vehicle_mix['Kamyonet'])+' → '+nf(S('Stage 3').vehicle_mix['Kamyonet']),'Kamyonet','sm brand')+
+  ps(nf(S('Stage 0').vehicle_mix['Kamyon'])+' → '+nf(S('Stage 3').vehicle_mix['Kamyon']),'Kamyon','sm blue')+
+  ps(nf(S('Stage 0').vehicle_mix['Hafif Kamyon'])+' → '+nf(S('Stage 3').vehicle_mix['Hafif Kamyon']),'Hafif Kamyon','sm')+
+  ps(nf(S('Stage 0').vehicle_mix['Tır'])+' → '+nf(S('Stage 3').vehicle_mix['Tır']),'Tır — hiç değişmedi','sm ok'),
+  '<div class="pmap mid">'+chartMix()+'</div>'+
+  '<table class="anim"><thead><tr><th>Araç türü</th><th class="n">Kapasite (desi)</th><th class="n">Spot ₺/sa</th><th class="n">Spot ₺/km</th><th class="n">Stage 0</th><th class="n">Nihai</th></tr></thead><tbody>'+
+  ['Kamyonet','Hafif Kamyon','Kamyon','Tır'].map(function(t){
+    var v=NET.vehicles.filter(function(x){return x[0]===t})[0];
+    return '<tr'+(t==='Tır'?' class="hi"':'')+'><td>'+t+'</td><td class="n">'+nf(v[1])+'</td><td class="n">'+nf(v[4],2)+'</td><td class="n">'+nf(v[5],0)+'</td><td class="n">'+nf(S('Stage 0').vehicle_mix[t]||0)+'</td><td class="n">'+nf(S('Stage 3').vehicle_mix[t]||0)+'</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Tırın 99’da sabit kalması bir tercih, bir sınır değil.</b> Tır 22.400 desi taşır ama saatlik 487,50 ₺’ye mal olur; kamyon 12.000 desiyi 318,25 ₺/sa ile taşır. Desi başına maliyette tır ancak <b>tam dolu</b> giderse öne geçer — ve yedi merkezde tır kotası sıfır olduğu için tam dolu bir tır rotası bulmak çoğu zaman imkânsız. Kıt kaynağı zorlamak yerine zorunlu kiralıklara bıraktık.','hl')+
+  note('Zaten planımızdaki tırların neredeyse tamamı zorunlu kiralık filodan geliyor: günde 10 kiralık tır × 9 çıkış tarihi = 90, üstüne 9 spot tır. Yani tır sayısını biz değil, şartname seçiyor.'))},
+
+/* ══════════════ Hakem simülatörü ══════════════ */
+'q-hakem':{k:'Kalite kapıları',t:'Hakem simülatörü — nedir, neden yazdık, ne yakaladı',b:()=>
+  pdef('<b>Hakem simülatörü nedir?</b> Planlayıcıdan <em>tamamen ayrı</em> yazılmış ikinci bir uygulama. Optimizatörün iç durumunu hiç görmez; yalnızca diske yazılan Excel çıktısını ve şartnamenin ham veri dosyalarını okur, maliyeti ve 17 kuralı <em>sıfırdan yeniden hesaplar</em>. Kısacası jürinin bizi değerlendireceği hesabı, teslimden önce kendimize uygularız.')+
+  pcols(
+  ps('17','Yeniden hesaplanan kural','sm')+
+  ps('592 / 592','Geçen regresyon testi','sm ok')+
+  ps('0','Nihai plandaki ihlal','sm ok')+
+  ps('0,0000 ₺','Beyan ettiğimiz maliyet ile hakemin hesabı arasındaki fark','sm brand')+
+  ps('3 / 3','Stage 3 prototipindeki hatadan kaçını yakaladı','sm warn'),
+  note('<b>Neden buna ihtiyaç var?</b> Bir optimizasyon kodu kendi hesabına göre daima haklıdır. Maliyeti hesaplayan fonksiyonla planı üreten fonksiyon aynı varsayımı paylaşıyorsa, ikisi de yanlış olduğunda <b>hiçbir test bunu göremez</b>. Bağımsız bir ikinci uygulama tam bu kör noktayı kapatır: iki uygulama aynı sayıyı üretmiyorsa ortada gerçek bir hata vardır.')+
+  note('<b>Bağımsızlık nasıl sağlandı?</b> Hakem, optimizatörün hiçbir veri yapısını, ara değişkenini ya da yardımcı fonksiyonunu paylaşmaz. Girdisi yalnızca iki şeydir: diske yazılmış <b>Taşıma Planı Excel’i</b> ve şartnamenin <b>ham veri dosyaları</b>. Zaman aritmetiğini, gece yarısı bölmesini, SLA cezasını ve kapasite kontrollerini kendi kodundan yeniden türetir.')+
+  '<table class="anim"><thead><tr><th>Kapı</th><th>Ne kontrol eder</th><th>İhlal olursa</th></tr></thead><tbody>'+
+  [['17 kural','Plan fiziksel ve kurallı olarak mümkün mü','Tek ihlal → aday reddedilir, resmî çıktı değişmez'],
+   ['Uzlaşma kapısı','Aramanın hesapladığı tasarruf ile hakemin ölçtüğü fark','Kuruşun milyonda birinden fazla sapma → yayın durur'],
+   ['Aşama kapıları','Stage 2 için 20, Stage 3 için 23 birebir sabit sayı','Sessiz kazanç kaybı fark edilmeden geçemez'],
+   ['Determinizm','Girdi satırları karıştırılınca plan değişiyor mu','Bir hücre bile farklıysa hata'],
+   ['Artifact doğrulama','Yazılan Excel geri okunur, şema doğrulanır, hakem yeniden koşar','Şema ya da maliyet uymazsa dosya yerine konmaz']]
+   .map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td style="color:var(--dim);font-size:12px">'+r[2]+'</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Peki gerçekten ne yakaladı?</b> Stage 3 prototipinde üç ayrı hata vardı ve <b>üçünü de yalnız bu kapı</b> gördü. Birincisi: zorunlu kiralık bir rotayı yük alma hedefi seçmek — kiralık araç rota dışına çıkamaz. İkincisi: yanlış SLA zaman damgası — inen kargonun teslim anı yerine aracın kalkış anını kullanmak. Üçüncüsü: alınan yükün, varış durağını geçip rotanın devamına taşınması. Hiçbiri programı çökertmiyordu; üçü de <b>sessizce yanlış ama geçerli görünen</b> bir plan üretiyordu.','hl')+
+  note('Hakem, optimizatör daha yazılmamışken bile iki optimizatör-sınıfı hatayı yakaladı. Bu yüzden sıralamayı bilerek tersine çevirdik: <b>önce hakem, sonra optimizatör</b>.'))},
+
+/* ══════════════ Tahmin modeli — iki grafiğin detayı ══════════════ */
+'t-fc':{k:'Tahmin modeli',t:'Katman nerede devreye giriyor — gün gün',b:()=>{
+  const f=D.forecast_vs_dow;
+  const TR=l=>l.replace(' Jun',' Haz').replace(' Jul',' Tem');
+  /* teslim edilen ufuk 29.06 – 05.07: ilk üç gün takvim olayı, kalanı normal */
+  const M4=[['Ay sonu −1 gün',D.calendar.day_before_month_end],
+            ['Ayın son günü',D.calendar.month_end],
+            ['Ayın ilk günü',D.calendar.first_day_after_month_end],
+            ['Normal gün',1],['Normal gün',1],['Normal gün',1],['Normal gün',1]];
+  const tot=f.dow_mean.reduce((a,b)=>a+b,0);
+  return pdef('<b>Grafik neyi karşılaştırıyor?</b> Gri sütun, o günü <em>sıradan bir haftagünü</em> sayan bir modelin tahminidir — yani geçmişteki aynı haftagünlerinin ortalaması. Yeşil sütun bizim tahminimizdir. İkisi arasındaki fark, <em>takvim çarpanı katmanının</em> o gün ne yaptığını gösterir.')+
+  pcols(
+  ps(nf(f.total_forecast),'Toplam tahmin edilen desi · 7 gün','sm')+
+  ps(nf(f.rows),'Tahmin dosyası satırı','sm blue')+
+  ps(nf(f.zero_rows),'Bunlardan desi = 0 olan','sm')+
+  ps(nf(f.forecast[1])+' desi','30 Haziran tahminimiz','sm brand')+
+  ps(nf(Math.round(f.dow_mean[1]))+' desi','Aynı gün için haftagünü ortalaması','sm warn'),
+  '<div class="pmap mid">'+chartFc()+'</div>'+
+  '<table class="anim"><thead><tr><th>Gün</th><th>Takvim rejimi</th><th class="n">Uygulanan çarpan</th>'+
+  '<th class="n">Haftagünü ort.</th><th class="n">Bizim tahminimiz</th><th class="n">Oran</th></tr></thead><tbody>'+
+  f.labels.map(function(l,i){
+    const r=f.dow_mean[i]?f.forecast[i]/f.dow_mean[i]:0;
+    return '<tr'+(i===1?' class="hi"':'')+'><td>'+TR(l)+'</td><td>'+M4[i][0]+'</td>'+
+      '<td class="n">×'+nf(M4[i][1],4)+'</td><td class="n">'+nf(Math.round(f.dow_mean[i]))+'</td>'+
+      '<td class="n">'+nf(f.forecast[i])+'</td><td class="n" style="color:'+
+      (i<3?C.brand2:C.dim)+'">'+nf(r,2)+'</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Tabloyu tek cümlede okumak:</b> yalnız <b>ilk üç günde</b> takvim rejimi var; kalan dört günde çarpan ×1,0000, yani katman hiç müdahale etmiyor. Son sütundaki oranların 02–05 Temmuz’da 1’e yakın çıkması bunun kanıtı — aradaki küçük fark, tabanımızın <b>ortalama değil son dört gözlemin medyanı</b> olmasından geliyor.')+
+  note('<b>30 Haziran neden bu kadar kritik?</b> Ayın son günü ve tahmin ufkumuzun tam içinde. O günü sıradan bir salı sayan bir model '+nf(Math.round(f.dow_mean[1]))+' desi tahmin ederdi; gerçekleşen ise bunun yaklaşık yüzde ikisi. Tek başına bu gün, yaklaşık <b>1,1 milyon desi</b> hata demektir — ve WMAPE hacim ağırlıklı olduğu için bu tek gözlem haftanın puanını domine ederdi.','hl')+
+  note('<b>Peki fazla mı düzeltiyoruz?</b> Hayır — ve bunu ölçtük. Dondurulmuş geri-testte <b>normal bir haftada</b> (15–21 Haziran) bizim modelimiz ile sade taban modeli <b>birebir aynı</b> WMAPE veriyor: '+nf(D.backtest['Normal hafta 15-21 Haz'].ours,4)+'. Katman o pencerede hiç tetiklenmiyor, dolayısıyla zarar da vermiyor. Ay sonu haftasında ise '+nf(D.backtest['Ay sonu haftası 30 Mar-5 Nis'].dow_median,4)+' → <b>'+nf(D.backtest['Ay sonu haftası 30 Mar-5 Nis'].ours,4)+'</b>.')+
+  note('<b>Sıfır satırlar:</b> '+nf(f.rows)+' tahmin satırının '+nf(f.zero_rows)+' tanesi desi = 0 çıkıyor. Bunlar Excel’de <b>kalır</b> — şartname tam ızgara ister — ama optimizasyona girmez; taşınacak yük yoktur.'))}},
+
+'t-cal':{k:'Tahmin modeli',t:'Takvim çarpanları — seçilmedi, ölçüldü',b:()=>
+  pdef('<b>Takvim çarpanı nedir?</b> Belirli bir takvim gününün, aynı haftagünündeki <em>normal</em> bir günün kaç katı yük taşıdığı. Modelin ikinci katmanı budur: taban tahmini bu sayıyla çarpılır. Sayılar elle ayarlanmadı; geçmiş ay sonlarından <em>hesaplandı</em>.')+
+  pcols(
+  ps('×'+nf(D.calendar.day_before_month_end,4),'Ay sonundan bir önceki gün','sm blue')+
+  ps('×'+nf(D.calendar.month_end,4),'Ayın son günü — talebin %98’i kayboluyor','sm brand')+
+  ps('×'+nf(D.calendar.first_day_after_month_end,4),'Ayın ilk günü — telafi sıçraması','sm ok')+
+  ps('×'+nf(D.calendar.normal,4),'Normal gün — dokunulmaz','sm')+
+  ps('5 gözlem','Her çarpan beş ay sonundan alınan beş oranın medyanı','sm'),
+  '<div class="pmap mid">'+chartCal()+'</div>'+
+  note('<b>Nasıl hesaplandı?</b> Her ay sonu için tek bir oran çıkarıyoruz: <span class="mono">o günün gerçekleşen toplamı ÷ aynı hücrelerin haftagünü taban toplamı</span>. Ocak–Mayıs arası beş ay sonu, beş oran verir; çarpan bu beş oranın <b>medyanıdır</b>. Ortalama değil medyan, çünkü tek bir sapkın ay tüm katsayıyı bozabilirdi.')+
+  note('<b>Neden tabana bölüyoruz?</b> Ham ortalamaya bölmek, ay sonu etkisini <b>haftagünü etkisiyle karıştırırdı</b> — 31 Mayıs bir pazar, 30 Nisan bir perşembe. Kendi haftagünü tabanına bölünce geriye yalnız <b>takvim etkisi</b> kalır; iki sinyal birbirinden temizce ayrılır.')+
+  note('<b>İki ayrı gün, iki ayrı katsayı.</b> Ayın son günü neredeyse sıfıra iniyor (×'+nf(D.calendar.month_end,4)+'), sondan bir önceki gün ise yalnızca kısmen düşüyor (×'+nf(D.calendar.day_before_month_end,4)+'). Tek bir “ay sonu” etiketi kullansaydık ikisini de ortalayıp <b>ikisini birden</b> yanlış tahmin ederdik.','hl')+
+  note('<b>Ayın ilk günü neden 1’in üstünde?</b> Çünkü ay sonunda ertelenen talep kaybolmuyor, ertesi güne kayıyor. ×'+nf(D.calendar.first_day_after_month_end,4)+' bu telafi sıçramasıdır — modelin bunu da bilmesi gerekiyor, yoksa 1 Temmuz’u eksik tahmin ederdik.')+
+  note('<b>Sızıntı koruması:</b> bir çarpan hesaplanırken yalnız <b>tarihi hedeften önce olan</b> gözlemler kullanılır ve taban hesabından <b>olay günlerinin kendisi</b> dışlanır. Ayrıca tahmin fonksiyonu, ufuk içi satır içeren bir talep tablosu görürse çalışmayı <b>reddeder</b> — gerçekleşen değerin modele kazayla sızması yapısal olarak imkânsız.'))}
+,
+
+/* ══════════════ Maliyet modeli — iki kartın detayı ══════════════ */
+'k-use':{k:'Kurallar · zaman',t:'Kullanım süresi — tek sürekli pencere',b:()=>{
+  const T=NET.trip, t0=17*60;
+  const mm=m=>String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+  const rows=[
+    [mm(t0),'Talep tamamlanır','Yük artık taşınabilir. <b>SLA saati burada başlar.</b>',C.ok],
+    [mm(t0),'Çıkış elleçlemesi başlar','<b>Kullanım süresi saati burada başlar</b> — araç henüz hareket etmedi.',C.brand],
+    [mm(t0+T.hload),'Araç yola çıkar','ceil('+nf(T.desi)+' × 0,01) = '+T.hload+' dakika elleçleme bitti.',C.blue],
+    [mm(t0+T.hload+T.travel),'Varış merkezine ulaşır','Yol '+T.km+' km · '+T.travel+' dakika.',C.purple],
+    [mm(t0+T.use),'İndirme biter','<b>Her iki saat de burada durur:</b> teslim gerçekleşti, araç serbest.',C.brand2]];
+  return pdef('<b>Kullanım süresi nedir?</b> Bir spot aracın faturalandığı süre: <em>ilk yükleme başlangıcından son indirme bitişine kadar tek, kesintisiz bir pencere</em>. Parçalı değildir — araç yolda mı, merkezde bekliyor mu, elleçleniyor mu fark etmez; pencerenin içindeki her dakika ödenir.')+
+  pcols(
+  ps(T.use+' dk','Toplam kullanım süresi = '+nf(T.use/60,2)+' saat','sm brand')+
+  ps(T.hload+' + '+T.travel+' + '+T.hunload,'Çıkış elleçleme + yolculuk + varış elleçleme','sm')+
+  ps(nf(T.rate_h,2)+' ₺/sa','Kamyon spot saatlik kira','sm blue')+
+  ps(nf(T.use/60*T.rate_h,2)+' ₺','Yalnız süreden gelen maliyet','sm')+
+  ps('%'+nf(100*(T.hload+T.hunload)/T.use,1),'Sürenin elleçlemede geçen payı','sm warn'),
+  '<div class="pmap wide">'+chartFlow()+'</div>'+
+  '<table class="anim"><thead><tr><th class="n">Saat</th><th>Ne olur</th><th>Sayaçlara etkisi</th></tr></thead><tbody>'+
+  rows.map(function(r){return '<tr><td class="n" style="color:'+r[3]+';font-weight:700">'+r[0]+
+    '</td><td><b>'+r[1]+'</b></td><td style="color:var(--muted);font-size:12px">'+r[2]+'</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Jüri bunu üç ayrı soruda netleştirdi</b> ve tanım her seferinde aynı çıktı: süre <b>ilk yükleme başlangıcında</b> başlar, <b>son indirme bitişinde</b> durur, ve aradaki <b>bekleme dâhildir</b>. Yani "aracı yolda tutmak" ile "aracı merkezde bekletmek" aynı fiyata mal olur.')+
+  note('<b>İki ayrı saat, iki ayrı başlangıç.</b> SLA saati talebin tamamlanma anında (09:00 ya da 17:00) başlar; kullanım süresi ise aracın o yükü <b>fiilen yüklemeye başladığı</b> anda. Yukarıdaki seferde ikisi çakışıyor çünkü araç talebi bekletmeden aldı — ama konsolidasyon için bekleyen bir yükte SLA saati işlerken kullanım süresi henüz başlamamış olur.','hl')+
+  note('<b>Optimizasyona etkisi doğrudan:</b> bir aracı doldurmak için beklemek <b>iki kalemden birden</b> ödetir — bekleyen yükün SLA cezası artar, ve zincirdeki aracın kullanım penceresi uzar. Bu yüzden Stage 2’de zincir kabul kuralı "daha az araç" değil, <b>"toplam maliyet düştü mü"</b> sorusudur.')+
+  note('<b>Yuvarlama:</b> tüm süreler bir üst tam dakikaya çıkar. Elleçleme desi başına 0,01 dakikadır ve <b>yükleme ile indirme ayrı ayrı</b> hesaplanır — üstelik her talep parçası kendi içinde yuvarlanır, bu yüzden bir bacağın toplam elleçlemesi, toplam desinin yuvarlamasından biraz büyük olabilir.')+
+  note('<b>Faturaya girmeyenler:</b> boş dönüş yoktur — araç varışta bırakılır, geri getirme maliyeti yoktur. Sabit çağırma ücreti, günlük taban ücret ya da minimum süre de yoktur. Bir araç ne kadar kullanılırsa o kadar ödenir.'))}},
+
+'k-cost':{k:'Kurallar · maliyet',t:'Maliyet formülü — üç terim, dördüncüsü yok',b:()=>{
+  const T=NET.trip, hrs=T.use/60, vc=hrs*T.rate_h, kc=T.km*T.rate_km;
+  return pdef('<b>Toplam maliyet</b> yalnız üç terimin toplamıdır: aracın <em>süre</em> maliyeti, aracın <em>mesafe</em> maliyeti, ve varsa <em>SLA gecikme cezası</em>. Şartnamede dördüncü bir kalem yoktur — bu, optimizasyonun neyi hedefleyeceğini tek başına belirler.')+
+  pcols(
+  ps(nf(T.cost,2)+' ₺','Örnek seferin toplam maliyeti','sm brand')+
+  ps(nf(vc,2)+' ₺','Süre terimi · %'+nf(100*vc/T.cost,1),'sm')+
+  ps(nf(kc,2)+' ₺','Mesafe terimi · %'+nf(100*kc/T.cost,1),'sm blue')+
+  ps('0,40 ₺','Geciken desi × ceil(saat) başına ceza','sm warn')+
+  ps('0,0000 ₺','Bizim hesabımız ile hakemin farkı','sm ok'),
+  '<div class="pmap wide">'+chartFormula()+'</div>'+
+  '<table class="anim"><thead><tr><th>Araç türü</th><th class="n">Kapasite</th><th class="n">Kiralık ₺/sa</th><th class="n">Kiralık ₺/km</th><th class="n">Spot ₺/sa</th><th class="n">Spot ₺/km</th></tr></thead><tbody>'+
+  ['Kamyonet','Hafif Kamyon','Kamyon','Tır'].map(function(t){
+    const v=NET.vehicles.filter(function(x){return x[0]===t})[0];
+    return '<tr'+(t===T.type?' class="hi"':'')+'><td>'+t+'</td><td class="n">'+nf(v[1])+
+      '</td><td class="n">'+nf(v[2],2)+'</td><td class="n">'+nf(v[3],0)+
+      '</td><td class="n">'+nf(v[4],2)+'</td><td class="n">'+nf(v[5],0)+'</td></tr>'}).join('')+
+  '</tbody></table>'+
+  note('<b>Kiralık ve spot aynı aracı farklı fiyatlar.</b> Kiralık tarifeler daha ucuzdur ama seçim hakkımız yoktur: 12 zorunlu rota her gün çıkar. Spot tarifeler pahalıdır ama tamamen bizim kontrolümüzdedir — optimizasyonun oynadığı tek yer burasıdır.')+
+  note('<b>Kapasite başına maliyet, tür seçimini belirler.</b> Kamyon 12.000 desiyi '+nf(NET.vehicles.filter(function(x){return x[0]==='Kamyon'})[0][4],2)+' ₺/sa ile taşır; tır 22.400 desiyi '+nf(NET.vehicles.filter(function(x){return x[0]==='Tır'})[0][4],2)+' ₺/sa ile. Tır ancak <b>tam dolu</b> giderse desi başına öne geçer — ve yedi merkezde tır kotası sıfır olduğu için tam dolu bir tır rotası çoğu zaman kurulamaz.','hl')+
+  note('<b>SLA cezası neden yasak değil?</b> Şartnamede "en fazla şu kadar gecikebilir" diye bir kural yok. Ceza doğrusal ve hesaplanabilir: geciken desi × yukarı yuvarlanmış saat × 0,40 ₺. Dolayısıyla bir aracı yola çıkarmak, küçük bir gecikme cezasından pahalıysa <b>cezayı satın almak doğru karardır</b>. Nihai planımızda SLA cezası bilerek arttı, araç maliyeti daha fazla düştü.')+
+  note('<b>Kuruşu kuruşuna doğrulama:</b> yukarıdaki '+nf(T.cost,2)+' ₺ elle hesaplanmadı — teslim ettiğimiz Excel’in <span class="mono">Toplam maliyet</span> hücresiyle birebir aynı, ve hakem simülatörü aynı sayıyı ham veriden bağımsız olarak yeniden üretiyor.'))}}
+};
 
 /* ══════════════ slaytlar ══════════════ */
 const SL=[];
 const add=(title,html,notes,use)=>SL.push({title,html,notes,use});
 
+add('Takım',`
+<p class="kicker" style="text-align:center;margin-bottom:10px">Takım</p>
+<h2 style="text-align:center;font-size:46px;margin-bottom:2px">Büke</h2>
+<div class="body">
+  <div class="team">
+    <div class="card mem">
+      <div class="ph"><img src="${PH.melih}" alt="Melih Ekizce"></div>
+      <div class="nm">Melih Ekizce</div>
+      <div class="un">İzmir Yüksek Teknoloji Enstitüsü</div>
+      <div class="dp">Bilgisayar Mühendisliği</div>
+      <div class="deg on"><i></i>Yüksek Lisans · devam ediyor</div>
+    </div>
+    <div class="card mem">
+      <div class="ph"><img src="${PH.eren}" alt="Mustafa Eren Işıktaşlı"></div>
+      <div class="nm">Mustafa Eren Işıktaşlı</div>
+      <div class="un">Yıldız Teknik Üniversitesi</div>
+      <div class="dp">Bilgisayar Mühendisliği</div>
+      <div class="deg on"><i></i>Yüksek Lisans · devam ediyor</div>
+    </div>
+    <div class="card mem">
+      <div class="ph"><img src="${PH.serhat}" alt="Serhat Özdemir"></div>
+      <div class="nm">Serhat Özdemir</div>
+      <div class="un">Dokuz Eylül Üniversitesi</div>
+      <div class="dp">Bilgisayar Mühendisliği</div>
+      <div class="deg"><i></i>Lisans</div>
+    </div>
+    <div class="card mem">
+      <div class="ph"><img src="${PH.mert}" alt="Mert Arı"></div>
+      <div class="nm">Mert Arı</div>
+      <div class="un">Bursa Uludağ Üniversitesi</div>
+      <div class="dp">Bilgisayar Mühendisliği</div>
+      <div class="deg"><i></i>Lisans</div>
+    </div>
+  </div>
+  <div class="card tight" style="flex:0 0 auto"><p class="sub" style="text-align:center">TEKNOFEST 2026 · Hepsiburada — Yapay Zekâ Destekli Lojistik Anahat Optimizasyonu · <b>Takım No 997307</b></p></div>
+</div>`,
+`Merhaba. Takım Büke dört kişiyiz ve dördümüz de Bilgisayar Mühendisliği okuyoruz.
+Melih Ekizce — İzmir Yüksek Teknoloji Enstitüsü, yüksek lisans devam ediyor. Mustafa Eren Işıktaşlı — Yıldız Teknik Üniversitesi, yüksek lisans devam ediyor. Serhat Özdemir — Dokuz Eylül Üniversitesi, lisans. Mert Arı — Bursa Uludağ Üniversitesi, lisans.
+Takım numaramız 997307. Bu slaytta uzun durmayacağım; hemen çözümümüze geçiyorum.`,
+`<b>Kullan:</b> Açılış slaytı — 15 saniyeden fazla kalmayın, isimleri soldan sağa okuyup geçin. <b>Not:</b> turuncu rozet yüksek lisansın hâlen sürdüğünü gösterir; sorulursa tek cümlede geçin. <b>Ezberlenecek:</b> 4 kişi · Bilgisayar Mühendisliği · takım no 997307.`);
+
 add('Kapak',`
 <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <img class="hblogo" src="${PH.hb}" alt="Hepsiburada">
   <p class="kicker">TEKNOFEST 2026 · Hepsiburada · Final Aşaması</p>
   <h1>Yapay Zekâ Destekli<br>Lojistik Anahat Optimizasyonu</h1>
   <p class="lead" style="max-width:70ch">Bir haftalık talebi, tüm operasyonel kısıtlara uyarak en düşük toplam maliyetle taşıyan dakika çözünürlüklü sevkiyat planı.</p>
@@ -503,31 +1756,31 @@ Sonucu baştan söyleyeyim: temel plandan yüzde 31,84 daha ucuz bir plan ürett
 `<b>Kullan:</b> Açılış. Dört KPI kartını tek tek gösterin, ekranda 20 saniyeden fazla kalmayın. <b>Ezberlenecek:</b> 11,23 M₺ · −%31,84 · 0 ihlal · 665 araç.`);
 
 add('Problem',`
-<p class="kicker">Problem</p><h2>Ne çözüyoruz</h2>
+<p class="kicker">Problem</p><h2>Ne çözüyoruz <span class="pophint">kartlara ve maddelere tıklayın</span></h2>
 <div class="body">
   <div class="g3">
-    <div class="card kpi"><div class="v sm blue">18</div><div class="l">Transfer merkezi</div></div>
-    <div class="card kpi"><div class="v sm blue">306</div><div class="l">Yönlü hat (18×17 tam matris)</div></div>
-    <div class="card kpi"><div class="v sm blue">289</div><div class="l">Geçmişte talep görülen OD çifti</div></div>
+    <div class="card kpi" data-pop="c18"><div class="v sm blue">18</div><div class="l">Transfer merkezi</div></div>
+    <div class="card kpi" data-pop="c306"><div class="v sm blue">306</div><div class="l">Yönlü hat (18×17 tam matris)</div></div>
+    <div class="card kpi" data-pop="c289"><div class="v sm blue">289</div><div class="l">Geçmişte talep görülen hat — 306'nın 289'u</div></div>
   </div>
   <div class="row grow">
     <div class="card" style="flex:1.15">
       <h3>Kısıtlar</h3>
       <ul class="tick">
-        <li><b>Elleçleme kapasitesi</b> — merkez başına günlük, 00:00'da sıfırlanır, gece yarısını aşan işlem <b>oransal</b> bölünür</li>
-        <li><b>Tır kapasitesi</b> — günlük toplam ziyaret; 7 merkezde <b>sıfır</b>; kiralık tırlar da tüketir</li>
-        <li><b>Kiralık filo</b> — 12 rota / 14 araç, talep olmasa da <b>her gün çıkmak zorunda</b>, uğrama ve dönüş yasak</li>
-        <li><b>SLA</b> — hat başına 1 veya 2 gün; aşılırsa desi × ⌈saat⌉ × 0,40 ₺</li>
+        <li data-pop="k-hand"><b>Elleçleme kapasitesi</b> — merkez başına günlük, 00:00'da sıfırlanır, gece yarısını aşan işlem <b>oransal</b> bölünür</li>
+        <li data-pop="k-tir"><b>Tır kapasitesi</b> — günlük toplam ziyaret; 7 merkezde <b>sıfır</b>; kiralık tırlar da tüketir</li>
+        <li data-pop="k-fleet"><b>Kiralık filo</b> — 12 rota / 14 araç, talep olmasa da <b>her gün çıkmak zorunda</b>, uğrama ve dönüş yasak</li>
+        <li data-pop="k-sla"><b>SLA</b> — hat başına 1 veya 2 gün; aşılırsa desi × ⌈saat⌉ × 0,40 ₺</li>
       </ul>
     </div>
     <div class="card" style="flex:1">
       <h3>Serbestlikler</h3>
       <ul class="tick ok">
-        <li>Spot araçlar <b>sınırsız sefer</b> yapabilir</li>
-        <li>Spot araçlar <b>uğrama (milk-run)</b> yapabilir — durak sayısına kural sınırı yok</li>
-        <li>Bir araca <b>farklı varışlı</b> yükler birlikte yüklenebilir</li>
-        <li>Zaman çözünürlüğü <b>dakika</b>; merkezler 24 saat çalışır, mesai kavramı yok</li>
-        <li>Teslim ufku aşabilir — <b>ceza ödeyip beklemek</b> meşru bir seçenek</li>
+        <li data-pop="s-trips">Spot araçlar <b>sınırsız sefer</b> yapabilir</li>
+        <li data-pop="s-milk">Spot araçlar <b>uğrama (milk-run)</b> yapabilir — durak sayısına kural sınırı yok</li>
+        <li data-pop="s-mix">Bir araca <b>farklı varışlı</b> yükler birlikte yüklenebilir</li>
+        <li data-pop="s-min">Zaman çözünürlüğü <b>dakika</b>; merkezler 24 saat çalışır, mesai kavramı yok</li>
+        <li data-pop="s-late">Teslim ufku aşabilir — <b>ceza ödeyip beklemek</b> meşru bir seçenek</li>
       </ul>
     </div>
   </div>
@@ -539,13 +1792,16 @@ Ve kritik bir nokta: gizli bir SLA tavanı yok. Yani ceza ödemek yasak değil, 
 `<b>Kullan:</b> Kısıt/serbestlik ikilisini yan yana gösterin — sağdaki liste ilerideki Stage 2 ve Stage 3'ün kural dayanağı. <b>Vurgula:</b> "durak sayısına kural sınırı yok" ve "gizli SLA tavanı yok".`);
 
 add('Maliyet modeli',`
-<p class="kicker">Kurallar</p><h2>Maliyet modeli ve zaman aritmetiği</h2>
-<div class="body"><div class="card" style="flex:1"><div class="chart" data-c="flow"></div></div>
-<div class="g3">
-  <div class="card tight"><h3>Yuvarlama</h3><p class="sub">Tüm süreler bir üst tam dakikaya. 0,92 sa = 55,2 dk → <b class="brand">56 dk</b>. Elleçleme 0,01 dk/desi, yükleme ve indirme <b>ayrı ayrı</b>.</p></div>
-  <div class="card tight"><h3>Gece yarısı</h3><p class="sub">23:30'da başlayan 10.000 desilik elleçleme → <b class="brand">3.000 / 7.000</b> oransal bölünür, iki günün kotasından düşer.</p></div>
-  <div class="card tight"><h3>SLA</h3><p class="sub">Gecikme bir üst tam saate. 6.000 desi 1 sa geç → <b class="brand">2.400 ₺</b>. Konsolidasyondaki bekleme de dâhil.</p></div>
-</div></div>`,
+<p class="kicker">Kurallar</p><h2>Maliyet modeli ve zaman aritmetiği <span class="pophint">iki kart da tıklanabilir</span></h2>
+<div class="body" style="gap:12px">
+  <div class="card tight" style="flex:0 0 auto" data-pop="k-cost"><div class="chart" data-c="formula" style="height:168px"></div></div>
+  <div class="card tight" style="flex:1" data-pop="k-use"><div class="chart" data-c="flow"></div></div>
+  <div class="g3" style="flex:0 0 auto">
+    <div class="card tight"><h3>Yuvarlama</h3><p class="sub">Tüm süreler <b>bir üst tam dakikaya</b>. 0,92 sa = 55,2 dk → <b class="brand">56 dk</b>. Elleçleme 0,01 dk/desi; yükleme ve indirme <b>ayrı ayrı</b> sayılır.</p></div>
+    <div class="card tight"><h3>Gece yarısı</h3><p class="sub">23:30'da başlayan 10.000 desilik elleçleme 100 dk sürer → kota <b class="brand">3.000 / 7.000</b> oransal bölünür, iki günün kotasından düşer.</p></div>
+    <div class="card tight"><h3>SLA cezası</h3><p class="sub">Gecikme <b>bir üst tam saate</b>. 6.000 desi 1 sa geç → <b class="brand">2.400 ₺</b>. Konsolidasyon için beklemek de gecikme sayılır.</p></div>
+  </div>
+</div>`,
 `Maliyet iki parçadan oluşuyor: araç maliyeti ve SLA cezası.
 Araç maliyetindeki kritik tanım "kullanım süresi". Jüri bunu üç ayrı soruda netleştirdi: kullanım süresi ilk yükleme başlangıcından son indirme bitişine kadar tek sürekli pencere. Bekleme de elleçleme de dâhil. Yani bir aracı yolda tutmak kadar, onu merkezde bekletmek de para.
 SLA saati talebin tamamlanma anında — dokuzda veya on yedide — başlıyor, nihai varış merkezindeki elleçleme bittiğinde duruyor. Aradaki her şey sayılıyor.
@@ -553,19 +1809,19 @@ Alttaki üç kutu jürinin verdiği birebir sayısal örnekler. Bunların üçü
 `<b>Kullan:</b> Akış şemasını soldan sağa parmakla takip edin. <b>Vurgula:</b> "kullanım süresi = tek sürekli pencere". <b>Ezberlenecek:</b> 55,2 → 56 · 3.000/7.000 · 2.400 ₺.`);
 
 add('Veri',`
-<p class="kicker">Veri</p><h2>66.024 satır geçmiş, 179 gün, 8 veri seti</h2>
+<p class="kicker">Veri</p><h2>66.024 satır geçmiş, 179 gün, 8 veri seti <span class="pophint">kartlara tıklayın</span></h2>
 <div class="body">
-  <div class="card" style="flex:1.25"><h3>Günlük toplam desi · Ocak–Haziran 2026</h3><div class="chart" data-c="history"></div></div>
+  <div class="card" style="flex:1.25" data-pop="d-hist"><h3>Günlük toplam desi · Ocak–Haziran 2026</h3><div class="chart" data-c="history"></div></div>
   <div class="row" style="flex:1">
-    <div class="card tight" style="flex:1.1"><h3>Veri işleme ve eleme</h3><div class="chart" data-c="clean"></div></div>
+    <div class="card tight" style="flex:1.1" data-pop="d-clean"><h3>Veri işleme ve eleme</h3><div class="chart" data-c="clean"></div></div>
     <div class="col" style="flex:.9">
       <div class="g2">
-        <div class="card kpi tight"><div class="v sm blue">179</div><div class="l">Gün geçmiş veri</div></div>
-        <div class="card kpi tight"><div class="v sm blue">23</div><div class="l">Dışlanan tarih</div></div>
+        <div class="card kpi tight" data-pop="d-179"><div class="v sm blue">179</div><div class="l">Gün geçmiş veri</div></div>
+        <div class="card kpi tight" data-pop="d-23"><div class="v sm blue">23</div><div class="l">Dışlanan tarih</div></div>
       </div>
-      <div class="card tight" style="flex:1"><h3>Kritik nokta</h3>
-        <p class="sub">Dışlama <b>yalnız eğitim verisine</b> uygulanır — hedef günler asla elenmez. Dışlama listesi bilerek yalnız <b>Ocak–Mayıs</b>'ı kapsar; 29–30 Haziran zaten tahmin ufkunun içindedir.</p>
-        <p class="sub" style="margin-top:8px">Yapmadıklarımız: outlier temizleme, log dönüşümü, ölçekleme, smoothing, trend/mevsim ayrıştırma, harici ML kütüphanesi. Veri düzenli ve tek bir güçlü mevsimsellik tarafından yönetiliyor.</p>
+      <div class="card tight" style="flex:1" data-pop="d-crit"><h3>Kritik nokta</h3>
+        <p class="sub">Dışlama <b>yalnız eğitim verisine</b> uygulanır — hedef günler asla elenmez.</p>
+        <p class="sub" style="margin-top:8px">Outlier temizleme, log dönüşümü, ölçekleme, smoothing, trend/mevsim ayrıştırma ve harici ML kütüphanesi <b>yok</b>.</p>
       </div>
     </div>
   </div>
@@ -577,12 +1833,12 @@ Sağda veri temizleme var. Eğitim verisinden 23 tarihi dışlıyoruz: 15 resmî
 `<b>Kullan:</b> Ay sonu noktalarını turuncu daire olarak gösterin, beşini tek tek sayın. <b>Vurgula:</b> "beş ayda beş kez, istisnasız". <b>Ezberlenecek:</b> 66.024 satır · 179 gün · 23 dışlanan tarih.`);
 
 add('Tahmin modeli',`
-<p class="kicker">Talep tahmini</p><h2>İki katman: haftagünü tabanı × takvim çarpanı</h2>
+<p class="kicker">Talep tahmini</p><h2>İki katman: haftagünü tabanı × takvim çarpanı <span class="pophint">iki grafik de tıklanabilir</span></h2>
 <div class="body">
   <div class="card tight"><pre>tahmin = <b>DOW_medyan_tabanı</b>(çıkış, varış, slot, haftagünü; k=4, tatil/ay sonu hariç)  ×  <b>takvim_çarpanı</b>(gün)</pre></div>
   <div class="g2 grow">
-    <div class="card"><h3>Ölçülmüş takvim çarpanları</h3><div class="chart" data-c="cal"></div></div>
-    <div class="card"><h3>Tahminimiz vs sıradan bir gün</h3><div class="chart" data-c="fc"></div></div>
+    <div class="card" data-pop="t-cal"><h3>Ölçülmüş takvim çarpanları</h3><div class="chart" data-c="cal"></div></div>
+    <div class="card" data-pop="t-fc"><h3>Tahminimiz vs sıradan bir gün</h3><div class="chart" data-c="fc"></div></div>
   </div>
 </div>`,
 `Model iki katmanlı ve kasten sade.
@@ -675,12 +1931,14 @@ Ama bir duvara toslıyor: aynı hatta birleşecek eş bulamadığınızda yapabi
 `<b>Kullan:</b> Kısa tutun, 45 saniye. Bu aşama basit — asıl hikâye Stage 2. <b>Ezberlenecek:</b> 177 araç silindi · −1,80 M₺.`);
 
 add('Stage 2',`
-<p class="kicker">Stage 2 · en büyük kazanç</p><h2>Milk-run — k ayrı aracın işini tek araca bindir</h2>
+<p class="kicker">Stage 2 · en büyük kazanç</p><h2>Milk-run — k ayrı aracın işini tek araca bindir <span class="pophint">grafiklere tıklayın</span></h2>
 <div class="body"><div class="row grow">
-  <div class="card" style="flex:1"><h3>Arama</h3><div class="chart" data-c="milkf"></div>
-    <p class="sub" style="margin-top:8px">Aynı çıkıştan aynı anda kalkan 2–4 aracı <b>tek fiziksel araca</b> zincirler. Segment sayısı sabit kalır (1.092) — zincir yeni bacak yaratmaz.</p></div>
+  <div class="card" style="flex:1" data-pop="s2-arama"><h3>Arama uzayı — ne denendi, ne kaldı</h3>
+    <div class="chart" data-c="milkf"></div></div>
   <div class="col" style="flex:1">
-    <div class="card"><h3>Zincir dağılımı</h3><div class="chart" data-c="chains"></div></div>
+    <div class="card" data-pop="s2-zincir"><h3>Sonuç — 693 aracın kaçı zincir</h3><div class="chart" data-c="chains"></div></div>
+    <div class="card tight"><p class="sub"><b>Zincir:</b> aynı merkezden aynı dakikada kalkan 2–4 ayrı aracın işi, tek fiziksel araca bindirilir. Araç sırayla uğrar, her durakta o merkeze ait yükü bırakır.</p>
+      <p class="sub" style="margin-top:7px"><b class="ok">Kimlik:</b> 1.092 − 626 + 227 = <b>693 araç</b>. Segment sayısı 1.092'de <b>sabit</b> — zincir yeni bacak yaratmaz, var olanları birleştirir.</p></div>
     <div class="card kpi tight"><div class="v sm">11.313.338,29 ₺</div><div class="l">Toplam maliyet</div><div class="d ok">−3.366.846,56 ₺ · −%22,9</div></div>
   </div>
 </div></div>`,
@@ -693,7 +1951,7 @@ Bunun kural dayanağı jüri soru-cevabında açık: "Spot araçlar için birden
 `<b>Kullan:</b> Hunide 96.369 → 227 kontrastını vurgulayın. Donut'ta 4 duraklı 72 zinciri gösterin. <b>Vurgula:</b> "segment sabit, araç düşüyor" ve jüri alıntısı. <b>Ezberlenecek:</b> 227 zincir · −3,37 M₺ · 693 araç.`);
 
 add('Stage 3',`
-<p class="kicker">Stage 3</p><h2>Rota ortasında yük alma (Tier A)</h2>
+<p class="kicker">Stage 3</p><h2>Rota ortasında yük alma (Tier A) <span class="pophint">arama kartına tıklayın</span></h2>
 <div class="body"><div class="row grow">
   <div class="card" style="flex:1"><h3>Fikir</h3>
     <p class="lead" style="font-size:16px">Zincir bir ara durakta sadece indirmesin — oradan kalkacak yükü de alsın. Alınan yükün varışı, rotanın <b>zaten uğradığı</b> bir durak olmak zorunda: rota topolojisi hiç değişmez.</p>
@@ -703,10 +1961,10 @@ depart_after = unload_end + elleçleme(alınan)  <b>← araç bundan kalkar</b><
     <p class="sub" style="margin-top:8px">İki zaman damgasını karıştırmak sessiz bir hata olurdu. İnen kargo indirmesi bittiği anda teslim edilmiştir; sonraki yükleme aracı geciktirir ama <b>teslimatı geciktirmez</b>. Prototipte tam bu hata yapıldı; <b class="brand">hakem yakaladı</b>.</p>
   </div>
   <div class="col" style="flex:.85">
-    <div class="card"><h3>Arama</h3><div class="chart" data-c="pickf"></div></div>
+    <div class="card" data-pop="s3-pickup"><h3>Arama — 135.660 çiftten 28 hamleye</h3><div class="chart" data-c="pickf"></div></div>
     <div class="g2">
-      <div class="card kpi tight"><div class="v sm">28</div><div class="l">Silinen araç</div></div>
-      <div class="card kpi tight"><div class="v sm">65.754</div><div class="l">Taşınan desi</div></div>
+      <div class="card kpi tight"><div class="v sm">28</div><div class="l">Plandan silinen araç</div></div>
+      <div class="card kpi tight"><div class="v sm">65.754</div><div class="l">Yol üstünden alınan desi</div></div>
     </div>
     <div class="card kpi tight"><div class="v sm brand">11.232.476,73 ₺</div><div class="l">Yayınlanan plan</div><div class="d ok">−80.861,55 ₺</div></div>
   </div>
@@ -719,11 +1977,11 @@ Soldaki kod kutusu önemli. Bir yük alma durağında iki ayrı zaman damgası v
 `<b>Kullan:</b> Jüri alıntısını (x+y) sesli okuyun — bu aşamanın meşruiyeti oradan geliyor. Kod kutusunu gösterin. <b>Ezberlenecek:</b> 135.660 çift → 28 kabul · −80.862 ₺.`);
 
 add('Filo',`
-<p class="kicker">Etki</p><h2>Filo yarıya indi, doluluk ikiye katlandı</h2>
+<p class="kicker">Etki</p><h2>Filo yarıya indi, doluluk ikiye katlandı <span class="pophint">üç grafiğin üçü de tıklanabilir</span></h2>
 <div class="body"><div class="g3 grow">
-  <div class="card"><h3>Fiziksel araç sayısı</h3><div class="chart" data-c="fleet"></div></div>
-  <div class="card"><h3>Doluluk kümülatif dağılımı</h3><div class="chart" data-c="fill"></div></div>
-  <div class="card"><h3>Araç türü karması</h3><div class="chart" data-c="mix"></div></div>
+  <div class="card" data-pop="f-fleet"><h3>Fiziksel araç sayısı</h3><div class="chart" data-c="fleet"></div></div>
+  <div class="card" data-pop="f-fill"><h3>Doluluk kümülatif dağılımı</h3><div class="chart" data-c="fill"></div></div>
+  <div class="card" data-pop="f-mix"><h3>Araç türü karması</h3><div class="chart" data-c="mix"></div></div>
 </div>
 <div class="chips">
   <span class="chip on">%30 altındaki spot araç: 480 → 30</span>
@@ -740,24 +1998,10 @@ Tır sayısı 99'da sabit — bilinçli. Tır kapasitesi kıt bir kaynak, yedi m
 `<b>Kullan:</b> Üç grafiği tek cümlede bağlayın: "daha az araç, daha dolu araç, daha doğru araç". <b>Ezberlenecek:</b> 480 → 30 · %48 → %79 · Tır 99 sabit.`);
 
 add('Hakem',`
-<p class="kicker">Kalite kapıları</p><h2>Hakem simülatörü — bağımsız ikinci uygulama</h2>
-<div class="body"><div class="row grow">
-  <div class="card" style="flex:.95"><h3>Hakemin yeniden hesapladığı 17 kural</h3><div class="chart" data-c="rules"></div></div>
-  <div class="col" style="flex:1.05">
-    <div class="card tight"><h3>Bağımsızlık</h3><p class="sub">Planlayıcıdan tamamen ayrı yazıldı. Optimizatörün iç durumunu <b>hiç görmez</b> — yalnızca çıktı tablolarını ve ham veriyi okur. Dolayısıyla optimizatör ile hakem arasındaki bir anlaşmazlık <b>gerçek bir hatadır</b>.</p></div>
-    <div class="card tight"><h3>Uzlaşma kapısı</h3><p class="sub">Aramanın kendi aritmetiğiyle topladığı tasarruf ile hakemin ölçtüğü fark, <b>kuruşun milyonda birine kadar</b> aynı sayı olmak zorunda.</p>
-      <p class="sub" style="margin-top:6px">Stage 3 prototipindeki <b class="brand">üç hatanın üçünü de</b> bu kapı yakaladı: kiralık rotayı hedef almak, yanlış SLA zaman damgası, yükün hedefini geçmesi. Başka hiçbir kontrol fark etmiyordu.</p></div>
-    <div class="card tight"><h3>Diğer kapılar</h3><ul class="tick ok" style="gap:6px">
-      <li><b>Aşama kapıları</b> — Stage 2 için 20, Stage 3 için 23 birebir sabit; sessiz kazanç kaybı yayını durdurur</li>
-      <li><b>Determinizm</b> — karıştırılmış girdiyle plan birebir aynı</li>
-      <li><b>Artifact doğrulama</b> — yayından önce Excel geri okunur, şema doğrulanır, hakem yeniden koşar</li></ul></div>
-    <div class="g3">
-      <div class="card kpi tight"><div class="v sm ok">592</div><div class="l">Regresyon testi</div></div>
-      <div class="card kpi tight"><div class="v sm ok">17</div><div class="l">Hakem kuralı</div></div>
-      <div class="card kpi tight"><div class="v sm ok">0</div><div class="l">İhlal</div></div>
-    </div>
-  </div>
-</div></div>`,
+<p class="kicker">Kalite kapıları</p><h2>Hakem simülatörü — bağımsız ikinci uygulama <span class="pophint">detay için tıklayın</span></h2>
+<div class="body">
+  <div class="card grow" data-pop="q-hakem"><h3>Hakemin sıfırdan yeniden hesapladığı 17 kural</h3><div class="chart" data-c="rules"></div></div>
+</div>`,
 `Bu projede tek bir sayıya bile "hesapladım, doğrudur" demiyoruz.
 Hakem simülatörü planlayıcıdan tamamen ayrı yazılmış ikinci bir uygulama. Optimizatörün iç durumunu hiç görmüyor — sadece çıktı Excel'ini ve ham veriyi okuyup maliyeti ve 17 kuralı sıfırdan yeniden hesaplıyor. Dolayısıyla optimizatör ile hakem arasındaki bir anlaşmazlık gerçek bir hatadır, ve teslimden önce yakalanır.
 Optimizatör daha yazılmamışken bile iki optimizatör-sınıfı hatayı yakaladı.
@@ -765,126 +2009,88 @@ Optimizatör daha yazılmamışken bile iki optimizatör-sınıfı hatayı yakal
 Bunun üstüne 592 regresyon testi, determinizm kontrolü ve artifact doğrulaması var: yayından önce Excel geri okunuyor, şema doğrulanıyor, hakem yeniden çalıştırılıyor.`,
 `<b>Kullan:</b> "İç durumunu hiç görmez" cümlesini vurgulayın — bağımsızlık iddiasının özü bu. <b>Ezberlenecek:</b> 17 kural · 592 test · kuruşun milyonda biri.`);
 
-add('Final uyumu',`
-<p class="kicker">Final Backtest</p><h2>Teknik gereksinimlere uyum</h2>
-<div class="body"><div class="g2 grow">
-  <div class="card"><h3>Sözleşmeler</h3><table>
-    <tr><th>Bölüm</th><th>Gereksinim</th><th>Karşılık</th></tr>
-    <tr><td class="mono">2</td><td>Tahmin çağrılmaz</td><td class="ok">import grafiğinde yok</td></tr>
-    <tr><td class="mono">3</td><td>Argümansız <span class="mono">main.py</span></td><td class="ok">etkileşim yok</td></tr>
-    <tr><td class="mono">4</td><td>Env değişkeni <b>veya</b> sabit yol</td><td class="ok">ikisi de</td></tr>
-    <tr><td class="mono">5</td><td>16 kolon birebir</td><td class="ok">yazım sonrası geri okunup doğrulanır</td></tr>
-    <tr><td class="mono">6</td><td>Manifest</td><td class="ok">var</td></tr>
-    <tr><td class="mono">7</td><td>Gömülü tarih yok</td><td class="ok">ufuk girdiden türetilir</td></tr>
-    <tr><td class="mono">8</td><td>Yalnız entegrasyon</td><td class="ok">0 farklı hücre</td></tr>
-    <tr><td class="mono">9</td><td>requirements.txt · internet yok</td><td class="ok">pandas + openpyxl</td></tr>
-    <tr class="hi"><td class="mono">10</td><td>100 dk · çıktı üretilmeli · kod 0</td><td class="brand">iki ayrı güvenlik</td></tr>
-  </table></div>
-  <div class="col">
-    <div class="card"><h3>Bölüm 10 güvenlikleri</h3><ul class="tick">
-      <li><b>Kademeli yayın</b> — geçerli ilk plan (Stage 0) elde edilir edilmez diske yazılır; her kabul edilen aşama dosyayı <b>atomik</b> günceller. Süreç Stage 2 ortasında öldürüldüğünde bile diskte şemaya birebir uyan geçerli bir plan bulundu.</li>
-      <li><b>Sert süre sınırı</b> — her arama aşaması ayrı daemon iş parçacığında, kalan bütçeyle çalışır. Sınır dolarsa aşama terk edilir, önceki plan korunur, süreç <b>çıkış kodu 0</b> ile biter.</li>
-    </ul></div>
-    <div class="card" style="flex:1"><h3>Ölçülen çalışma süresi</h3><div class="chart" data-c="runtime"></div></div>
-  </div>
-</div></div>`,
-`Final aşamasında kodumuz bize önceden bildirilmeyen bir haftalık veri setiyle çalıştırılacak. Teknik gereksinimler dokümanı 11 bölüm ve her bölüm test edilebilir bir gereksinim tanımlıyor.
-Solda hepsinin karşılığı var. Birkaçını vurgulayayım: Bölüm 2 tahmin modülünün çağrılmamasını istiyor — main.py'nin import grafiğini taradık, forecast modülüne hiçbir yoldan ulaşılamıyor. Bölüm 5 kolon şemasına birebir uyum istiyor — dosyayı yazdıktan sonra diskten geri okuyup şemayı yeniden doğruluyor, ancak ondan sonra atomik olarak yerine koyuyoruz.
-Sağdaki iki güvenlik Bölüm 10 için. Bölüm 10 üç şeyi hatalı çalıştırma sayıyor: sıfırdan farklı çıkış kodu, 100 dakikayı aşmak, çıktı üretmemek.
-Birincisi kademeli yayın: geçerli ilk plan elde edilir edilmez dosya yazılıyor. Süreci Stage 2'nin ortasında bilerek öldürdük — diskte 3.710 satırlık, şemaya birebir uyan geçerli bir plan vardı.
-İkincisi sert süre sınırı: her arama aşaması ayrı bir daemon thread'de kalan bütçeyle çalışıyor. Sınır dolarsa aşama terk ediliyor ve süreç normal biçimde bitiyor.
-Referans veri setinde uçtan uca süremiz 150 saniye — tavanın kırkta biri.`,
-`<b>Kullan:</b> Tabloyu tek tek okumayın, sadece 2 / 5 / 8 / 10 satırlarını gösterin. <b>Vurgula:</b> "süreci bilerek öldürdük". <b>Ezberlenecek:</b> ~150 sn vs 100 dk · 0 farklı hücre.`);
-
-add('Genelleştirilebilirlik',`
-<p class="kicker">Bölüm 7</p><h2>Farklı hafta, farklı hacim — ölçüldü</h2>
-<div class="body">
-  <div class="card"><table>
-    <tr><th>Senaryo</th><th>Ufuk</th><th class="n">Talep</th><th class="n">Desi</th><th class="n">Süre</th><th class="n">İhlal</th><th class="n">Kazanç</th></tr>
-    <tr class="hi"><td>Referans (teslim edilen)</td><td>29.06 – 05.07.2026</td><td class="n">4.046</td><td class="n">4.977.975</td><td class="n">150 sn</td><td class="n ok">0</td><td class="n ok">−%31,8</td></tr>
-    <tr><td>Farklı yıl + 4 günlük ufuk + <span class="mono">REQ_</span> kimlik + <span class="mono">HH:MM</span></td><td>25.05 – 28.05.2025</td><td class="n">1.808</td><td class="n">1.214.316</td><td class="n">171 sn</td><td class="n ok">0</td><td class="n ok">−%45,8</td></tr>
-    <tr><td>Farklı hafta + %125 hacim + <span class="mono">HH:MM:SS</span></td><td>02.09 – 08.09.2026</td><td class="n">2.925</td><td class="n">6.222.428</td><td class="n">143 sn</td><td class="n ok">0</td><td class="n ok">−%28,0</td></tr>
-  </table></div>
-  <div class="row grow"><div class="card" style="flex:1"><h3>%250 hacim — fizikî olarak çözümsüz veri seti</h3>
-    <p class="sub">İstanbul, 01.07.2026: o günün yükleme + indirme talebi <b>395.825 desi</b>, günlük kapasite <b>394.786 desi</b>. Ağ referans hafta için zaten neredeyse dolu.</p>
-    <ul class="tick"><li>Stage 0 planı üretildi ve yayınlandı — <b>çökme yok</b></li>
-    <li>69 elleçleme ihlalinin tamamı talebin o gün o merkezde kapasiteyi aşmasından — <b>hiçbir planla sağlanamaz</b></li>
-    <li>Stage 1 adayı bu nedenle <b>doğru biçimde reddedildi</b>, temel plan korundu</li>
-    <li>Çıktı Bölüm 5 şemasına birebir uydu</li></ul></div>
-    <div class="card tight" style="flex:.6"><h3>Kendi kendini denetleme</h3>
-      <p class="sub"><span class="mono">tools/make_test_input.py</span> mevcut talep tablosundan sentetik girdi türetir: tarih kaydırma, hacim ölçekleme, ufuk kısaltma, kimlik ve saat biçimi değiştirme.</p>
-      <p class="sub" style="margin-top:8px"><span class="mono">tools/verify_output.py</span> üretilen planı diskten geri okuyup <b>bağımsız olarak</b> hakemden geçirir. Üç senaryoda da beyan/hakem farkı <b>0,0000 ₺</b>.</p></div>
-  </div>
-</div>`,
-`Bölüm 7 kodun herhangi bir takvim haftası için çalışmasını istiyor. Bunu iddia etmek yetmez, kendimiz test ettik.
-Üç senaryo ölçtük. Referansın yanı sıra: farklı bir yıl, 4 günlük kısaltılmış ufuk, yüzde 35 hacim, REQ_ önekli kimlikler ve HH:MM saat biçimi. Ve ayrı olarak farklı bir hafta, yüzde 125 hacim, HH:MM:SS biçimi. Üçünde de çıkış kodu sıfır, sıfır ihlal, ve beyan ettiğimiz maliyet ile hakemin hesabı arasındaki fark sıfır virgül sıfır lira.
-Alttaki kutu dürüst bir not. Yüzde 250 hacimli sentetik bir veri setinde 69 elleçleme ihlali gördük. Ama bu bir kod kusuru değil: İstanbul'un 1 Temmuz'daki elleçleme talebi 395.825 desi, günlük kapasitesi 394.786. Ağ zaten neredeyse dolu. Hacim bu seviyenin belirgin biçimde üzerine çıkarsa elleçleme kısıtı hiçbir plan tarafından sağlanamaz.
-Önemli olan şu: kod çökmedi, geçerli plan üretti ve yayınladı, ve Stage 1 adayını doğru biçimde reddetti.`,
-`<b>Kullan:</b> Tabloyu gösterin, %250 kutusunu dürüstlük anı olarak sunun — jüri sorarsa hazırlıksız yakalanmayın. <b>Ezberlenecek:</b> 395.825 vs 394.786 desi.`);
-
-add('Çıkmaz sokaklar',`
-<p class="kicker">Ölçülmüş</p><h2>Denedik, ölçtük, reddettik</h2>
-<div class="body"><div class="card" style="flex:1"><table>
-  <tr><th>Fikir</th><th>Ölçüm</th><th>Karar</th></tr>
-  <tr><td>Düşük dolulukta aynı-hat birleştirme</td><td class="mono">0 ₺ kazanç — 46 aracın 46'sı da o gün o hattın tek aracı</td><td class="brand">Duvar; Stage 3 farklı yönden aştı</td></tr>
-  <tr><td>Tır'ı milk-run zincirine katmak</td><td class="mono">+18.100 ₺ DAHA KÖTÜ. Kamyon aynı 12.000 kapasitede Tır'ı eziyor (318,25 vs 487,50 ₺/sa); kârlı Tır adaylarının %93,6'sı kapasitesi-0 yedi merkez yüzünden ölüyor</td><td class="brand">Reddedildi</td></tr>
-  <tr><td>5 duraklı zincir (kaba kuvvet)</td><td class="mono">13,5 dk CPU + 1,3 GB'dan sonra sonuç yok — C(n,5)=254.992 alt küme × 120 sıra</td><td class="brand">Budama gerekir</td></tr>
-  <tr><td>Greedy yerine tam eşleme (max-weight matching)</td><td class="mono">47.796 ₺ — ama çoklu-durak geçişinin <b>alternatifi</b>, toplamı değil; mevcut çözüm bunu ~476 bin ₺ ile aşıyor</td><td class="brand">Üstü kapatıldı</td></tr>
-  <tr><td>Tahmin bias'ını düzeltme (4 ayrı yaklaşım)</td><td class="mono">Hedef sahte: +%28,3 bias, n=2 ile uydurulan çarpanın artefaktı. LOO ile teslim modelinin bias'ı <b>−0,0573</b>. Dört adayın dördü de dışsal örneklemde başarısız</td><td class="brand">Reddedildi</td></tr>
-  <tr><td>En kötü talepleri hedefleyerek SLA azaltma</td><td class="mono">Uzun kuyruk — en kötü 20 talep cezanın yalnız ~%15'i</td><td class="brand">Verimsiz</td></tr>
-</table></div>
-<div class="card tight"><p class="sub">Bu tablo bir başarısızlık listesi değil — <b>arama yaptığımızın kanıtı</b>. Her satır ölçüldü ve sayıyla reddedildi; hiçbiri sezgiyle elenmedi.</p></div></div>`,
-`Bu slaytı özellikle koydum, çünkü bir optimizasyon çözümünün kalitesi sadece kabul ettiği fikirlerle değil, reddettikleriyle de ölçülür.
-Altı fikri denedik, ölçtük ve reddettik.
-En ilginç ikisi şunlar. Birincisi: düşük dolulukta aynı-hat birleştirme. Stage 2'den sonra kalan 46 yarı boş aracı birleştirmeyi denedik — kazanç tam olarak sıfır lira. Çünkü 46'sının 46'sı da o gün o hattın tek aracıydı; birleşecek eş yok. Stage 3 bu duvarı farklı bir yönden aştı: aynı hatta eş aramak yerine yükü oradan geçen bir zincire bindirdi.
-İkincisi: tırı zincire katmak. Kural engeli yok, kapasite tavanını 22 bin 400'e çıkarırdı. Ama ölçtük: 18 bin 100 lira daha kötü. Çünkü kamyon aynı 12 bin kapasitede tırı her koşulda eziyor — saatlik 318 lira karşı 487 — ve kârlı tır adaylarının yüzde 93,6'sı kapasitesi sıfır olan yedi merkez yüzünden ölüyor.
-Hiçbiri sezgiyle elenmedi. Hepsi ölçüldü.`,
-`<b>Kullan:</b> En fazla iki satırı sesli anlatın (0 ₺ ve +18.100 ₺), gerisi ekranda kalsın. <b>Vurgula:</b> "arama yaptığımızın kanıtı". <b>Ezberlenecek:</b> 0 ₺ · +18.100 ₺ · 318,25 vs 487,50 ₺/sa.`);
-
-add('Kapanış',`
-<p class="kicker">Kapanış</p><h2>Nerede duruyoruz</h2>
+add('Özet',`
+<p class="kicker">Kapanış</p><h2>Özet — ne yaptık, ne ölçtük</h2>
 <div class="body">
   <div class="g4">
-    <div class="card kpi tight"><div class="v sm brand">11,23 M₺</div><div class="l">Toplam maliyet · −%31,84</div></div>
-    <div class="card kpi tight"><div class="v sm ok">0</div><div class="l">Hakem ihlali</div></div>
-    <div class="card kpi tight"><div class="v sm">592/592</div><div class="l">Regresyon testi</div></div>
-    <div class="card kpi tight"><div class="v sm">~150 sn</div><div class="l">Uçtan uca çalışma</div></div>
+    <div class="card kpi tight"><div class="v sm brand">11,23 M₺</div><div class="l">Toplam maliyet</div><div class="d ok">−%31,84</div></div>
+    <div class="card kpi tight"><div class="v sm ok">0</div><div class="l">Hakem ihlali</div><div class="d" style="color:var(--dim)">her aşamada</div></div>
+    <div class="card kpi tight"><div class="v sm">665</div><div class="l">Fiziksel araç</div><div class="d ok">1.269 → 665</div></div>
+    <div class="card kpi tight"><div class="v sm">%79</div><div class="l">Ortalama spot doluluk</div><div class="d ok">%48 → %79</div></div>
   </div>
   <div class="row grow">
-    <div class="card" style="flex:1"><h3>Bu çözümü ayıran üç şey</h3><ul class="tick">
-      <li><b>Bağımsız hakem</b> — hiçbir sayıya güvenmiyoruz, her şey ikinci bir uygulamayla yeniden hesaplanıyor</li>
-      <li><b>Kural okuma disiplini</b> — kazancın büyük kısmı jürinin açıkça serbest bıraktığı ama çoğu takımın kullanmadığı iki cümleden geldi: sınırsız uğrama ve indir-yükle</li>
-      <li><b>Ölçülmüş reddetme</b> — altı fikir sezgiyle değil, sayıyla elendi</li>
-    </ul></div>
-    <div class="card" style="flex:.85"><h3>Sırada ne var</h3><ul class="tick">
-      <li>Tahmin bias'ı — ay sonu haftasında +%28,3, en yüksek değerli açık kalem</li>
-      <li>Yük alma <b>Tier B</b> — rotayı bir durak uzatır, bağımsız ölçüm ek ~66 bin ₺ gösterdi</li>
-      <li>5 duraklı zincir — budamalı (branch-and-bound) arama ile</li>
-      <li>Hub konsolidasyonu ve parametre taraması</li>
-    </ul></div>
+    <div class="card" style="flex:1.05"><h3>Çözümün yapısı</h3>
+      <ul class="tick">
+        <li><b>Talep tahmini</b> — iki katman: haftagünü medyan tabanı × ölçülmüş takvim çarpanı. Ay sonu ve tatiller ayrı rejim olarak modellendi; frozen backtest'te ay sonu haftasında WMAPE 0,5328 → <b>0,4464</b>.</li>
+        <li><b>Stage 0 · temel plan</b> — zorunlu kiralık filo önce doldurulur, tır ziyaret bütçesi çıkarılır, her hat-gün için araç kombinasyonları tam numaralandırılır. 1.269 araç, <b>16,48 M₺</b>.</li>
+        <li><b>Stage 1-2-3 · maliyet merdiveni</b> — aynı-hat onarımı (−1,80 M₺), milk-run zincirleri (−3,37 M₺), rota ortasında yük alma (−0,08 M₺). Her aşama bir öncekini girdi alır.</li>
+        <li><b>Bağımsız hakem</b> — 17 kural ve maliyet, ikinci bir uygulamayla sıfırdan yeniden hesaplanır. Bir aşama ancak hem taban hem aday <b>0 ihlalle</b> geçerse kabul edilir.</li>
+        <li><b>Final güvenlikleri</b> — kademeli atomik yayın ve sert süre sınırı; süreç yarıda kesilse bile diskte şemaya uyan geçerli bir plan kalır.</li>
+      </ul>
+    </div>
+    <div class="col" style="flex:.82">
+      <div class="card"><h3>Ölçülen sonuç</h3><table class="anim">
+        <thead><tr><th>Ölçüt</th><th class="n">Stage 0</th><th class="n">Nihai</th></tr></thead><tbody>
+        <tr class="hi"><td>Toplam maliyet</td><td class="n">16,48 M₺</td><td class="n">11,23 M₺</td></tr>
+        <tr><td>Fiziksel araç</td><td class="n">1.269</td><td class="n">665</td></tr>
+        <tr><td>Ortalama spot doluluk</td><td class="n">%48,02</td><td class="n">%79,03</td></tr>
+        <tr><td>%30 altı dolu spot araç</td><td class="n">480</td><td class="n">30</td></tr>
+        <tr><td>Hakem ihlali</td><td class="n ok">0</td><td class="n ok">0</td></tr>
+        </tbody></table></div>
+      <div class="card tight"><h3>Doğrulama</h3>
+        <div class="chips">
+          <span class="chip ok">592 / 592 regresyon testi</span>
+          <span class="chip ok">17 hakem kuralı</span>
+          <span class="chip ok">beyan/hakem farkı 0,0000 ₺</span>
+          <span class="chip">determinizm kontrolü</span>
+          <span class="chip">~150 sn uçtan uca</span>
+        </div>
+        <p class="sub" style="margin-top:9px">Farklı yıl, farklı hafta ve %125 hacimde de çıkış kodu 0, sıfır ihlal.</p>
+      </div>
+    </div>
   </div>
-  <p class="sub" style="text-align:center">Teşekkürler — sorularınızı bekliyoruz.</p>
 </div>`,
 `Toparlayayım.
-11 milyon 232 bin liralık bir plan ürettik — temel plandan yüzde 31,84 daha ucuz. Sıfır kural ihlali, 592 test, 150 saniye çalışma süresi.
-Bu çözümü ayıran üç şey var.
-Birincisi bağımsız hakem: hiçbir sayıya güvenmiyoruz, her şey ikinci bir uygulamayla sıfırdan yeniden hesaplanıyor.
-İkincisi kural okuma disiplini. Kazancımızın büyük kısmı jürinin soru-cevapta açıkça serbest bıraktığı iki cümleden geldi: "spot araçlarla sınırsız sefer ve uğrama yapabilirsiniz" ve "bir araçtan x indirilip y yüklenirse kapasiteden x artı y düşülür". Bu iki cümle 3 milyon 447 bin liralık kazancın kapısıydı.
-Üçüncüsü ölçülmüş reddetme: altı fikri sezgiyle değil, sayıyla eledik.
-Açık kalemlerimiz de var ve saklamıyoruz: tahmin bias'ı, Tier B yük alma, beş duraklı zincir.
-Teşekkürler, sorularınızı bekliyoruz.`,
-`<b>Kullan:</b> KPI şeridini tekrar gösterin — açılıştaki dört sayıyla simetri kurun. <b>Bitiriş cümlesi:</b> "iki cümle, 3,45 milyon lira". Soru-cevaba geçin.`);
+Çözüm dört katmandan oluşuyor. Önce talep tahmini: iki katmanlı, kasten sade bir model — haftagünü medyanı çarpı ölçülmüş takvim çarpanı. Sonra dört aşamalı maliyet merdiveni: temel plan, aynı-hat onarımı, milk-run zincirleri ve rota ortasında yük alma. Üçüncüsü bağımsız hakem: hiçbir sayıya güvenmiyoruz, her şey ikinci bir uygulamayla sıfırdan yeniden hesaplanıyor. Dördüncüsü final güvenlikleri: süreç yarıda kesilse bile diskte geçerli bir plan kalıyor.
+Ölçülen sonuç: 16 milyon 481 binden 11 milyon 232 bine, yüzde 31,84 düşüş. Araç sayısı 1.269'dan 665'e, ortalama doluluk yüzde 48'den 79'a. Yüzde 30'un altında dolu spot araç sayısı 480'den 30'a indi.
+Ve bunların hepsi sıfır kural ihlaliyle: 592 regresyon testi, 17 hakem kuralı, ve beyan ettiğimiz maliyet ile hakemin bağımsız hesabı arasında sıfır virgül sıfır lira fark.`,
+`<b>Kullan:</b> Açılıştaki dört sayıyla simetri kurun. Soldaki listeyi tek tek okumayın — beş maddeyi tek cümlede özetleyip sağdaki tabloya geçin. <b>Ezberlenecek:</b> 16,48 → 11,23 M₺ · 1.269 → 665 · %48 → %79 · 0 ihlal.`);
+
+add('Sorular',`
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <p class="kicker" style="margin-bottom:18px">Teşekkürler</p>
+  <h1 style="font-size:78px;margin-bottom:20px">Sorularınız</h1>
+  <p class="lead" style="max-width:56ch;text-align:center;font-size:18px">
+    Verinin, modelin ve planın her ayrıntısı için hazırız — arama uzayı, kural yorumları,
+    ölçülmüş çıkmaz sokaklar ve açık kalemler dâhil.</p>
+  <div class="chips" style="justify-content:center;margin-top:34px">
+    <span class="chip on">11,23 M₺ · −%31,84</span>
+    <span class="chip ok">0 hakem ihlali</span>
+    <span class="chip">665 fiziksel araç</span>
+    <span class="chip">592 / 592 test</span>
+    <span class="chip">~150 sn</span>
+  </div>
+  <p class="sub" style="margin-top:40px">Takım Büke · No 997307 — Melih Ekizce · Mustafa Eren Işıktaşlı · Serhat Özdemir · Mert Arı</p>
+</div>`,
+`Teşekkür ederiz. Sorularınızı bekliyoruz.
+Sunumda değinmediğimiz ama sorulursa cevaplamaya hazır olduğumuz konular var: arama uzayının nasıl budandığı, kural yorumlarımızın şartnamedeki dayanağı, ölçüp reddettiğimiz altı fikir, ve açık kalemlerimiz — tahmin bias'ı, Tier B yük alma ve beş duraklı zincir.`,
+`<b>Kullan:</b> Bu slaytta kalın; soru-cevap boyunca ekranda dursun. Rozetler jürinin akılda tutmasını istediğimiz beş sayı. <b>Not:</b> açık kalemler sorulursa dürüstçe söyleyin — bias +%28,3, Tier B ~66 bin ₺, 5 durak budama gerektiriyor.`);
 
 /* ══════════════ kurulum ══════════════ */
 const CH={ladder:chartLadder,history:chartHistory,cal:chartCal,fc:chartFc,bt:chartBt,
           fleet:chartFleet,chains:()=>chartChains('Stage 2'),fill:chartFill,mix:chartMix,
           milkf:chartMilkFunnel,pickf:chartPickFunnel,clean:chartClean,flow:chartFlow,
-          rules:chartRules,pickstop:chartPickStop,runtime:chartRuntime};
+          formula:chartFormula,rules:chartRules,pickstop:chartPickStop};
 
 const stage=document.getElementById('stage');
 SL.forEach((s,i)=>{
   const el=document.createElement('section');
   el.className='slide'; el.dataset.i=i; el.innerHTML=s.html;
+  if(s.title!=='Kapak'){                       /* kapakta zaten büyük logo var */
+    const lg=document.createElement('img');
+    lg.className='cnrlogo'; lg.src=PH.hb; lg.alt='Hepsiburada';
+    el.appendChild(lg);
+  }
   stage.appendChild(el);
 });
 document.querySelectorAll('.chart[data-c]').forEach(node=>{
@@ -897,13 +2103,25 @@ document.querySelectorAll('#tocl li').forEach(li=>li.onclick=()=>{go(+li.dataset
 
 let cur=0;
 const slides=[...document.querySelectorAll('.slide')];
+
+/* Aktif slaydın grafiklerini yeniden kur: SVG <animate> öğeleri ancak
+   yeniden yaratıldıklarında baştan çalışır. Böylece her slayta her
+   dönüşte grafikler yeniden canlanır. */
+function replay(el){
+  el.querySelectorAll('.chart[data-c]').forEach(node=>{
+    const fn=CH[node.dataset.c];
+    if(fn) node.innerHTML=fn();
+  });
+}
 function go(i){
   cur=Math.max(0,Math.min(SL.length-1,i));
   slides.forEach((el,j)=>el.classList.toggle('active',j===cur));
+  replay(slides[cur]);
   document.getElementById('cur').textContent=cur+1;
   document.getElementById('bar').style.width=((cur+1)/SL.length*100)+'%';
   document.getElementById('ntxt').textContent=SL[cur].notes;
   document.getElementById('nuse').innerHTML=SL[cur].use;
+  navp.disabled=cur===0; navn.disabled=cur===SL.length-1;
   location.hash=String(cur+1);
 }
 function fit(){
@@ -911,17 +2129,57 @@ function fit(){
   slides.forEach(el=>el.style.transform=`scale(${s})`);
 }
 addEventListener('resize',fit);
+
+/* --- kenar okları: fare hareket edince belirir, 2 sn sonra kaybolur --- */
+const navp=document.getElementById('navp'), navn=document.getElementById('navn');
+let navT=0;
+function navShow(){
+  if(popOpen())return;
+  document.body.classList.add('navon');
+  clearTimeout(navT); navT=setTimeout(()=>document.body.classList.remove('navon'),2000);
+}
+addEventListener('mousemove',navShow);
+navp.onclick=e=>{e.stopPropagation();go(cur-1);navShow()};
+navn.onclick=e=>{e.stopPropagation();go(cur+1);navShow()};
+
+/* --- pop-up aç / kapat --- */
+const popEl=document.getElementById('pop');
+const popOpen=()=>popEl.classList.contains('on');
+function openPop(k){
+  const p=POP[k]; if(!p)return false;
+  document.getElementById('popk').textContent=p.k;
+  document.getElementById('poph').innerHTML=p.t;
+  document.getElementById('popb').innerHTML=p.b();
+  const w=popEl.querySelector('.win'); w.scrollTop=0;
+  popEl.classList.add('on');
+  document.body.classList.remove('navon'); clearTimeout(navT);
+  return true;
+}
+function closePop(){popEl.classList.remove('on')}
+
 addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(popOpen()){closePop();return}
+    document.getElementById('toc').classList.remove('on');
+    document.getElementById('notes').classList.remove('on');return;
+  }
+  if(popOpen())return;                       /* pop-up açıkken slayt gezinmesi durur */
   if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1)}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1)}
   else if(e.key==='Home')go(0); else if(e.key==='End')go(SL.length-1);
   else if(e.key==='n'||e.key==='N')document.getElementById('notes').classList.toggle('on');
   else if(e.key==='o'||e.key==='O')document.getElementById('toc').classList.toggle('on');
-  else if(e.key==='Escape'){document.getElementById('toc').classList.remove('on');document.getElementById('notes').classList.remove('on')}
 });
 addEventListener('click',e=>{
-  if(e.target.closest('#toc')||e.target.closest('#notes'))return;
-  go(cur + (e.clientX < innerWidth*0.28 ? -1 : 1));
+  if(popOpen()){                             /* dışarı tıklama yalnız kapatır, slaytı ilerletmez */
+    if(!e.target.closest('#pop .win')||e.target.closest('#pop .x'))closePop();
+    return;
+  }
+  if(e.target.closest('#toc')||e.target.closest('#notes')||e.target.closest('.nav'))return;
+  const t=e.target.closest('[data-pop]');
+  if(t&&openPop(t.dataset.pop))return;
+  if(e.target.closest('.slide'))return;        /* slayt içi tıklama sayfayı değiştirmez */
+  go(cur + (e.clientX < innerWidth*0.5 ? -1 : 1));
 });
 fit();
 go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
