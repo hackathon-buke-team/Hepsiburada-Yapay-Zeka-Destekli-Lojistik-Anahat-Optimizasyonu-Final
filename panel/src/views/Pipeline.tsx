@@ -232,6 +232,12 @@ const LAB = {
   sla_worst_share: 15,
 } as const
 
+/* LAB ve REG_TESTS panel.json'da taşınmayan deney/koşu ölçümleridir. Panonun
+   "elle yazılmış sayı yok" ilkesini korumak için kaynakları ekranda açıkça
+   yazılır; B planında kanit.json'a bağlanacaklar. */
+const LAB_KAYNAK = 'deney kütüğü · Stage 1–3 kabul raporları'
+const TEST_KAYNAK = 'pytest koşusu · final-teslim/tests'
+
 const TRIED: { t: string; m: ReactNode; r: string; tone: string; note: string }[] = [
   {
     t: 'Düşük dolulukta aynı-hat birleştirme',
@@ -767,7 +773,9 @@ function detailFor(id: string): ReactNode {
               sabitlendi; rastgelelik kaynağı yok. Her aşama sonunda plan yeniden doğrulanıyor, yalnız sonda değil.
             </p>
             <div className="chips">
-              <span className="chip ok">{n0(REG_TESTS)} regresyon testi</span>
+              <span className="chip ok" title={`kaynak: ${TEST_KAYNAK}`}>
+                {n0(REG_TESTS)} regresyon testi
+              </span>
               <span className="chip ok">{n0(RULES.length)} hakem kuralı</span>
               <span className="chip ok">
                 {n0(STAGES.length)} aşamanın {n0(STAGES_CLEAN)}&apos;inde de {n0(VIOL_TOTAL)} ihlal
@@ -1134,6 +1142,9 @@ export default function Pipeline({ go }: ViewProps) {
           Bu bir başarısızlık listesi değil, <b>arama yaptığımızın kanıtı</b>. Her satır tahmin edilip atlanmadı;
           kodlandı, koşturuldu, ölçüldü ve ölçüm kötü çıktığı için bırakıldı. Kabul edilen dört aşama, bu elemenin
           geride kalanı.
+        </p>
+        <p className="fine c-dim" style={{ marginTop: 8 }}>
+          Kaynak: bu tablodaki ölçümler plan çıktısından değil, {LAB_KAYNAK}'ndan gelir.
         </p>
       </Card>
     </div>

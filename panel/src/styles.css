@@ -154,6 +154,7 @@ body {
 .kstrip .k.brand .v { color: var(--brand2); }
 .kstrip .k.ok .v { color: var(--ok); }
 .kstrip .k.blue .v { color: var(--blue); }
+.kstrip .k.bad .v { color: var(--bad); }
 
 /* ── içerik ─────────────────────────────────────────────────── */
 .view {

@@ -30,10 +30,26 @@ import { Meter } from '../lib/charts'
 
 type LayerKey = 'kiralik' | 'spot' | 'zincir' | 'pickup'
 
+/* Katman ipuçlarındaki sayılar veriden türetilir — eskiden elle yazılıydı ve
+   veri değişince sessizce yanlışa dönerdi. */
+const RENT_ROUTES = D.rented.length
+const RENT_PER_DAY = D.rented.reduce((a, r) => a + r.n, 0)
+const MAX_STOPS = D.stages.meta.max_chain_stops
+
 const LAYERS: { k: LayerKey; label: string; color: string; hint: string }[] = [
-  { k: 'kiralik', label: 'Kiralık rotalar', color: C.warn, hint: 'zorunlu 12 rota · 14 araç/gün' },
+  {
+    k: 'kiralik',
+    label: 'Kiralık rotalar',
+    color: C.warn,
+    hint: `zorunlu ${RENT_ROUTES} rota · ${RENT_PER_DAY} araç/gün`,
+  },
   { k: 'spot', label: 'Spot atamalar', color: C.blue, hint: 'tek bacaklı spot seferler' },
-  { k: 'zincir', label: 'Konsolidasyon zincirleri', color: C.brand, hint: 'milk-run · 2–4 durak' },
+  {
+    k: 'zincir',
+    label: 'Konsolidasyon zincirleri',
+    color: C.brand,
+    hint: `milk-run · 2–${MAX_STOPS} durak`,
+  },
   { k: 'pickup', label: 'Yol üstü yük alma', color: C.pink, hint: 'ara durakta yük alan zincirler' },
 ]
 

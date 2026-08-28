@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { D, FILTER0, useSlice, type Filter } from './store'
+import { D, FILTER0, S, STAGES, useSlice, type Filter } from './store'
 import { Icon, TipProvider } from './lib/ui'
 import { M, n0, pct } from './lib/fmt'
 import Overview from './views/Overview'
@@ -16,6 +16,11 @@ export interface ViewProps {
   setFilter: (f: Filter | ((p: Filter) => Filter)) => void
   go: (v: ViewId) => void
 }
+
+/** Hakem simülatörünün her aşamada bulduğu ihlal sayısı — veriden okunur.
+    Eskiden bu sayı ekranda düz bir '0' dizesiydi; panonun en büyük iddiası
+    kendi verisinden doğrulanmıyordu. */
+const VIOL_TOTAL = STAGES.reduce((a, k) => a + Number(S(k).violations), 0)
 
 const VIEWS: {
   id: ViewId
@@ -44,7 +49,7 @@ const VIEWS: {
     id: 'filo',
     label: 'FİLO',
     title: 'Filo gezgini',
-    sub: '665 fiziksel araç · 1.064 bacak · her aracın rotası',
+    sub: `${n0(D.meta.vehicles)} fiziksel araç · ${n0(D.meta.legs)} bacak · her aracın rotası`,
     icon: Icon.truck,
   },
   {
@@ -58,7 +63,7 @@ const VIEWS: {
     id: 'talep',
     label: 'TALEP',
     title: 'Talep ve tahmin',
-    sub: '179 günlük geçmiş · 7 günlük tahminimiz',
+    sub: `${n0(D.history.days.length)} günlük geçmiş · ${n0(D.forecast.daily.length)} günlük tahminimiz`,
     icon: Icon.chart,
   },
   {
@@ -111,13 +116,13 @@ export default function App() {
             { v: M(slice.cost), l: 'süzülen maliyet', c: 'brand' },
             { v: n0(slice.vehicles.length), l: 'araç', c: '' },
             { v: n0(slice.legs.length), l: 'bacak', c: '' },
-            { v: pct(slice.avgFill), l: 'spot doluluk', c: 'ok' },
+            { v: pct(slice.avgFill), l: 'tepe spot doluluk', c: 'ok' },
           ]
         : [
             { v: M(D.meta.total_cost), l: 'toplam maliyet', c: 'brand' },
-            { v: '0', l: 'hakem ihlali', c: 'ok' },
+            { v: n0(VIOL_TOTAL), l: 'hakem ihlali', c: VIOL_TOTAL === 0 ? 'ok' : 'bad' },
             { v: n0(D.meta.vehicles), l: 'fiziksel araç', c: '' },
-            { v: pct(D.meta.avg_fill), l: 'spot doluluk', c: 'ok' },
+            { v: pct(D.meta.avg_fill), l: 'tepe spot doluluk', c: 'ok' },
           ],
     [filtered, slice],
   )
