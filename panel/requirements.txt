@@ -1,0 +1,6 @@
+# Anahat Sevkiyat Panosu — masaüstü (.exe) ve veri üretimi bağımlılıkları.
+# Teslim paketinin (final-teslim/requirements.txt) bağımlılıkları BUNA DAHİL DEĞİLDİR;
+# pano ayrı bir araçtır ve değerlendirmeye girmez.
+openpyxl>=3.1
+pywebview>=5.0
+pyinstaller>=6.0
