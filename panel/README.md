@@ -7,7 +7,7 @@ Pano iki biçimde çalışır ve ikisi de aynı koddan üretilir:
 
 | Biçim | Dosya | Nasıl açılır |
 |---|---|---|
-| **Masaüstü** | `dist-exe/Anahat-Sevkiyat-Panosu.exe` | Çift tıklayın. Kurulum, internet ve tarayıcı ayarı gerekmez (~15 MB). |
+| **Masaüstü** | `dist-exe/Anahat-Sevkiyat-Panosu.exe` | Çift tıklayın. Kurulum, internet ve tarayıcı ayarı gerekmez (~18 MB). |
 | **Web** | `dist/` | Herhangi bir statik sunucuda ya da Vercel'de yayımlanır. |
 
 Panoda dış harita servisi, CDN, font sunucusu ya da API çağrısı **yoktur** — Türkiye
@@ -68,6 +68,8 @@ npm run dev          # geliştirme sunucusu
 npm run build        # -> dist/       (web, Vercel)
 npm run build:tek    # -> dist-tek/   (tek dosyalık HTML, .exe içine gömülür)
 npm run build:exe    # -> dist-exe/Anahat-Sevkiyat-Panosu.exe
+npm run paket        # build:tek + build:exe zinciri (tek komut)
+npm test             # pano saf fonksiyon testleri (vitest)
 ```
 
 `build:exe`, önce `build:tek` çalıştırılmış olmasını bekler.
@@ -88,7 +90,7 @@ npx vercel --prod        # panel/ klasöründe; vercel.json hazır
 | Grafikler | Elle yazılmış SVG (`src/lib/charts.tsx`) | Grafik kütüphanesi yok — tam kontrol, çevrimdışı çalışma, tek tipografi |
 | Harita | Elle yazılmış izdüşüm (`src/lib/geo.ts`) | Eş dikdörtgen izdüşüm, 39° enleminde boylam düzeltmesi. GeoJSON dosyası, tile sunucusu ya da harita kütüphanesi yok |
 | Stil | Tek `styles.css`, CSS değişkenli tasarım belirteçleri | CSS çerçevesi yok |
-| Masaüstü | pywebview + PyInstaller | Windows'un yerleşik WebView2 motorunu kullanır; Electron'un ~150 MB'ı yerine ~15 MB |
+| Masaüstü | pywebview + PyInstaller | Windows'un yerleşik WebView2 motorunu kullanır; Electron'un ~150 MB'ı yerine ~18 MB |
 
 Toplam çalışma zamanı bağımlılığı: `react` ve `react-dom`.
 
