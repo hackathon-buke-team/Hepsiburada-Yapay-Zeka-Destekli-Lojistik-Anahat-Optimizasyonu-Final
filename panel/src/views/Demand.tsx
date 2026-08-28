@@ -215,7 +215,7 @@ export default function Demand({ go }: ViewProps) {
           v={compact(cu)}
           tone="brand"
           l="tahmin edilen toplam desi"
-          d={`${n0(daily.length)} gün · ${n0(FC.lane.length)} hat`}
+          d={`${n0(daily.length)} gün · ${n0(CL.od_in_history)} aktif hat`}
         />
       </div>
 
@@ -236,7 +236,7 @@ export default function Demand({ go }: ViewProps) {
           <Legend
             items={[
               [C.blue, 'normal gün — koyu az, açık çok desi'],
-              [C.warn, `resmî tatil · ${n0(flagN[1])} gün`],
+              [C.warn, `resmî tatil · ${n0(flagN[1])} gün (yalnız tatil)`],
               [C.brand, `ay sonu · ${n0(flagN[2])} gün`],
             ]}
           />
@@ -460,7 +460,7 @@ export default function Demand({ go }: ViewProps) {
 
         <Card
           title={`En yoğun ${n0(top.length)} hat`}
-          sub={`${n0(FC.lane.length)} hattın ilk ${n0(top.length)}'si`}
+          sub={`${n0(CL.od_in_history)} aktif hattın en yoğun ${n0(FC.lane.length)}'ı içinden`}
         >
           <Bars rows={laneRows} nw={186} qw={62} />
           <p className="note" style={{ marginTop: 11 }}>

@@ -235,6 +235,13 @@ const LAB = {
 /* LAB ve REG_TESTS panel.json'da taşınmayan deney/koşu ölçümleridir. Panonun
    "elle yazılmış sayı yok" ilkesini korumak için kaynakları ekranda açıkça
    yazılır; B planında kanit.json'a bağlanacaklar. */
+/** Tahmin ufkundaki ay sonu günü — sabit tarih yazmak yerine veriden bulunur;
+    ufuk kayarsa metin kendiliğinden doğru günü gösterir. */
+const ME_IX = D.forecast.daily.findIndex((_, i, arr) => {
+  const nxt = arr[i + 1]
+  return nxt ? Number(nxt.iso.slice(8, 10)) === 1 : false
+})
+
 const LAB_KAYNAK = 'deney kütüğü · Stage 1–3 kabul raporları'
 const TEST_KAYNAK = 'pytest koşusu · final-teslim/tests'
 
@@ -498,11 +505,15 @@ function detailFor(id: string): ReactNode {
               fmtV={(v) => n0(v / 1000) + ' B'}
             />
           </Box>
-          <p className="note hl">
-            30.06 ay sonu: tahmin <b>{n0(D.forecast.daily[1].desi)}</b> desiye düşüyor, ertesi gün{' '}
-            <b>{n0(D.forecast.daily[2].desi)}</b> desiye fırlıyor. Bu çukur ve sıçrama elle konmadı, takvim
-            çarpanından geldi — ve filo planı bunu bildiği için ay sonunda araç tutmuyor.
-          </p>
+          {ME_IX >= 0 && (
+            <p className="note hl">
+              {D.forecast.daily[ME_IX].d} ay sonu: tahmin{' '}
+              <b>{n0(D.forecast.daily[ME_IX].desi)}</b> desiye düşüyor, ertesi gün{' '}
+              <b>{n0(D.forecast.daily[ME_IX + 1].desi)}</b> desiye fırlıyor. Bu çukur ve sıçrama elle
+              konmadı, takvim çarpanından geldi — ve filo planı bunu bildiği için ay sonunda araç
+              tutmuyor.
+            </p>
+          )}
         </div>
         <div style={{ width: 320, flex: '0 0 auto' }}>
           <KvTable
@@ -516,6 +527,13 @@ function detailFor(id: string): ReactNode {
               ['plandaki gerçekleşen desi', n0(D.meta.desi), 'c-brand'],
             ]}
           />
+          <p className="fine" style={{ marginTop: 10 }}>
+            İki desi sayısı farklı şeyi ölçer. <b>{n0(D.meta.desi_teslim)}</b> desi gerçekten teslim
+            edilen yüktür — Σyükleme = Σindirme, tahmin toplamıyla birebir.{' '}
+            <b>{n0(D.meta.desi)}</b> desi ise bacak toplamıdır: aktarma merkezinden geçen yük her
+            bacakta yeniden sayılır. Oran <b>{nf(D.meta.transfer_carpani, 3)}×</b> — hub-and-spoke
+            ağının ölçüsü.
+          </p>
           <p className="note c-dim" style={{ marginTop: 10 }}>
             Sıfır talepli satırlar da yazılır: hakem, plandaki her kimliği bu tabloda arar; tablo eksikse plan
             reddedilir.
