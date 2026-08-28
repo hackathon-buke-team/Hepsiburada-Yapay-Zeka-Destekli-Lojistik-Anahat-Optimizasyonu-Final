@@ -227,6 +227,10 @@ p.lead b { color: var(--ink2); font-weight: 600; }
 .note + .note { margin-top: 8px; }
 .note b { color: var(--ink2); font-weight: 600; }
 .note.hl { border-left: 2px solid var(--brand); padding-left: 11px; }
+
+/* Kaynak/tanım dipnotu — bir sayının nereden geldiğini söyleyen ince satır. */
+.fine { font-size: 11px; line-height: 1.55; color: var(--dim); }
+.fine b { color: var(--muted); font-weight: 600; }
 .def {
   border: 1px solid rgba(87, 166, 255, 0.22);
   background: rgba(87, 166, 255, 0.055);

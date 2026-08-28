@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { D, S, STAGES, STAGE_LABEL, DATES, VT_ORDER } from '../store'
+import { D, NAME, S, STAGES, STAGE_LABEL, DATES, VT_ORDER } from '../store'
 import { Bars, C, Card, KIND_COLOR, Kpi, Legend, TipKV, VT_COLOR } from '../lib/ui'
 import { Columns, Donut, Spark } from '../lib/charts'
 import { DOW, M, TL, compact, dM, dPct, n0, nf, pct, shortDate } from '../lib/fmt'
@@ -21,6 +21,13 @@ const CHAIN_COLOR = [C.dim, C.blue, C.brand2, C.brand]
 /* Doluluk histogramı: %0–100 aralığı eşit dilimlere bölünür. */
 const FILL_STEP = 10
 const FILL_BINS = 100 / FILL_STEP
+
+/* Çıkış doluluğu (aşama ölçümünün tanımı) ile tepe doluluk (panonun tanımı)
+   yalnız yolda yük alan zincirlerde ayrışır. Farkı yaratan araçları veriden
+   buluruz; sayıyı metne gömmeyiz. */
+const CIKIS_TEPE = D.vehicles.filter(
+  (v) => v.kind === 'Spot' && D.legs[v.legs[0]].fill < 30 && v.fill >= 30,
+)
 
 /** Kpi.d varsayılan olarak yeşil; her fark iyi haber değil, rengi ezebilelim. */
 function Delta({ t, c }: { t: string; c: string }) {
@@ -142,10 +149,15 @@ export default function Overview({ filter, setFilter, go }: ViewProps) {
           onClick={() => go('filo')}
         />
         <Kpi
-          v={pct(D.meta.avg_fill)}
-          l="Ortalama spot doluluk"
+          v={pct(D.meta.avg_fill_cikis)}
+          l="Ortalama spot doluluk (çıkışta)"
           tone="ok"
-          d={<Delta t={`${dPts(D.meta.avg_fill - ST0.avg_fill)} puan`} c={C.ok} />}
+          d={
+            <>
+              <Delta t={`${dPts(D.meta.avg_fill_cikis - ST0.avg_fill)} puan`} c={C.ok} />
+              <span className="c-dim"> · tepe yükte {pct(D.meta.avg_fill)}</span>
+            </>
+          }
           onClick={() => go('filo')}
         />
         <Kpi
@@ -437,9 +449,22 @@ export default function Overview({ filter, setFilter, go }: ViewProps) {
             }))}
           />
           <p className="note" style={{ marginTop: 13 }}>
-            Ağırlık sağ uca kaydı: %30'un altında kalan spot araç{' '}
+            Ağırlık sağ uca kaydı: çıkışta %30'un altında yüklenen spot araç{' '}
             <b>{n0(Number(ST0.spot_below_30))}</b> iken <b>{n0(Number(ST3.spot_below_30))}</b> oldu,
-            ortalama doluluk <b>{pct(ST0.avg_fill)}</b> → <b>{pct(D.meta.avg_fill)}</b>.
+            ortalama çıkış doluluğu <b>{pct(ST0.avg_fill)}</b> → <b>{pct(ST3.avg_fill)}</b>.
+          </p>
+          <p className="fine" style={{ marginTop: 8 }}>
+            Histogram <b>tepe yükü</b> ölçer — zincir boyunca taşınan en yüksek desi. Tepe yükte
+            %30 altında kalan <b>{n0(D.meta.spot_below_30_tepe)}</b> araç var; çıkışta{' '}
+            <b>{n0(D.meta.spot_below_30_cikis)}</b>.
+            {CIKIS_TEPE.length === 1 && (
+              <>
+                {' '}
+                Aradaki tek araç <b>{CIKIS_TEPE[0].id}</b>: {NAME[D.legs[CIKIS_TEPE[0].legs[0]].a]}
+                'dan %{nf(D.legs[CIKIS_TEPE[0].legs[0]].fill, 1)} dolulukla çıkıyor, yol üstünde yük
+                alıp %{nf(CIKIS_TEPE[0].fill, 1)}'e çıkıyor — Stage 3'ün yaptığı iş tam olarak budur.
+              </>
+            )}
           </p>
         </Card>
       </div>
