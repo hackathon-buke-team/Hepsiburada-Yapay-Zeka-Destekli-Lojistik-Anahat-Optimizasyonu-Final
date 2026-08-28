@@ -8,8 +8,7 @@ gerekmez.
 
 Kullanım:
     cd panel
-    npm run build:tek          # önce tek dosyalık HTML'i üret
-    python desktop/build_exe.py
+    npm run paket            # build:tek + build:exe zinciri
 """
 from __future__ import annotations
 
@@ -29,21 +28,79 @@ SINGLE = PANEL / "dist-tek" / "index.html"
 STAGE = HERE / ".stage"                                  # geçici derleme alanı
 DIST = PANEL / "dist-exe"
 NAME = "Anahat-Sevkiyat-Panosu"
+VERSION = "2.0.0"
+
+
+def _pywebview_var() -> bool:
+    """pywebview kurulu mu?
+
+    Kurulu değilse PyInstaller yalnızca 'hidden import not found' UYARISI verir,
+    0 dönüş koduyla başarılı biter ve açılışta sessizce ölen bir exe üretir.
+    """
+    try:
+        import webview  # noqa: F401
+    except Exception:
+        return False
+    return True
+
+
+def on_kontrol() -> str | None:
+    """Derlemeyi engelleyen ilk sorunu döndür; sorun yoksa None."""
+    if not SINGLE.is_file():
+        return (
+            f"{SINGLE} yok.\n"
+            "Önce tek dosyalık HTML'i üretin:  npm run build:tek"
+        )
+    if not _pywebview_var():
+        return (
+            "pywebview kurulu değil. Onsuz üretilen .exe açılışta sessizce ölür.\n"
+            "Kurulum:  pip install -r requirements.txt"
+        )
+    return None
+
+
+def _version_file() -> pathlib.Path:
+    """SmartScreen itibarı için exe sürüm/üretici üstverisi."""
+    major, minor, patch = (int(x) for x in VERSION.split("."))
+    p = STAGE / "surum.txt"
+    p.write_text(
+        f"""VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=({major}, {minor}, {patch}, 0),
+    prodvers=({major}, {minor}, {patch}, 0),
+    mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1, subtype=0x0,
+    date=(0, 0)),
+  kids=[
+    StringFileInfo([StringTable('041f04b0', [
+      StringStruct('CompanyName', 'Takim Buke - TEKNOFEST 2026'),
+      StringStruct('FileDescription', 'Anahat Sevkiyat Panosu'),
+      StringStruct('FileVersion', '{VERSION}'),
+      StringStruct('InternalName', '{NAME}'),
+      StringStruct('OriginalFilename', '{NAME}.exe'),
+      StringStruct('ProductName', 'Anahat Sevkiyat Panosu'),
+      StringStruct('ProductVersion', '{VERSION}')])]),
+    VarFileInfo([VarStruct('Translation', [1055, 1200])])
+  ]
+)
+""",
+        encoding="utf-8",
+    )
+    return p
 
 
 def main() -> int:
-    if not SINGLE.is_file():
-        print("HATA: dist-tek/index.html yok. Önce `npm run build:tek` çalıştırın.")
+    hata = on_kontrol()
+    if hata:
+        print("HATA: " + hata)
         return 1
 
-    # PyInstaller --add-data için tek dosyayı 'pano/' altında topla
-    pano = STAGE / "pano"
     if STAGE.exists():
         shutil.rmtree(STAGE)
+    pano = STAGE / "pano"
     pano.mkdir(parents=True)
     shutil.copy2(SINGLE, pano / "index.html")
 
-    icon = HERE / "pano.ico"
+    sep = ";" if sys.platform == "win32" else ":"
     args = [
         sys.executable, "-m", "PyInstaller",
         "--noconfirm", "--clean",
@@ -52,26 +109,37 @@ def main() -> int:
         "--distpath", str(DIST),
         "--workpath", str(STAGE / "work"),
         "--specpath", str(STAGE),
-        # Windows'ta ayırıcı ';' — pano/ klasörü .exe içine gömülür
-        "--add-data", f"{pano}{';' if sys.platform == 'win32' else ':'}pano",
+        "--add-data", f"{pano}{sep}pano",
         "--hidden-import", "webview.platforms.edgechromium",
         "--hidden-import", "clr_loader",
-        str(HERE / "app.py"),
     ]
+    if sys.platform == "win32":
+        args += ["--version-file", str(_version_file())]
+    icon = HERE / "pano.ico"
     if icon.is_file():
-        args[args.index("--windowed") + 1:args.index("--windowed") + 1] = ["--icon", str(icon)]
+        args += ["--icon", str(icon)]
+    args.append(str(HERE / "app.py"))
 
-    print("PyInstaller çalışıyor…\n  " + " ".join(args[:10]) + " …")
-    r = subprocess.run(args, cwd=str(PANEL))
-    if r.returncode != 0:
-        return r.returncode
+    print("PyInstaller çalışıyor…")
+    try:
+        r = subprocess.run(args, cwd=str(PANEL))
+        kod = r.returncode
+    finally:
+        # Erken dönüşte de temizlensin: eskiden PyInstaller hatasında .stage kalıyordu.
+        shutil.rmtree(STAGE, ignore_errors=True)
+
+    if kod != 0:
+        print(f"HATA: PyInstaller {kod} döndürdü.")
+        return kod
 
     exe = DIST / f"{NAME}.exe"
-    if exe.is_file():
-        mb = exe.stat().st_size / 1e6
-        print(f"\nhazır  {exe}  ·  {mb:,.1f} MB")
-        print("Çift tıklayıp açabilirsiniz; kurulum ve internet gerekmez.")
-    shutil.rmtree(STAGE, ignore_errors=True)
+    if not exe.is_file():
+        print(f"HATA: PyInstaller 0 döndürdü ama {exe} oluşmadı.")
+        return 1
+
+    mb = exe.stat().st_size / 1e6
+    print(f"\nhazır  {exe}  ·  {mb:,.1f} MB")
+    print("Çift tıklayıp açabilirsiniz; kurulum ve internet gerekmez.")
     return 0
 
 
