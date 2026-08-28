@@ -15,8 +15,25 @@ export interface Meta {
   sla_cost: number
   desi: number
   km: number
+  /** spot araçların TEPE yük doluluk ortalaması (zincir boyunca en yüksek yük) */
   avg_fill: number
   avg_fill_leg: number
+  /** spot araçların ÇIKIŞ bacağı doluluk ortalaması — aşama ölçümüyle aynı tanım */
+  avg_fill_cikis: number
+  /** çıkışta %30 altında yüklenen spot araç sayısı (aşama ölçümüyle aynı tanım) */
+  spot_below_30_cikis: number
+  /** tepe yükte %30 altında kalan spot araç sayısı (pano tanımı) */
+  spot_below_30_tepe: number
+  /** aktarma tekrarı olmadan gerçekten teslim edilen desi (= forecast.total) */
+  desi_teslim: number
+  /** bacak toplamı / teslim edilen — aktarmadan gelen çarpan */
+  transfer_carpani: number
+  /** panel.json'un üretim anı */
+  built_at: string
+  /** kaynak Tasima-plani.xlsx içerik parmak izi (sha256, ilk 16 hane) */
+  src_plan: string
+  /** kaynak Talep-tahmini.xlsx içerik parmak izi */
+  src_forecast: string
 }
 
 export interface Centre {

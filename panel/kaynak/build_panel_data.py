@@ -25,6 +25,7 @@ from __future__ import annotations
 import sys
 
 import calendar
+import hashlib
 import json
 import math
 import pathlib
@@ -180,8 +181,10 @@ for r in plan:
     if int(r[12]) > 0:
         L["drop"] += float(r[10])
     L["idset"].add(str(r[9]).split("-")[0])
-    if len(L["ids"]) < 24:
-        L["ids"].append(r[9])
+    # Kırpma YOK: eskiden 24'te kesiliyordu ve 7 bacakta toplam 27 talep kimliği
+    # kalıcı olarak kayboluyordu; Fleet'teki "devreden yük" rozeti o bacaklarda
+    # yanlış negatif veriyordu. Talep düzeyi izleme de bu listeye dayanacak.
+    L["ids"].append(r[9])
 
 D0 = min(dmy(L["dd"]) for L in legmap.values())
 
@@ -300,13 +303,20 @@ for L in legs:
 loadgrid = [[round(book.get((c, d), 0.0)) for d in range(ndays)] for c in range(18)]
 loadgrid_ust = [[round(upper.get((c, d), 0.0)) for d in range(ndays)] for c in range(18)]
 
-tirv: dict[tuple, int] = {}
-for L in legs:
-    if L["vt"] != "Tır":
+# Hakem (final-teslim/src/ledger.py TirLedger) ziyaretleri (araç, ziyaret_no)
+# çifti olarak TEKİLLEŞTİRİR: bacak j'nin kalkışı ziyaret j, varışı ziyaret
+# j+1'dir. Böylece zincirdeki ara durakta "indir + yükle" aynı gün içindeyse
+# TEK ziyaret sayılır. Eski sayım kalkışa +1, varışa +1 yazıyordu; bugün
+# örtüşmesinin tek sebebi 99 tırın tamamının tek bacaklı (stops=1) olması.
+tirv: dict[tuple, set] = {}
+for V in vehicles:
+    if V["vt"] != "Tır":
         continue
-    tirv[(L["a"], L["t0"] // 1440)] = tirv.get((L["a"], L["t0"] // 1440), 0) + 1
-    tirv[(L["b"], L["t1"] // 1440)] = tirv.get((L["b"], L["t1"] // 1440), 0) + 1
-tirgrid = [[tirv.get((c, d), 0) for d in range(ndays)] for c in range(18)]
+    for j, i in enumerate(V["legs"]):
+        L = legs[i]
+        tirv.setdefault((L["a"], L["t0"] // 1440), set()).add((V["id"], j))
+        tirv.setdefault((L["b"], L["t1"] // 1440), set()).add((V["id"], j + 1))
+tirgrid = [[len(tirv.get((c, d), ())) for d in range(ndays)] for c in range(18)]
 
 # ══════════════════════ 6 · hat bazlı akış ══════════════════════
 flow: dict[tuple, dict] = {}
@@ -382,6 +392,21 @@ stages = json.loads(DECK.read_text(encoding="utf-8"))
 
 # ══════════════════════ 10 · yaz ══════════════════════
 total_cost = round(sum(L["cost"] for L in legs), 2)
+
+
+def _sha(p: pathlib.Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()[:16]
+
+
+# İki farklı doluluk tanımı — panoda ayrı ayrı etiketlenir:
+#   çıkış  = aracın İLK bacağındaki doluluk (aşama ölçümünün / deck'in tanımı)
+#   tepe   = zincir boyunca taşıdığı EN YÜKSEK yük (panonun tanımı)
+# Tek bacaklı araçlarda ikisi aynıdır; yalnız yolda yük alan zincirlerde ayrışır.
+# Referans koşuda farkı yaratan TEK araç V0541'dir: Erzincan'dan %25,9 dolulukla
+# çıkıp Mardin'de yol üstünde yük alarak %30,3'e çıkıyor.
+spot_v = [V for V in vehicles if V["kind"] == "Spot"]
+first_leg = [legs[V["legs"][0]] for V in spot_v]
+
 meta = {
     "horizon": [dates[0].strftime("%d.%m.%Y"), dates[-1].strftime("%d.%m.%Y")],
     "start": D0.isoformat(), "ndays": ndays,
@@ -396,6 +421,14 @@ meta = {
     "km": sum(L["km"] for L in legs),
     "avg_fill": round(statistics.mean(V["fill"] for V in vehicles if V["kind"] == "Spot"), 2),
     "avg_fill_leg": round(statistics.mean(L["fill"] for L in legs if L["kind"] == "Spot"), 2),
+    "avg_fill_cikis": round(statistics.mean(L["fill"] for L in first_leg), 2),
+    "spot_below_30_cikis": sum(1 for L in first_leg if L["fill"] < 30),
+    "spot_below_30_tepe": sum(1 for V in spot_v if V["fill"] < 30),
+    "desi_teslim": round(sum(L["load"] for L in legs)),
+    "transfer_carpani": round(sum(L["desi"] for L in legs) / sum(L["load"] for L in legs), 3),
+    "built_at": datetime.now().isoformat(timespec="seconds"),
+    "src_plan": _sha(OUTDIR / "Tasima-plani.xlsx"),
+    "src_forecast": _sha(OUTDIR / "Talep-tahmini.xlsx"),
 }
 
 for L in legs:                                  # set JSON'a yazılamaz
@@ -432,6 +465,28 @@ assert not over, f"elleçleme kotası aşımı: {over[:5]}"
 tot_load = sum(L["load"] for L in legs)
 tot_drop = sum(L["drop"] for L in legs)
 assert abs(tot_load - tot_drop) < 1, (tot_load, tot_drop)
+
+# Tır ziyaret kotası — elleçleme için kapı vardı, bunun için yoktu (asimetri).
+tir_over = [(centres[c]["n"], d, tirgrid[c][d], centres[c]["tir"])
+            for c in range(18) for d in range(ndays)
+            if tirgrid[c][d] > centres[c]["tir"]]
+assert not tir_over, f"tır ziyaret kotası aşımı: {tir_over[:5]}"
+
+# Panonun ÇIKIŞ doluluğu ile aşama ölçümü BAĞIMSIZ iki hesaptır; eşleşmeleri
+# gerekir. Eşleşmezse ya tanım kaydı ya da veri bayatladı.
+S3 = stages["stages"]["Stage 3"]
+assert abs(meta["avg_fill_cikis"] - S3["avg_fill"]) < 0.02, \
+    (meta["avg_fill_cikis"], S3["avg_fill"])
+assert meta["spot_below_30_cikis"] == S3["spot_below_30"], \
+    (meta["spot_below_30_cikis"], S3["spot_below_30"])
+
+# Teslim edilen desi = tahmin toplamı (aktarma tekrarı olmadan).
+assert meta["desi_teslim"] == forecast["total"], \
+    (meta["desi_teslim"], forecast["total"])
+
+# Kırpma kaldırıldı: her plan satırının kimliği bacaklarda temsil edilmeli.
+assert sum(len(L["ids"]) for L in legs) == len(plan), \
+    (sum(len(L["ids"]) for L in legs), len(plan))
 
 print(f"panel ok  {DEST}  {DEST.stat().st_size:,} bayt")
 print(f"  {meta['legs']} bacak · {meta['vehicles']} araç "
