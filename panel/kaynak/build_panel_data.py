@@ -426,7 +426,13 @@ meta = {
     "spot_below_30_tepe": sum(1 for V in spot_v if V["fill"] < 30),
     "desi_teslim": round(sum(L["load"] for L in legs)),
     "transfer_carpani": round(sum(L["desi"] for L in legs) / sum(L["load"] for L in legs), 3),
-    "built_at": datetime.now().isoformat(timespec="seconds"),
+    # Koşu damgası KAYNAK dosyalardan türetilir, "şimdi"den değil: aynı plandan
+    # yeniden üretilen panel.json birebir aynı olsun (git'te gürültü yapmasın)
+    # ve damga "bu veri hangi koşudan" sorusuna cevap versin.
+    "built_at": datetime.fromtimestamp(
+        max((OUTDIR / "Tasima-plani.xlsx").stat().st_mtime,
+            (OUTDIR / "Talep-tahmini.xlsx").stat().st_mtime)
+    ).isoformat(timespec="seconds"),
     "src_plan": _sha(OUTDIR / "Tasima-plani.xlsx"),
     "src_forecast": _sha(OUTDIR / "Talep-tahmini.xlsx"),
 }
