@@ -86,8 +86,14 @@ python main.py
 │   ├── docs/superpowers/         Aşama planları, tasarım şartnameleri, kabul raporları
 │   └── *.pdf                     Jüri Q&A ve aşama bilgilendirme dokümanları
 │
+├── panel/                     ← Anahat Sevkiyat Panosu (jüri kontrol panosu)
+│   ├── src/                      React arayüzü — altı görünüm
+│   ├── kaynak/                   panel.json üreteci (tek gerçeğin kaynağı)
+│   ├── desktop/                  pywebview kabuğu + .exe derleyici
+│   └── README.md                 panonun kendi dokümantasyonu
+│
 ├── sunum/
-│   ├── index.html                Anahat sevkiyat panosu (interaktif)
+│   ├── v2.html                   Jüri sunumu (16 slayt)
 │   └── dokumanlar/               Jüri sunumu için hazırlanan Word dökümanları
 │
 ├── zzips/                     Teslim edilen orijinal zip arşivleri
