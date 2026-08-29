@@ -158,8 +158,6 @@ body.navon .nav:hover{color:var(--brand);border-color:rgba(255,96,0,.55);backgro
 #toc li:hover{color:var(--brand2)}
 #toc li b{color:var(--ink);font-weight:600}
 /* --- tıklanabilir öğeler --- */
-.pophint{font:600 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
-  border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin-left:14px;vertical-align:3px;white-space:nowrap}
 .card[data-pop]{position:relative;cursor:pointer;transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
 .card[data-pop]:hover{border-color:rgba(87,166,255,.55);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.35)}
 .card[data-pop]::after{content:"";position:absolute;right:13px;top:13px;width:7px;height:7px;border-radius:50%;
@@ -326,7 +324,7 @@ ul.tick li[data-pop]:hover::after{background:rgba(255,255,255,.055)}
   html,body{overflow:visible;background:#fff}
   #stage{position:static;display:block}
   .slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;margin:0 auto 10mm}
-  #bar,#hud,#notes,#toc,#pop,.pophint,.nav{display:none}
+  #bar,#hud,#notes,#toc,#pop,.nav{display:none}
 }
 </style>
 </head>
@@ -504,25 +502,6 @@ function chartFc(){
   o+=afade(txt(x0,y0+h+34,'30 Haziran: 24.040 desi tahmin — ortalama 1.110.177',{size:10.5,fill:C.dim}),1.15);
   return svg(W,H,o)+`<div class="legend"><span><i style="background:#33415a"></i>Aynı haftagünü ortalaması</span>
     <span><i style="background:${C.ok}"></i>Bizim tahminimiz</span></div>`}
-
-/* ── backtest WMAPE ── */
-function chartBt(){
-  const W=430,H=300,x0=52,y0=14,w=W-x0-14,h=H-y0-58;
-  const keys=Object.keys(D.backtest), series=[['naive','Naive',  '#33415a'],['dow_median','DOW medyanı',C.blue],['ours','Bizim model',C.brand]];
-  const max=0.75, g=w/keys.length, bw=g*0.2;
-  let o=grid(x0,y0,w,h,3,v=>nf(v*max,2));
-  keys.forEach((k,i)=>{
-    series.forEach((s,j)=>{
-      const v=D.backtest[k][s[0]], bh=h*v/max, d=.12+i*.32+j*.14;
-      const x=x0+g*i+g/2+(j-1)*(bw+6)-bw/2;
-      o+=abar(x,y0+h-bh,bw,bh,s[2],3,d,.5);
-      o+=afade(txt(x+bw/2,y0+h-bh-7,nf(v,4),{anchor:'middle',size:10,w:700,fill:j===2?C.brand2:C.dim}),d+.45);
-    });
-    o+=afade(txt(x0+g*i+g/2,y0+h+18,k.split(' ').slice(0,2).join(' '),{anchor:'middle',size:11,w:600,fill:C.muted})+
-      txt(x0+g*i+g/2,y0+h+34,k.split(' ').slice(2).join(' '),{anchor:'middle',size:10,fill:C.dim}),.1+i*.32);
-  });
-  return svg(W,H,o)+`<div class="legend"><span><i style="background:#33415a"></i>Naive</span>
-    <span><i style="background:${C.blue}"></i>DOW medyanı</span><span><i style="background:${C.brand}"></i>Bizim model</span></div>`}
 
 /* ── araç sayısı ── */
 function chartFleet(){
@@ -1248,7 +1227,7 @@ const BANDS=[[0,300,'0 – 300 km'],[300,600,'300 – 600 km'],[600,900,'600 –
                    segs:[{v:a,col:SLA_OK},{v:c,col:SLA_2}]};});
 
 const POP={
-c18:{k:'Ağ yapısı',t:'18 transfer merkezi — hepsi hem çıkış hem varış',b:()=>pdef('<b>Transfer merkezi nedir?</b> Yüklerin toplandığı, aktarıldığı ve dağıtıldığı lojistik düğüm. Bu problemde 18 merkez var ve hepsi eşit yetenekte — depo / fabrika / mağaza ayrımı yok: her merkez hem <em>gönderici</em>, hem <em>alıcı</em>, hem de <em>aktarma</em> noktası olabilir.')+pcols(
+c18:{k:'Ağ yapısı',t:'18 transfer merkezi — hepsi hem çıkış hem varış',b:()=>pcols(
   ps(nf(2986868)+' <span class="u">desi/gün</span>','Toplam günlük elleçleme kapasitesi')+
   ps('513.171','En yüksek — Yalova (toplamın %17,2\'si)','blue')+
   ps('36.869','En düşük — Denizli (Yalova\'nın 1/14\'ü)','warn')+
@@ -1256,11 +1235,9 @@ c18:{k:'Ağ yapısı',t:'18 transfer merkezi — hepsi hem çıkış hem varış
   mapSVG({dot:c=>({r:3.4+7.2*Math.sqrt(c.h/HMAX),fill:c.t?C.blue:'#ff8a3d',
                            ring:c.t?null:'rgba(255,96,0,.75)'}),
           legend:[[C.blue,'nokta büyüklüğü = elleçleme kapasitesi','d'],
-                  ['#ff8a3d','tır kapasitesi sıfır (7 merkez)','d']]})+
-  note('Şartname merkezleri <b>depo / fabrika / mağaza</b> diye ayırmaz: 18 merkezin her biri hem çıkış hem varış hem de aktarma noktası olabilir. Ağın tamamı bu 18 düğümden ibarettir.')+
-  note('Elleçleme kapasitesi <b>merkez başına günlüktür</b> ve gelen–giden ayrımı yapmaz; aynı gün o merkeze uğrayan her araç aynı kotayı yer. Kapasite dağılımı çok dengesiz: en büyük merkez en küçüğün 14 katı.','hl'))},
+                  ['#ff8a3d','tır kapasitesi sıfır (7 merkez)','d']]}))},
 
-c306:{k:'Ağ yapısı',t:'306 yönlü hat — 18 × 17 tam matris',b:()=>pdef('<b>Yönlü hat nedir?</b> İki merkez arasındaki tek yönlü doğrudan bağlantı. İstanbul→Yalova ile Yalova→İstanbul <em>ayrı iki hattır</em>: mesafeleri aynı olsa da üzerlerindeki talep ve akış birbirinden bağımsızdır.')+pcols(
+c306:{k:'Ağ yapısı',t:'306 yönlü hat — 18 × 17 tam matris',b:()=>pcols(
   ps('204 hat','SLA 1 gün — teslim ertesi güne kadar','ok')+
   ps('102 hat','SLA 2 gün — genelde uzun mesafe','brand')+
   ps('60 – 1.548 km','Mesafe aralığı (ortalama 628 km)','sm blue')+
@@ -1269,11 +1246,9 @@ c306:{k:'Ağ yapısı',t:'306 yönlü hat — 18 × 17 tam matris',b:()=>pdef('<
                   w:.95,op:1,delay:0,step:7}],
           dotDelay:2400,dot:()=>({r:4.2,fill:C.blue}),
           legend:[['rgba(61,214,140,.8)','SLA 1 gün — 204 hat'],
-                  ['rgba(255,140,40,.85)','SLA 2 gün — 102 hat']]})+
-  note('Her merkez diğer 17 merkezin hepsine doğrudan bağlı: 18 × 17 = <b>306 yönlü hat</b>. Hatlar yönlüdür — İstanbul→Yalova ile Yalova→İstanbul iki ayrı hattır.')+
-  note('Mesafe ve SLA <b>simetriktir</b> (her iki yön için aynı); asimetrik olan <b>taleptir</b>. Eğriler gidiş ile dönüşü ayırt etmek için zıt yönde bükülmüştür. Bir sefer bu hatlardan yalnız birini kullanmak zorunda değildir — uğramalı rotalar birden çok hattı zincirler.','hl'))},
+                  ['rgba(255,140,40,.85)','SLA 2 gün — 102 hat']]}))},
 
-c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli varışlı',b:()=>pdef('<b>OD çifti nedir?</b> <em>Origin–Destination</em>, yani çıkış–varış çifti: bir talebin nereden nereye gideceğini tanımlar. Ağımızda her OD çifti bir yönlü hatta karşılık gelir; 306 hattın 289’unda geçmişte en az bir kez gerçek talep görülmüş.')+pcols(
+c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli varışlı',b:()=>pcols(
   ps('66.024 satır','179 günlük geçmiş talep (1 Oca – 28 Haz 2026)')+
   ps('289 / 306','Geçmişte en az bir kez talep görülen hat','blue')+
   ps('17 hat','Hiç talep görülmemiş — hepsi Kocaeli varışlı','warn')+
@@ -1283,29 +1258,23 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
           dotDelay:2700,dot:(c,i)=>({r:i===KOC?7:4,fill:i===KOC?'#ff4d6d':C.blue,
                                      ring:i===KOC?'rgba(255,77,109,.7)':null}),
           legend:[['rgba(87,166,255,.6)','geçmişte talep görülen 289 hat'],
-                  ['#ff4d6d','hiç talep görülmemiş 17 hat → hepsi Kocaeli\'ye']]})+
-  note('Kocaeli geçmiş veride <b>hiç varış talebi almamış</b>; yalnızca çıkış noktası olarak görünüyor. Bu bir veri eksikliği değil, ağın yapısal özelliği — Kocaeli bu problemde saf bir <b>gönderici / aktarma</b> merkezi.')+
-  note('Pratik sonucu: tahmin ızgaramızı 306 değil <b>289 hat</b> üzerine kuruyoruz — 289 hat × 2 tamamlanma saati × 7 gün = <b>4.046 satır</b>. Var olmayan 17 hat için model üretmeye çalışmak, tahmin hatasına sadece gürültü eklerdi.','hl'))},
+                  ['#ff4d6d','hiç talep görülmemiş 17 hat → hepsi Kocaeli\'ye']]}))},
 
 'k-hand':{k:'Kısıt 1 · en sert kısıt',t:'Elleçleme kapasitesi — merkez başına günlük',b:()=>pdef('<b>Elleçleme nedir?</b> Bir yükün araca <em>yüklenmesi</em> veya araçtan <em>indirilmesi</em> sırasında merkezde harcanan işlem süresi. Desi başına 0,01 dakika sürer, yükleme ve indirme ayrı ayrı sayılır. Her merkezin günlük bir elleçleme kotası vardır: kota dolduğunda o merkez o gün başka yük işleyemez.')+pcols(
   ps('0,01 dk/desi','Elleçleme hızı — <b>yükleme ve indirme ayrı ayrı</b>','sm')+
   ps('00:00','Kota bu saatte sıfırlanır; devreden bakiye yok','blue')+
   ps('3.000 / 7.000','23:30\'da başlayan 10.000 desilik işlem böyle bölünür','sm brand')+
   ps('2.986.868','18 merkezin toplam günlük kapasitesi (desi)'),
-  pbars(byH().map(c=>({n:c.n,v:c.h,q:nf(c.h),c:c.h===HMAX?'hi':''})))+
-  note('<b>Gece yarısı kuralı:</b> 10.000 desilik bir elleçleme 100 dakika sürer. 23:30\'da başlarsa 30 dakikası bugüne, 70 dakikası yarına düşer — kota da aynı <b>oranda</b> bölünür: 3.000 desi bugünden, 7.000 desi yarından. Bu kuralı hakem simülatörümüzde birebir uyguladık.')+
-  note('Bunu en sert kısıt yapan şey: kota <b>gün</b> bazlı ama plan <b>dakika</b> bazlı. Bir aracı 23:50\'ye kaydırmak, o merkezin ertesi günkü kotasını da yer. Konsolidasyon kazancı ile kota tüketimi doğrudan çelişir.','hl'))},
+  pbars(byH().map(c=>({n:c.n,v:c.h,q:nf(c.h),c:c.h===HMAX?'hi':''}))))},
 
 'k-tir':{k:'Kısıt 2',t:'Tır kapasitesi — 7 merkezde sıfır',b:()=>pdef('<b>Tır kapasitesi nedir?</b> Bir merkezin günde kaç <em>tır ziyareti</em> kaldırabileceği. Ziyaret = o merkezden çıkan ya da oraya varan her tır seferi. Fiziksel bir kısıttır — rampa, saha ve manevra alanı sınırı; tır dışındaki araç türlerini bağlamaz.')+pcols(
   ps('69 ziyaret/gün','18 merkezin toplam tır kotası')+
   ps('7 merkez','Kota sıfır — tır ne girebilir ne çıkabilir','warn')+
   ps('20 ziyaret','Zorunlu kiralık tırların her gün yediği kota','brand')+
   ps('2 / 2 · 1 / 1','Tekirdağ ve Balıkesir kotası kiralıklarca <b>tamamen</b> dolu','sm warn'),
-  pbars(byT().map(c=>({n:c.n,v:c.t,q:c.t,c:c.t===0?'z':''})))+
-  note('Kota <b>günlük toplam ziyaret</b> sayısıdır: bir tır seferi hem çıkış merkezinin hem varış merkezinin kotasından birer adet düşer. Kotası sıfır olan yedi merkez — <b>Bilecik, Sivas, Isparta, Kütahya, Karaman, Zonguldak, Denizli</b> — tır trafiğine tamamen kapalıdır.')+
-  note('İşin can sıkıcı tarafı: <b>zorunlu kiralık tırlar da bu kotayı tüketir.</b> Günde 10 kiralık tır seferi, 20 ziyaret demek. İstanbul\'un 10\'luk kotasının 8\'i, Yalova\'nın 4\'ünün 3\'ü daha plan başlamadan yenmiş oluyor; Tekirdağ ve Balıkesir\'de spot tıra hiç yer kalmıyor.','hl'))},
+  pbars(byT().map(c=>({n:c.n,v:c.t,q:c.t,c:c.t===0?'z':''}))))},
 
-'k-fleet':{k:'Kısıt 3',t:'Kiralık filo — 12 rota, her gün 14 araç',b:()=>pdef('<b>Kiralık filo nedir?</b> Şartnamenin bize önceden verdiği, <em>sabit rotalarda her gün çalışmak zorunda olan</em> araç havuzu. Maliyeti plandan bağımsız olarak oluşur: ne iptal edebilir, ne rotasını değiştirebilir, ne de yolda başka bir merkeze uğratabiliriz.')+pcols(
+'k-fleet':{k:'Kısıt 3',t:'Kiralık filo — 12 rota, her gün 14 araç',b:()=>pcols(
   ps('12 rota','Sabit, değiştirilemez rota listesi','sm')+
   ps('10 tır + 4 kamyon','Günde 14 araç — talep olmasa da çıkar','sm brand')+
   ps('126 sefer','Planımızın 9 çıkış tarihinde toplam zorunlu sefer','blue')+
@@ -1313,9 +1282,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   '<table><thead><tr><th>Çıkış</th><th>Varış</th><th>Tür</th><th class="n">Araç/gün</th></tr></thead><tbody>'+
   NET.rented.map(r=>'<tr'+(r[3].trim()==='Tır'?' class="hi"':'')+'><td>'+r[0]+'</td><td>'+r[1]+
     '</td><td>'+r[3]+'</td><td class="n">'+r[2]+'</td></tr>').join('')+
-  '</tbody></table>'+
-  note('Kiralık filo maliyeti <b>batık</b>: plan bu araçları kaldıramaz, sadece <b>doldurabilir</b>. Boş giden bir kiralık araç, ödenmiş ama kullanılmamış kapasitedir — bu yüzden optimizasyon merdiveninde ilk iş, uygun yükleri kiralıklara bindirmek.')+
-  note('Kiralık araçlar aynı zamanda iki kısıtı birden yer: hem tır kotasını (günde 20 ziyaret) hem varış merkezlerinin elleçleme kotasını. Yani plan onlarla <b>başlamak</b> zorunda; spot araçlar ancak artakalan kapasiteyle çalışabilir.','hl'))},
+  '</tbody></table>')},
 
 'k-sla':{k:'Kısıt 4',t:'SLA — hat başına 1 veya 2 gün, tavanı yok',b:()=>pdef('<b>SLA nedir?</b> <em>Service Level Agreement</em> — hizmet seviyesi taahhüdü. Burada: bir talebin, tamamlanma anından itibaren kaç gün içinde nihai varış merkezine <em>teslim edilmiş olması</em> gerektiği. Bu süreyi aşmak yasak değildir; gecikilen her saat için ceza ödenir.')+pcols(
   ps('204 / 102','SLA 1 gün olan / 2 gün olan hat sayısı','sm')+
@@ -1323,60 +1290,42 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps('desi × ⌈saat⌉ × 0,40 ₺','Gecikme cezası — saat bir üst tam saate yuvarlanır','sm brand')+
   ps('2.400 ₺','6.000 desilik yük 1 saat gecikirse','warn')+
   ps('Gizli tavan <b>yok</b>','Ceza yasak değil — sadece pahalı','sm ok'),
-  pstack(BANDS)+leg([[SLA_OK,'SLA 1 gün — 204 hat'],[SLA_2,'SLA 2 gün — 102 hat']])+
-  note('SLA tamamen <b>mesafeye bağlı</b>: 773 km’ye kadar olan hatların hepsi 1 gün, 782 km’den uzun hatların hepsi 2 gün. Arada çakışan tek bir hat bile yok — teslim süresi, ağın coğrafyasının doğrudan bir sonucu.')+
-  note('<b>Saat nerede başlar, nerede durur:</b> talebin tamamlanma anında (09:00 veya 17:00) başlar, yükün nihai varış merkezindeki <b>elleçlemesi bittiğinde</b> durur. Aradaki her şey — yolculuk, aktarma, konsolidasyon için bekleme — sayılır.')+
-  note('Kritik nokta: şartnamede <b>"en fazla şu kadar gecikebilir"</b> diye bir kural yok. Ceza doğrusal ve hesaplanabilir, dolayısıyla bir aracı doldurmak için beklemek meşru bir <b>maliyet takasıdır</b>. Nihai planımızda SLA cezası '+M(S0.sla_penalty)+'₺\'den '+M(S3.sla_penalty)+'₺\'ye <b>çıktı</b>, buna karşılık araç maliyeti '+M(S0.vehicle_cost)+'₺\'den '+M(S3.vehicle_cost)+'₺\'ye düştü — net kazanç '+M(S0.total_cost-S3.total_cost)+'₺.','hl'))},
+  pstack(BANDS)+leg([[SLA_OK,'SLA 1 gün — 204 hat'],[SLA_2,'SLA 2 gün — 102 hat']]))},
 
 's-trips':{k:'Serbestlik 1',t:'Spot araçlar sınırsız sefer yapabilir',b:()=>pdef('<b>Spot araç nedir?</b> Önceden kiralanmış değil, ihtiyaç duyuldukça çağrılan ve yalnız <em>kullanıldığı süre</em> kadar ücretlendirilen araç. <b>Sefer</b> ise bir aracın tek bir çıkış–varış hareketidir.')+pcols(
   ps('Sınır yok','Bir spot araç gün içinde kaç sefer yaparsa yapsın','sm')+
   ps(nf(S0.spot_n)+' → '+nf(S3.spot_n),'Spot araç sayımız — Stage 0\'dan nihai plana','sm ok')+
   ps('%'+nf(S0.avg_fill,0)+' → %'+nf(S3.avg_fill,0),'Ortalama doluluk oranı','sm ok'),
-  note('Jüri soru-cevabında netleşti: spot araçların sefer sayısına <b>kural sınırı yok</b>. İstediğimiz kadar araç çağırabilir, her aracı istediğimiz kadar çalıştırabiliriz.')+
-  note('Ama fatura bunu bedava yapmıyor: bir spot aracın <b>kullanım süresi</b>, ilk yükleme başlangıcından son indirme bitişine kadar <b>tek sürekli penceredir</b>. Bekleme de elleçleme de bu pencerenin içindedir. Yani "araç sayısını azaltmak" ile "aracı uzun süre meşgul etmek" arasında gerçek bir takas var.')+
-  note('Bu yüzden bizim optimizasyonumuz sefer sayısını değil <b>doluluğu</b> hedefliyor: aynı yükü daha az ve daha dolu araçla taşımak, aynı aracı daha çok koşturmaktan neredeyse her zaman ucuz çıkıyor. Sonuç: '+nf(S0.routes)+' rotadan '+nf(S3.routes)+' rotaya, ortalama doluluk %'+nf(S0.avg_fill,0)+'\'den %'+nf(S3.avg_fill,0)+'\'a.','hl'))},
+  '')},
 
-'s-milk':{k:'Serbestlik 2 · en büyük kazanç',t:'Uğrama (milk-run) — durak sayısına kural sınırı yok',b:()=>pdef('<b>Milk-run nedir?</b> Sütçünün her sabah tek turda sırayla birçok eve uğraması gibi: <em>tek bir araç</em>, tek çıkışta yüklenir ve yol boyunca birden çok merkeze uğrayarak yükünü parça parça bırakır. Alternatifi, her varış merkezi için ayrı bir araç çıkarmaktır.')+pcols(
+'s-milk':{k:'Serbestlik 2 · en büyük kazanç',t:'Uğrama (milk-run) — durak sayısına kural sınırı yok',b:()=>pcols(
   ps(nf(D.milkrun.chains_accepted),'Kabul edilen uğramalı zincir','ok')+
   ps(nf(D.milkrun.source_vehicles_replaced)+' → '+nf(D.milkrun.chains_accepted),'Bu zincirlerin yerine geçtiği araç sayısı','sm ok')+
   ps(M(D.milkrun.desi_consolidated)+' desi','Konsolide edilen yük','sm blue')+
   ps(M(D.milkrun.local_saving_tl)+'₺','Yalnız bu adımın yerel kazancı','sm brand'),
   chainSVG()+
-  note('Yukarıdaki harita nihai planımızdan <b>gerçek bir zincir</b>: '+NET.chain.vehicle+' numaralı '+
-       NET.chain.type.toLowerCase()+' 30 Haziran 17:36’da Mersin’den '+nf(NET.chain.stops[0].load)+
-       ' desi ve '+NET.chain.stops[0].parts+' talep parçasıyla çıkıyor, sırayla Şanlıurfa, Mardin, Erzincan ve '+
-       'Sivas’a uğrayıp yükünü bırakıyor, 1 Temmuz 10:52’de boşalıyor. Milk-run olmasaydı bu <b>dört ayrı araç</b> demekti.')+
   pbars([{n:'2 duraklı',v:D.milkrun.chain_size_mix['2'],q:D.milkrun.chain_size_mix['2']+' zincir'},
          {n:'3 duraklı',v:D.milkrun.chain_size_mix['3'],q:D.milkrun.chain_size_mix['3']+' zincir'},
-         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1)+
-  note('Şartnamede durak sayısına üst sınır yok — bir spot araç istediği kadar merkeze uğrayabilir. Biz arama uzayını kontrol altında tutmak için kendimize <b>en fazla '+D.meta.max_chain_stops+' durak</b> sınırı koyduk; bu bizim seçimimiz, kuralın değil.')+
-  note('Arama hunisi: '+nf(D.milkrun.pairs_evaluated)+' ikili ve '+nf(D.milkrun.triples_evaluated)+
-       ' üçlü kombinasyon değerlendirildi, '+nf(D.milkrun.chains_accepted)+' zincir kabul edildi — her biri hakem simülatöründen geçtikten sonra.','hl'))},
+         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1))},
 
 's-mix':{k:'Serbestlik 3',t:'Bir araca farklı varışlı yükler birlikte yüklenebilir',b:()=>pdef('<b>Karışık yükleme nedir?</b> Aynı araçta <em>farklı varış merkezlerine</em> giden yüklerin birlikte taşınması. Araç ilk durakta yalnız oraya ait yükü indirir, geri kalanıyla yoluna devam eder — uğramayı anlamlı kılan şey tam olarak budur.')+pcols(
   ps(nf(D.milkrun.parts_consolidated),'Birleştirilen yük parçası','ok')+
   ps(nf(D.pickup.parts_picked_up),'Yol üstünden ek olarak alınan parça','blue')+
   ps(M(D.pickup.desi_picked_up)+' desi','Yol üstü toplamayla taşınan yük','sm'),
-  note('Aynı araçta A→B ve A→C yükü birlikte bulunabilir: araç B\'ye uğrar, oradaki yükü indirir, kalanla C\'ye devam eder. Bu serbestlik olmasaydı uğrama zaten anlamsız olurdu — ikisi birlikte çalışır.')+
-  note('Bunun ikinci bir sonucu daha var: bir araç <b>yol üstünde yük alabilir</b>. Nihai plandaki '+nf(D.pickup.pickups_accepted)+' yol-üstü toplama, '+nf(D.pickup.donor_vehicles_removed)+' aracı tamamen gereksiz kıldı ve '+M(D.pickup.local_saving_tl)+'₺ kazandırdı.')+
-  note('Kritik detay: bir yükün <b>parçalara bölünüp farklı araçlara</b> dağıtılması da serbest. Çıktı şemasında aynı Talep ID birden fazla satırda görünebiliyor (D00460-2 gibi) — bu bir hata değil, kuralın izin verdiği bir esneklik.','hl'))},
+  '')},
 
 's-min':{k:'Serbestlik 4',t:'Zaman çözünürlüğü dakika; merkezler 24 saat çalışır',
-  b:()=>pdef('<b>Zaman çözünürlüğü nedir?</b> Planın kararlarını hangi zaman biriminde verdiği. Bizde bu birim <em>dakika</em>: bir aracın çıkış anını 18:00 gibi kaba bir saate değil, 17:36 gibi tam dakikaya koyabiliyoruz.')+
+  b:()=>
   pcols(
   ps('24 saat','Merkezler kesintisiz çalışır; vardiya ya da mesai penceresi yok','sm ok')+
   ps(nf(NET.clock.night)+' sefer','Nihai planımızda gece 00:00–06:00 arası yola çıkan araç','sm purple')+
   ps('60 / 60','Dakika değerlerinin tamamı kullanılıyor','sm blue')+
   ps('%'+nf(NET.clock.on_hour/NET.clock.legs*100,1),'Yalnız bu kadarı tam saatte çıkıyor — gerisi ara dakikalarda','sm brand')+
   ps('55,2 dk → 56 dk','Tüm süreler bir üst tam dakikaya yuvarlanır','sm'),
-  clockChart()+minuteChart()+
-  note('Yukarıdaki iki grafik <b>iddia değil, planımızın kendisi</b>. Üstte '+nf(NET.clock.legs)+
-       ' aracın çıkış saati: akşam 17:00–20:00 yoğunluğu talebin tamamlanma anlarından geliyor, ama gece boyunca da '+
-       nf(NET.clock.night)+' araç yola çıkıyor. Şartnamede vardiya ya da gece kısıtı yok; gün kavramının tek etkisi elleçleme kotasının <b>00:00’da sıfırlanması</b>.')+
-  note('Altta aynı seferlerin <b>dakikaları</b>. Saat çözünürlüğüyle çalışan bir plan burada yalnız <b>:00</b> sütununu doldururdu; bizde 60 dakika değerinin 60’ı da dolu. Bu, aracı doldurmak için <b>çıkış anını serbestçe kaydırabilmek</b> demek — planın en değerli serbestliği.','hl'))},
+  clockChart()+minuteChart())},
 
 'd-hist':{k:'Geçmiş veri',t:'179 günün tamamı — hacim, zaman ekseninde',b:()=>
-  pdef('<b>Neye bakıyoruz?</b> 1 Ocak – 28 Haziran 2026 arası <em>her günün toplam desi hacmi</em>. Mavi eğri günlük hacim, yeşil kesikli çizgi normal bir günün medyanı. Alttaki ince şerit her günün hangi <em>rejime</em> ait olduğunu söyler: turuncu ayın son iki günü, sarı resmî tatil, mavi normal gün.')+
+
   '<div class="pcols"><div class="pside">'+
   ps(nf(D.cleaning.raw_rows),'Geçmiş talep satırı','sm')+
   ps('179 gün','1 Ocak – 28 Haziran 2026, kesintisiz','sm blue')+
@@ -1384,16 +1333,12 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps('%0,2','En düşük ay sonu — 31 Mayıs, 2.010 desi','sm warn')+
   ps('5 / 5','Ay sonu çöküşü kaç ayda gerçekleşti','sm brand')+
   '</div><div class="pmain">'+histBig()+
-  note('Eğrideki <b>beş derin dip</b> tesadüf değil: beşi de ayın son günü. Turuncu noktalar bunları işaretliyor — Ocak’tan Mayıs’a beş ayın beşinde, istisnasız. Aralarındaki sarı çizgiler resmî tatiller; onlar da düşük ama ay sonu kadar keskin değil.')+
   '</div></div>'+
   '<div class="pcols" style="margin-top:20px"><div class="pside" style="flex:0 0 430px">'+
   regimeChart()+
   '</div><div class="pmain">'+
-  note('Soldaki grafik aynı 179 günü <b>dört gruba</b> ayırıp her grubun medyanını karşılaştırıyor. Normal bir gün 100 kabul edilirse: resmî tatil ve ay sonundan bir önceki gün belirgin biçimde düşük, <b>ayın son günü ise neredeyse sıfır</b>. Bunlar “aykırı değer” değil — her ay tekrarlayan, öngörülebilir <b>ayrı rejimler</b>. Modelimizin ikinci katmanı tam olarak bunu ölçüyor.')+
-  note('Kritik nokta: <b>30 Haziran tahmin ufkumuzun içinde</b> ve o da bir ay sonu. Bu günü normal bir salı sayan model, tek başına orada yaklaşık <b>1,1 milyon desi</b> hata üretir — bu tek gözlem WMAPE puanını domine ederdi.','hl')+
   '</div></div>'+
   '<div style="margin-top:20px">'+
-  note('Aynı veri <b>takvim düzeninde</b>: her kare bir gün, sütunlar hafta, satırlar haftanın günü. Bu görünüm büyüklükleri okumaya değil, <b>örüntünün takvime nasıl oturduğunu</b> görmeye yarar — turuncu kareler ay sonlarında düzenli aralıklarla tekrar eder.')+
   calHeat()+'</div>'},
 
 'd-clean':{k:'Veri hazırlığı',t:'Ham veriden eğitim ızgarasına — ne elendi, neden',b:()=>
@@ -1404,13 +1349,10 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps(nf(D.cleaning.training_grid_rows),'Eğitimde kullanılan hücre','sm ok')+
   ps(nf(D.cleaning.excluded_grid_rows),'23 dışlanan tarihe ait hücre','sm warn'),
   pbars([{n:'Eğitimde kullanılan',v:D.cleaning.training_grid_rows,q:nf(D.cleaning.training_grid_rows)+' hücre',c:''},
-         {n:'Dışlanan (23 tarih)',v:D.cleaning.excluded_grid_rows,q:nf(D.cleaning.excluded_grid_rows)+' hücre',c:'z'}],1)+
-  note('<b>Neden ızgara?</b> '+nf(D.cleaning.raw_rows)+' ham satır yalnız talep <b>olan</b> hücrelerdir. 289 hat × 2 saat × 179 gün = '+
-       nf(D.cleaning.history_grid_rows)+' hücrenin geri kalanı gerçek birer <b>sıfır</b>dır ve modelin bunları görmesi şarttır.')+
-  note('<b>Ne yapmadık:</b> outlier temizleme, log dönüşümü, ölçekleme, smoothing, trend/mevsim ayrıştırma ve harici ML kütüphanesi <b>kullanmadık</b>. Tek elediğimiz şey 23 takvim tarihi — onlar da gürültü değil, <b>başka bir rejim</b>: tatil ve ay sonu günleri normal günün istatistiğini bozar, ama kendileri düzenli ve öngörülebilirdir.','hl'))},
+         {n:'Dışlanan (23 tarih)',v:D.cleaning.excluded_grid_rows,q:nf(D.cleaning.excluded_grid_rows)+' hücre',c:'z'}],1))},
 
 'd-179':{k:'Veri kaynakları',t:'179 gün geçmiş · 8 veri seti',b:()=>
-  pdef('<b>Neyi neyle besliyoruz?</b> Tahmin modeli yalnız geçmiş talep verisini kullanır; kalan dosyalar optimizasyonun kısıtlarını ve maliyetlerini tanımlar. Hiçbir dış veri kaynağı, hava durumu ya da harici tahmin girdisi yoktur.')+
+
   '<div class="pcols"><div class="pside">'+
   ps('179 gün','1 Oca – 28 Haz 2026 · eksik gün yok','sm blue')+
   ps(nf(D.cleaning.raw_rows),'Geçmiş talep satırı','sm')+
@@ -1429,11 +1371,10 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
    .map(r=>'<tr'+(r[3]?' class="hi"':'')+'><td>'+r[0]+'</td><td>'+r[1]+
            '</td><td class="n">'+r[2]+'</td></tr>').join('')+
   '</tbody></table>'+
-  note('Son iki satır <b>bizim ürettiğimiz</b> çıktılardır, girdi değil. İlk altısı şartnamenin verdiği dosyalardır ve hiçbirini değiştirmedik.','hl')+
   '</div></div>'},
 
 'd-23':{k:'Dışlanan tarihler',t:'23 tarih — her birinin gerekçesi tek tek yazılı',b:()=>
-  pdef('<b>Dışlamak ne demek?</b> Bu 23 gün veriden <em>silinmez</em>. Yalnızca “normal bir gün ne kadar yük taşır” sorusunun cevabı hesaplanırken <em>hesaba katılmaz</em>. Sonra ayrı bir katman bu günlerin normal günden ne kadar saptığını ölçer. Yani onları <b>atmıyoruz — ayrı modelliyoruz</b>.')+
+
   '<div class="pcols"><div class="pside">'+
   ps('15 + 10 − 2 = 23','Resmî tatil + ay sonu günü − ikisine birden giren tarih','sm brand')+
   ps('23 tarih','179 günün %12,8’i','sm warn')+
@@ -1441,15 +1382,11 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps('Yalnız eğitim','Hedef günler hiçbir koşulda elenmez','sm ok')+
   ps('Haziran yok','Bilinçli — 29/30 Haziran tahmin ufkunun içinde','sm ok')+
   '</div><div class="pmain">'+
-  note('<b>Neden 25 değil 23?</b> Şartname takvimi iki ayrı listeden besleniyor: 15 <b>resmî tatil</b> ve Ocak–Mayıs’ın son iki günü, yani 5 ay × 2 = 10 <b>ay sonu günü</b>. Bu iki liste iki tarihte çakışıyor: <b>30 ve 31 Mayıs</b> hem Kurban Bayramı’na hem Mayıs’ın son iki gününe denk geliyor. Aynı tarihi iki kez saymak yanlış olurdu — bu yüzden dışlanan <b>ayrı takvim tarihi sayısı 23</b>. Aşağıdaki listede bu iki tarih mor işaretli.')+
-  note('<b>Peki neden dışlıyoruz?</b> Çünkü bu günler gürültü değil, <b>başka bir rejim</b>. Normal bir salının medyanını hesaplarken aralarına bir ay sonu karışırsa medyan aşağı kayar ve model <b>her salıyı</b> olduğundan düşük tahmin etmeye başlar. Onları ayırınca iki temiz sinyal elde ediyoruz: normal günün gerçek seviyesi, ve olay günlerinin bu seviyeden sapma oranı.','hl')+
   exclChart()+
-  note('Listede iki farklı davranış görünüyor. <b>Ayın son günü</b> neredeyse sıfıra iniyor (%0,2 – %2,6); <b>sondan bir önceki gün</b> ise yalnızca kısmen düşük (%56 – %122) — bazen normalin üstüne bile çıkıyor. Aynı ayrım bayramlarda da var: bayramın ilk günleri dip yaparken arife günleri normale yakın kalıyor. Bu yüzden modelimiz tek bir “tatil” etiketi kullanmaz; <b>ayın son günü</b> ve <b>sondan bir önceki gün</b> için ayrı katsayılar ölçer.')+
-  note('<b>Haziran neden listede yok?</b> Veri 28 Haziran’da bitiyor; Haziran’ın son iki günü olan 29–30 Haziran zaten <b>tahmin edeceğimiz günler</b>. Onları eğitimden elemek anlamsız olurdu — tam tersine, doğru tahmin etmek zorundayız. Dışlama listesinin Haziran’a uzanmaması bu yüzden bir eksiklik değil, bilinçli bir sınır.')+
   '</div></div>'},
 
 'd-crit':{k:'Metodoloji',t:'Ne yaptık, ne yapmadık — ve neden',b:()=>
-  pdef('<b>Sızıntı (leakage) nedir?</b> Modelin, tahmin etmesi gereken günün bilgisini eğitim sırasında görmesi. Backtest sonucunu gerçekte olacağından iyi gösterir. Aşağıdaki iki kural bunu engellemek içindir.')+
+
   pcols(
   ps('Yalnız eğitim','Dışlama sadece geçmiş veriye uygulanır','sm ok')+
   ps('Hedef gün asla','Tahmin edilecek günler hiçbir koşulda elenmez','sm ok')+
@@ -1464,8 +1401,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
    ['Takvim dışlama','<b class="ok">Yaptık</b>','Tatil ve ay sonu ayrı rejim — normal gün istatistiğinden çıkarılmalı'],
    ['Tam ızgara (sıfırlar dâhil)','<b class="ok">Yaptık</b>','Talep görülmeyen hücre gerçek bir sıfırdır; görülmezse model her hücreye talep uydurur']]
    .map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td style="color:var(--dim);font-size:12px">'+r[2]+'</td></tr>').join('')+
-  '</tbody></table>'+
-  note('Kısacası: veri düzenli ve <b>tek bir güçlü mevsimsellik</b> tarafından yönetiliyor. Bu durumda ağır ön işleme kazanç değil <b>risk</b> ekler — her ek katman, doğrulaması gereken yeni bir varsayımdır.','hl'))},
+  '</tbody></table>')},
 
 's-late':{k:'Serbestlik 5',t:'Teslim ufku aşılabilir — ceza ödeyip beklemek meşru',b:()=>pdef('<b>Teslim ufku nedir?</b> Bir talebin SLA’sına göre teslim edilmiş olması gereken son an. Bu anı aşmak kural ihlali değildir — <em>fiyatı belli bir seçenektir</em>: gecikilen her saat için desi başına ceza ödenir.')+pcols(
   ps(M(S0.sla_penalty)+'₺ → '+M(S3.sla_penalty)+'₺','SLA cezamız bilerek <b>arttı</b>','sm warn')+
@@ -1476,30 +1412,22 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
            segs:[{v:S0.vehicle_cost,col:'rgba(87,166,255,.75)'},{v:S0.sla_penalty,col:SLA_2}]},
           {n:'Nihai plan',q:M(S3.total_cost)+'₺',
            segs:[{v:S3.vehicle_cost,col:'rgba(87,166,255,.75)'},{v:S3.sla_penalty,col:SLA_2}]}])+
-  leg([['rgba(87,166,255,.85)','araç maliyeti'],[SLA_2,'SLA cezası']])+
-  note('Şartnamede <b>gizli bir SLA tavanı yok</b>: "en fazla şu kadar gecikebilir" diye bir kural yazılmamış. Gecikme yasak bir davranış değil, fiyatı belli bir seçenektir.')+
-  note('Biz de bunu bilinçli kullanıyoruz. Nihai planda SLA cezasını '+M(S3.sla_penalty-S0.sla_penalty)+
-       '₺ <b>artırdık</b>, çünkü aynı hamle araç maliyetinden '+M(S0.vehicle_cost-S3.vehicle_cost)+
-       '₺ kazandırdı. Bu bir ihlal değil, kuralların içinde kalan bir <b>maliyet takası</b> — ve hakem simülatörü her aşamada sıfır ihlal veriyor.','hl'))}
+  leg([['rgba(87,166,255,.85)','araç maliyeti'],[SLA_2,'SLA cezası']]))}
 ,
 
 /* ══════════════ Stage 2 · milk-run detayları ══════════════ */
 's2-arama':{k:'Stage 2 · arama',t:'101.795 kombinasyon denendi, 227 zincir kabul edildi',b:()=>
-  pdef('<b>Zincir nedir?</b> Aynı merkezden <em>aynı dakikada</em> kalkan k adet ayrı araç, tek bir fiziksel araca bindirilir. Araç sırayla her varış merkezine uğrar, yükün oraya ait kısmını bırakır, kalanla devam eder. <em>Kaç segment taşındığı değişmez — kaç araç kiralandığı değişir.</em>')+
+
   pcols(
   ps(nf(D.milkrun.groups_considered),'Aday grup — aynı merkez, aynı dakika','sm')+
   ps(nf(D.milkrun.pairs_evaluated+D.milkrun.triples_evaluated),'Fiyatlandırılan kombinasyon','sm blue')+
   ps(nf(D.milkrun.chains_accepted),'Kabul edilen zincir','sm ok')+
   ps('%'+nf(100*D.milkrun.chains_accepted/(D.milkrun.pairs_evaluated+D.milkrun.triples_evaluated),3),'Kabul oranı — arama gerçekten eliyor','sm brand')+
   ps(D.meta.max_chain_stops+' durak','Kendi koyduğumuz üst sınır — kuralın değil','sm warn'),
-  '<div class="pmap mid">'+chartMilkFunnel()+'</div>'+
-  note('<b>Huni neden önce genişliyor?</b> Çünkü bunlar üç ayrı şey. <b>'+nf(D.milkrun.groups_considered)+' aday grup</b>, aynı merkez-dakikada buluşan araç <i>kümeleridir</i>. Bu kümelerin içinden çıkarılabilecek <b>'+nf(D.milkrun.pairs_evaluated)+' çift</b> ve <b>'+nf(D.milkrun.triples_evaluated)+' çoklu alt küme</b> tek tek fiyatlandırılır — üstelik her alt kümenin <i>uğrama sırası</i> da ayrı bir adaydır. Sonunda kabul edilen '+nf(D.milkrun.chains_accepted)+' zincir kalır.')+
-  note('<b>Bir aday nasıl kabul edilir?</b> İki koşul birden gerekir. Birincisi: zincirin toplam maliyeti, yerine geçtiği k aracın toplamından <b>düşük</b> olmalı. İkincisi: ortaya çıkan plan hakem simülatöründen <b>0 ihlalle</b> geçmeli. İkinci koşul sağlanmazsa aday, kârlı olsa bile atılır ve resmî çıktı hiç değişmez.')+
-  note('<b>Kimlik kontrolü:</b> Stage 1 planında '+nf(S('Stage 1').routes)+' araç vardı. Kabul edilen zincirler '+nf(D.milkrun.source_vehicles_replaced)+' aracın yerine geçti ve onların yerine '+nf(D.milkrun.chains_accepted)+' araç kondu: '+nf(S('Stage 1').routes)+' − '+nf(D.milkrun.source_vehicles_replaced)+' + '+nf(D.milkrun.chains_accepted)+' = <b>'+nf(S('Stage 2').routes)+'</b>. Segment sayısı ise '+nf(S('Stage 1').segments)+'’de <b>sabit</b> kaldı — zincir yeni bacak yaratmaz, var olanları tek araca bindirir.','hl')+
-  note('<b>Neden en fazla '+D.meta.max_chain_stops+' durak?</b> Şartnamede üst sınır yok; sınır bizim. 5 duraklı zinciri kaba kuvvetle denedik: C(n,5) alt küme × 120 sıralama, 13,5 dakika CPU ve 1,3 GB bellekten sonra sonuç alınamadı. Budamalı bir arama olmadan 5 durak kapalı bir kapı — bunu açık kalem olarak yazıyoruz.'))},
+  '<div class="pmap mid">'+chartMilkFunnel()+'</div>')},
 
 's2-zincir':{k:'Stage 2 · sonuç',t:'227 zincir hangi uzunlukta ve ne kazandırdı',b:()=>
-  pdef('<b>Grafiği nasıl okumalı?</b> Halka, nihai plandaki <em>fiziksel araç</em> sayısını uzunluğa göre böler. “1 bacak” tek durağa giden sıradan bir seferdir; “4 durak” ise dört ayrı aracın işini üstlenen bir zincirdir.')+
+
   pcols(
   ps(nf(D.milkrun.chain_size_mix['2'])+' / '+nf(D.milkrun.chain_size_mix['3'])+' / '+nf(D.milkrun.chain_size_mix['4']),'2 / 3 / 4 duraklı zincir sayısı','sm')+
   ps(nf(D.milkrun.source_vehicles_replaced)+' → '+nf(D.milkrun.chains_accepted),'Yerine geçilen araç → zincir','sm ok')+
@@ -1507,16 +1435,13 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps(nf(D.milkrun.parts_consolidated),'Birleştirilen talep parçası','sm')+
   ps(M(D.milkrun.local_saving_tl)+'₺','Yalnız bu adımın kazancı','sm brand'),
   chainSVG()+
-  note('Yukarıdaki harita <b>uydurma değil</b>: nihai planımızdaki '+NET.chain.vehicle+' numaralı '+NET.chain.type.toLowerCase()+'. 30 Haziran 17:36’da Mersin’den '+nf(NET.chain.stops[0].load)+' desi ve '+NET.chain.stops[0].parts+' talep parçasıyla çıkıyor; Şanlıurfa, Mardin, Erzincan ve Sivas’a sırayla uğrayıp yükünü bırakıyor; 1 Temmuz 10:52’de boşalıyor. Milk-run olmasaydı bu <b>dört ayrı araç</b> demekti.')+
   pbars([{n:'2 duraklı',v:D.milkrun.chain_size_mix['2'],q:D.milkrun.chain_size_mix['2']+' zincir'},
          {n:'3 duraklı',v:D.milkrun.chain_size_mix['3'],q:D.milkrun.chain_size_mix['3']+' zincir'},
-         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1)+
-  note('<b>Neden 4 duraklı zincirler 3 duraklılardan çok?</b> Çünkü arama uzunluğa değil <b>kârlılığa</b> göre seçiyor. Dört aracı tek araca bindirmek üç katına yakın kazandırır; üç duraklı zincirler ancak dördüncü bir uygun araç bulunamadığında ortaya çıkar. '+nf(D.milkrun.chain_size_mix['4'])+' adet 4 duraklı zincir tek başına '+nf(4*D.milkrun.chain_size_mix['4'])+' aracın işini görüyor.')+
-  note('<b>Zincirler hangi araç türünde?</b> '+Object.keys(D.milkrun.chain_type_mix).map(function(t){return D.milkrun.chain_type_mix[t]+' '+t.toLowerCase()}).join(' · ')+'. Tır listede <b>yok</b> ve bu bilinçli: tırı zincire katmayı ölçtük, 18.100 ₺ <b>daha kötü</b> sonuç verdi. Kamyon aynı 12.000 desi kapasitede tırdan ucuz (318,25 ₺/sa karşı 487,50 ₺/sa) ve kârlı tır adaylarının %93,6’sı tır kotası sıfır olan yedi merkez yüzünden ölüyor.','hl'))},
+         {n:'4 duraklı',v:D.milkrun.chain_size_mix['4'],q:D.milkrun.chain_size_mix['4']+' zincir',c:'hi'}],1))},
 
 /* ══════════════ Stage 3 · yük alma detayı ══════════════ */
 's3-pickup':{k:'Stage 3 · yük alma',t:'Rota ortasında yük alma — ve rotanın neden uzamadığı',b:()=>
-  pdef('<b>Tier A nedir?</b> Bir zincir ara durakta yalnız <em>indirmez</em>, oradan kalkacak yükü de <em>alır</em>. Kritik kısıt bizim koyduğumuz: alınan yükün varış merkezi, rotanın <em>zaten uğrayacağı</em> bir durak olmak zorunda. Böylece rota bir metre bile uzamaz, topoloji hiç değişmez.')+
+
   pcols(
   ps(nf(D.pickup.routes_considered),'Hedef rota — Stage 2’nin zincirleri','sm')+
   ps(nf(D.pickup.donors_available),'Donör araç — yükünü devredebilecek','sm blue')+
@@ -1524,37 +1449,28 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ps(nf(D.pickup.profitable_candidates)+' → '+nf(D.pickup.pickups_accepted),'Kârlı aday → çakışmasız kabul','sm ok')+
   ps(nf(D.pickup.desi_picked_up)+' desi','Yol üstünden alınan yük · '+nf(D.pickup.parts_picked_up)+' parça','sm brand'),
   '<div class="pmap wide">'+chartPickStop()+'</div>'+
-  note('<b>Kural dayanağı jürinin kendi cümlesi:</b> “bir araçtan x kadar yük indirilip y kadar yük yüklenirse kapasiteden x artı y kadar yük düşülür.” Bu tek cümle hem işlemin serbest olduğunu söylüyor hem de elleçleme aritmetiğini veriyor.')+
-  '<pre style="margin-top:15px">unload_end   = varış + elleçleme(inen)          <b>← SLA saati burada durur</b>\ndepart_after = unload_end + elleçleme(alınan)   <b>← araç ancak bundan sonra kalkar</b></pre>'+
-  note('<b>Buradaki sessiz hata:</b> bir yük alma durağında <b>iki ayrı zaman damgası</b> vardır. İnen kargo, indirilmesi bittiği anda teslim edilmiştir; sonradan yapılan yükleme aracı geciktirir ama <b>o teslimatı geciktirmez</b>. İkisini tek damgaya indirgemek, olmayan bir SLA cezası uydurur. Prototipimizde tam olarak bu hata yapıldı ve <b class="brand">hakem simülatörü yakaladı</b> — başka hiçbir kontrol fark etmemişti.','hl')+
-  note('<b>Neden '+nf(D.pickup.profitable_candidates)+' kârlı adaydan yalnız '+nf(D.pickup.pickups_accepted)+'’i kabul edildi?</b> Çünkü aynı donör aracı birden fazla rota istiyor. Çakışma çözümünde her donör yalnız bir kez kullanılabilir, kalanlar elenir. Kabul edilen '+nf(D.pickup.pickups_accepted)+' hamle '+nf(D.pickup.donor_vehicles_removed)+' aracı plandan tamamen sildi ve '+nf(D.pickup.local_saving_tl,2)+' ₺ kazandırdı.')+
-  note('<b>Tier B neden yok?</b> Tier B, alınan yükün varışı rotada olmasa bile rotayı <b>bir durak uzatarak</b> yükü taşımayı önerir. Bağımsız ölçümümüz ek ~66 bin ₺ gösterdi; ancak rota topolojisini değiştirdiği için hakem kurallarının çok daha geniş bir kısmını etkiliyor. Kalan sürede güvenle doğrulayamadığımız için <b>bilinçli olarak dışarıda bıraktık</b> — açık kalem olarak duruyor.'))},
+  '<pre style="margin-top:15px">unload_end   = varış + elleçleme(inen)          <b>← SLA saati burada durur</b>\ndepart_after = unload_end + elleçleme(alınan)   <b>← araç ancak bundan sonra kalkar</b></pre>')},
 
 /* ══════════════ Filo etkisi — grafik detayları ══════════════ */
 'f-fleet':{k:'Etki · filo',t:'Fiziksel araç sayısı neden bu kadar önemli',b:()=>
-  pdef('<b>“Fiziksel araç” ne demek?</b> Faturaya giren birim. Bir araç kaç merkeze uğrarsa uğrasın <em>tek bir kullanım penceresi</em> için ücretlendirilir. Dolayısıyla araç sayısını düşürmek, aynı yükü aynı mesafede taşırken maliyeti düşürmenin en doğrudan yoludur.')+
+
   pcols(
   STG.map(function(k,i){return ps(nf(S(k).routes),k+' — '+['temel plan','aynı-hat onarım','milk-run','yük alma'][i],'sm'+(i===3?' brand':''))}).join('')+
   ps('−%47,6',nf(S('Stage 0').routes)+' → '+nf(S('Stage 3').routes)+' fiziksel araç','sm ok'),
   '<div class="pmap mid">'+chartFleet()+'</div>'+
-  note('<b>Segment sayısı ile araç sayısı aynı şey değildir.</b> Segment, “A’dan B’ye bir hareket” demektir ve taşınacak yük onu zorunlu kılar. Araç ise o hareketleri koşan, saatlik ücretlendirilen birimdir. Stage 2’de segment sayısı '+nf(S('Stage 1').segments)+'’de sabit kalırken araç '+nf(S('Stage 1').routes)+'’den '+nf(S('Stage 2').routes)+'’e indi: <b>aynı işi daha az araçla</b> yaptık.')+
   '<table class="anim"><thead><tr><th>Aşama</th><th class="n">Segment</th><th class="n">Fiziksel araç</th><th class="n">Kiralık</th><th class="n">Spot</th><th class="n">Araç maliyeti</th></tr></thead><tbody>'+
   STG.map(function(k,i){var x=S(k);return '<tr'+(i===3?' class="hi"':'')+'><td>'+k+'</td><td class="n">'+nf(x.segments)+'</td><td class="n">'+nf(x.routes)+'</td><td class="n">'+nf(x.rented_routes)+'</td><td class="n">'+nf(x.spot_routes)+'</td><td class="n">'+M(x.vehicle_cost)+'₺</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Kiralık sayısı hiç değişmiyor</b> ve bu doğru: 12 zorunlu rota × 9 çıkış tarihi = '+nf(S('Stage 0').rented_routes)+' araç her aşamada aynen duruyor, çünkü onları iptal etme yetkimiz yok. Optimizasyonun dokunabildiği tek yer spot filodur: '+nf(S('Stage 0').spot_routes)+' → '+nf(S('Stage 3').spot_routes)+'.','hl'))},
+  '</tbody></table>')},
 
 'f-fill':{k:'Etki · doluluk',t:'Kümülatif doluluk eğrisi nasıl okunur',b:()=>
-  pdef('<b>Kümülatif dağılım nedir?</b> Yatay eksende bir doluluk oranı seçin; eğri size “araçların yüzde kaçı bu orandan <em>daha az</em> dolu” cevabını verir. Eğri ne kadar <em>sağa</em> yaslanmışsa o kadar çok araç yüksek dolulukta demektir.')+
+
   pcols(
   STG.map(function(k,i){return ps('%'+nf(S(k).avg_fill,2),k+' ortalama doluluk','sm'+(i===3?' ok':''))}).join('')+
   ps(nf(S('Stage 0').spot_below_30)+' → '+nf(S('Stage 3').spot_below_30),'%30’un altında dolu spot araç','sm brand'),
-  '<div class="pmap mid">'+chartFill()+'</div>'+
-  note('<b>Somut okuma:</b> Stage 0 eğrisi %30 çizgisini yüksekten keser — '+nf(S('Stage 0').spot_routes)+' spot aracın <b>'+nf(S('Stage 0').spot_below_30)+' tanesi</b> üçte birinden az doluydu. Nihai planda bu sayı <b>'+nf(S('Stage 3').spot_below_30)+'</b>. Yarı boş bir araç, ödenmiş ama kullanılmamış kapasitedir.')+
-  note('<b>Neden %100 değil?</b> Çünkü doluluk kendi başına bir hedef değil, maliyetin bir <b>göstergesi</b>. Bir aracı sonuna kadar doldurmak için başka bir yükü saatlerce bekletmek, kazandırdığından fazla SLA cezası ödetebilir. Optimizasyon doluluğu değil <b>toplam maliyeti</b> minimize eder; %'+nf(S('Stage 3').avg_fill,2)+' bunun sonucudur, amacı değil.','hl')+
-  note('Eğrinin sağ ucundaki dik yükseliş tam dolu araçların yoğunluğunu gösterir. Kiralık filo da bu grafikte yer alır ve doluluğu bizim kontrolümüzde değildir — zorunlu rotalar talep olmasa da çıkar.'))},
+  '<div class="pmap mid">'+chartFill()+'</div>')},
 
 'f-mix':{k:'Etki · araç karması',t:'Neden kamyonet azaldı, kamyon arttı, tır hiç değişmedi',b:()=>
-  pdef('<b>Karma neden değişiyor?</b> Konsolidasyon yarı dolu küçük araçları birleştirir. İki yarı dolu kamyonetin yükü tek bir kamyona sığdığında kamyonet sayısı iki azalır, kamyon sayısı bir artar. Araç <em>sayısı</em> düşerken ortalama araç <em>boyu</em> büyür.')+
+
   pcols(
   ps(nf(S('Stage 0').vehicle_mix['Kamyonet'])+' → '+nf(S('Stage 3').vehicle_mix['Kamyonet']),'Kamyonet','sm brand')+
   ps(nf(S('Stage 0').vehicle_mix['Kamyon'])+' → '+nf(S('Stage 3').vehicle_mix['Kamyon']),'Kamyon','sm blue')+
@@ -1565,21 +1481,18 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   ['Kamyonet','Hafif Kamyon','Kamyon','Tır'].map(function(t){
     var v=NET.vehicles.filter(function(x){return x[0]===t})[0];
     return '<tr'+(t==='Tır'?' class="hi"':'')+'><td>'+t+'</td><td class="n">'+nf(v[1])+'</td><td class="n">'+nf(v[4],2)+'</td><td class="n">'+nf(v[5],0)+'</td><td class="n">'+nf(S('Stage 0').vehicle_mix[t]||0)+'</td><td class="n">'+nf(S('Stage 3').vehicle_mix[t]||0)+'</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Tırın 99’da sabit kalması bir tercih, bir sınır değil.</b> Tır 22.400 desi taşır ama saatlik 487,50 ₺’ye mal olur; kamyon 12.000 desiyi 318,25 ₺/sa ile taşır. Desi başına maliyette tır ancak <b>tam dolu</b> giderse öne geçer — ve yedi merkezde tır kotası sıfır olduğu için tam dolu bir tır rotası bulmak çoğu zaman imkânsız. Kıt kaynağı zorlamak yerine zorunlu kiralıklara bıraktık.','hl')+
-  note('Zaten planımızdaki tırların neredeyse tamamı zorunlu kiralık filodan geliyor: günde 10 kiralık tır × 9 çıkış tarihi = 90, üstüne 9 spot tır. Yani tır sayısını biz değil, şartname seçiyor.'))},
+  '</tbody></table>')},
 
 /* ══════════════ Hakem simülatörü ══════════════ */
 'q-hakem':{k:'Kalite kapıları',t:'Hakem simülatörü — nedir, neden yazdık, ne yakaladı',b:()=>
-  pdef('<b>Hakem simülatörü nedir?</b> Planlayıcıdan <em>tamamen ayrı</em> yazılmış ikinci bir uygulama. Optimizatörün iç durumunu hiç görmez; yalnızca diske yazılan Excel çıktısını ve şartnamenin ham veri dosyalarını okur, maliyeti ve 17 kuralı <em>sıfırdan yeniden hesaplar</em>. Kısacası jürinin bizi değerlendireceği hesabı, teslimden önce kendimize uygularız.')+
+
   pcols(
   ps('17','Yeniden hesaplanan kural','sm')+
   ps('592 / 592','Geçen regresyon testi','sm ok')+
   ps('0','Nihai plandaki ihlal','sm ok')+
   ps('0,0000 ₺','Beyan ettiğimiz maliyet ile hakemin hesabı arasındaki fark','sm brand')+
   ps('3 / 3','Stage 3 prototipindeki hatadan kaçını yakaladı','sm warn'),
-  note('<b>Neden buna ihtiyaç var?</b> Bir optimizasyon kodu kendi hesabına göre daima haklıdır. Maliyeti hesaplayan fonksiyonla planı üreten fonksiyon aynı varsayımı paylaşıyorsa, ikisi de yanlış olduğunda <b>hiçbir test bunu göremez</b>. Bağımsız bir ikinci uygulama tam bu kör noktayı kapatır: iki uygulama aynı sayıyı üretmiyorsa ortada gerçek bir hata vardır.')+
-  note('<b>Bağımsızlık nasıl sağlandı?</b> Hakem, optimizatörün hiçbir veri yapısını, ara değişkenini ya da yardımcı fonksiyonunu paylaşmaz. Girdisi yalnızca iki şeydir: diske yazılmış <b>Taşıma Planı Excel’i</b> ve şartnamenin <b>ham veri dosyaları</b>. Zaman aritmetiğini, gece yarısı bölmesini, SLA cezasını ve kapasite kontrollerini kendi kodundan yeniden türetir.')+
+
   '<table class="anim"><thead><tr><th>Kapı</th><th>Ne kontrol eder</th><th>İhlal olursa</th></tr></thead><tbody>'+
   [['17 kural','Plan fiziksel ve kurallı olarak mümkün mü','Tek ihlal → aday reddedilir, resmî çıktı değişmez'],
    ['Uzlaşma kapısı','Aramanın hesapladığı tasarruf ile hakemin ölçtüğü fark','Kuruşun milyonda birinden fazla sapma → yayın durur'],
@@ -1587,9 +1500,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
    ['Determinizm','Girdi satırları karıştırılınca plan değişiyor mu','Bir hücre bile farklıysa hata'],
    ['Artifact doğrulama','Yazılan Excel geri okunur, şema doğrulanır, hakem yeniden koşar','Şema ya da maliyet uymazsa dosya yerine konmaz']]
    .map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td style="color:var(--dim);font-size:12px">'+r[2]+'</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Peki gerçekten ne yakaladı?</b> Stage 3 prototipinde üç ayrı hata vardı ve <b>üçünü de yalnız bu kapı</b> gördü. Birincisi: zorunlu kiralık bir rotayı yük alma hedefi seçmek — kiralık araç rota dışına çıkamaz. İkincisi: yanlış SLA zaman damgası — inen kargonun teslim anı yerine aracın kalkış anını kullanmak. Üçüncüsü: alınan yükün, varış durağını geçip rotanın devamına taşınması. Hiçbiri programı çökertmiyordu; üçü de <b>sessizce yanlış ama geçerli görünen</b> bir plan üretiyordu.','hl')+
-  note('Hakem, optimizatör daha yazılmamışken bile iki optimizatör-sınıfı hatayı yakaladı. Bu yüzden sıralamayı bilerek tersine çevirdik: <b>önce hakem, sonra optimizatör</b>.'))},
+  '</tbody></table>')},
 
 /* ══════════════ Tahmin modeli — iki grafiğin detayı ══════════════ */
 't-fc':{k:'Tahmin modeli',t:'Katman nerede devreye giriyor — gün gün',b:()=>{
@@ -1601,8 +1512,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
             ['Ayın ilk günü',D.calendar.first_day_after_month_end],
             ['Normal gün',1],['Normal gün',1],['Normal gün',1],['Normal gün',1]];
   const tot=f.dow_mean.reduce((a,b)=>a+b,0);
-  return pdef('<b>Grafik neyi karşılaştırıyor?</b> Gri sütun, o günü <em>sıradan bir haftagünü</em> sayan bir modelin tahminidir — yani geçmişteki aynı haftagünlerinin ortalaması. Yeşil sütun bizim tahminimizdir. İkisi arasındaki fark, <em>takvim çarpanı katmanının</em> o gün ne yaptığını gösterir.')+
-  pcols(
+  return pcols(
   ps(nf(f.total_forecast),'Toplam tahmin edilen desi · 7 gün','sm')+
   ps(nf(f.rows),'Tahmin dosyası satırı','sm blue')+
   ps(nf(f.zero_rows),'Bunlardan desi = 0 olan','sm')+
@@ -1617,26 +1527,17 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
       '<td class="n">×'+nf(M4[i][1],4)+'</td><td class="n">'+nf(Math.round(f.dow_mean[i]))+'</td>'+
       '<td class="n">'+nf(f.forecast[i])+'</td><td class="n" style="color:'+
       (i<3?C.brand2:C.dim)+'">'+nf(r,2)+'</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Tabloyu tek cümlede okumak:</b> yalnız <b>ilk üç günde</b> takvim rejimi var; kalan dört günde çarpan ×1,0000, yani katman hiç müdahale etmiyor. Son sütundaki oranların 02–05 Temmuz’da 1’e yakın çıkması bunun kanıtı — aradaki küçük fark, tabanımızın <b>ortalama değil son dört gözlemin medyanı</b> olmasından geliyor.')+
-  note('<b>30 Haziran neden bu kadar kritik?</b> Ayın son günü ve tahmin ufkumuzun tam içinde. O günü sıradan bir salı sayan bir model '+nf(Math.round(f.dow_mean[1]))+' desi tahmin ederdi; gerçekleşen ise bunun yaklaşık yüzde ikisi. Tek başına bu gün, yaklaşık <b>1,1 milyon desi</b> hata demektir — ve WMAPE hacim ağırlıklı olduğu için bu tek gözlem haftanın puanını domine ederdi.','hl')+
-  note('<b>Peki fazla mı düzeltiyoruz?</b> Hayır — ve bunu ölçtük. Dondurulmuş geri-testte <b>normal bir haftada</b> (15–21 Haziran) bizim modelimiz ile sade taban modeli <b>birebir aynı</b> WMAPE veriyor: '+nf(D.backtest['Normal hafta 15-21 Haz'].ours,4)+'. Katman o pencerede hiç tetiklenmiyor, dolayısıyla zarar da vermiyor. Ay sonu haftasında ise '+nf(D.backtest['Ay sonu haftası 30 Mar-5 Nis'].dow_median,4)+' → <b>'+nf(D.backtest['Ay sonu haftası 30 Mar-5 Nis'].ours,4)+'</b>.')+
-  note('<b>Sıfır satırlar:</b> '+nf(f.rows)+' tahmin satırının '+nf(f.zero_rows)+' tanesi desi = 0 çıkıyor. Bunlar Excel’de <b>kalır</b> — şartname tam ızgara ister — ama optimizasyona girmez; taşınacak yük yoktur.'))}},
+  '</tbody></table>')}},
 
-'t-cal':{k:'Tahmin modeli',t:'Takvim çarpanları — seçilmedi, ölçüldü',b:()=>
-  pdef('<b>Takvim çarpanı nedir?</b> Belirli bir takvim gününün, aynı haftagünündeki <em>normal</em> bir günün kaç katı yük taşıdığı. Modelin ikinci katmanı budur: taban tahmini bu sayıyla çarpılır. Sayılar elle ayarlanmadı; geçmiş ay sonlarından <em>hesaplandı</em>.')+
+'t-cal':{k:'Tahmin modeli',t:'Takvim çarpanları',b:()=>
+
   pcols(
   ps('×'+nf(D.calendar.day_before_month_end,4),'Ay sonundan bir önceki gün','sm blue')+
   ps('×'+nf(D.calendar.month_end,4),'Ayın son günü — talebin %98’i kayboluyor','sm brand')+
   ps('×'+nf(D.calendar.first_day_after_month_end,4),'Ayın ilk günü — telafi sıçraması','sm ok')+
   ps('×'+nf(D.calendar.normal,4),'Normal gün — dokunulmaz','sm')+
   ps('5 gözlem','Her çarpan beş ay sonundan alınan beş oranın medyanı','sm'),
-  '<div class="pmap mid">'+chartCal()+'</div>'+
-  note('<b>Nasıl hesaplandı?</b> Her ay sonu için tek bir oran çıkarıyoruz: <span class="mono">o günün gerçekleşen toplamı ÷ aynı hücrelerin haftagünü taban toplamı</span>. Ocak–Mayıs arası beş ay sonu, beş oran verir; çarpan bu beş oranın <b>medyanıdır</b>. Ortalama değil medyan, çünkü tek bir sapkın ay tüm katsayıyı bozabilirdi.')+
-  note('<b>Neden tabana bölüyoruz?</b> Ham ortalamaya bölmek, ay sonu etkisini <b>haftagünü etkisiyle karıştırırdı</b> — 31 Mayıs bir pazar, 30 Nisan bir perşembe. Kendi haftagünü tabanına bölünce geriye yalnız <b>takvim etkisi</b> kalır; iki sinyal birbirinden temizce ayrılır.')+
-  note('<b>İki ayrı gün, iki ayrı katsayı.</b> Ayın son günü neredeyse sıfıra iniyor (×'+nf(D.calendar.month_end,4)+'), sondan bir önceki gün ise yalnızca kısmen düşüyor (×'+nf(D.calendar.day_before_month_end,4)+'). Tek bir “ay sonu” etiketi kullansaydık ikisini de ortalayıp <b>ikisini birden</b> yanlış tahmin ederdik.','hl')+
-  note('<b>Ayın ilk günü neden 1’in üstünde?</b> Çünkü ay sonunda ertelenen talep kaybolmuyor, ertesi güne kayıyor. ×'+nf(D.calendar.first_day_after_month_end,4)+' bu telafi sıçramasıdır — modelin bunu da bilmesi gerekiyor, yoksa 1 Temmuz’u eksik tahmin ederdik.')+
-  note('<b>Sızıntı koruması:</b> bir çarpan hesaplanırken yalnız <b>tarihi hedeften önce olan</b> gözlemler kullanılır ve taban hesabından <b>olay günlerinin kendisi</b> dışlanır. Ayrıca tahmin fonksiyonu, ufuk içi satır içeren bir talep tablosu görürse çalışmayı <b>reddeder</b> — gerçekleşen değerin modele kazayla sızması yapısal olarak imkânsız.'))}
+  '<div class="pmap mid">'+chartCal()+'</div>')}
 ,
 
 /* ══════════════ Maliyet modeli — iki kartın detayı ══════════════ */
@@ -1649,8 +1550,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
     [mm(t0+T.hload),'Araç yola çıkar','ceil('+nf(T.desi)+' × 0,01) = '+T.hload+' dakika elleçleme bitti.',C.blue],
     [mm(t0+T.hload+T.travel),'Varış merkezine ulaşır','Yol '+T.km+' km · '+T.travel+' dakika.',C.purple],
     [mm(t0+T.use),'İndirme biter','<b>Her iki saat de burada durur:</b> teslim gerçekleşti, araç serbest.',C.brand2]];
-  return pdef('<b>Kullanım süresi nedir?</b> Bir spot aracın faturalandığı süre: <em>ilk yükleme başlangıcından son indirme bitişine kadar tek, kesintisiz bir pencere</em>. Parçalı değildir — araç yolda mı, merkezde bekliyor mu, elleçleniyor mu fark etmez; pencerenin içindeki her dakika ödenir.')+
-  pcols(
+  return pcols(
   ps(T.use+' dk','Toplam kullanım süresi = '+nf(T.use/60,2)+' saat','sm brand')+
   ps(T.hload+' + '+T.travel+' + '+T.hunload,'Çıkış elleçleme + yolculuk + varış elleçleme','sm')+
   ps(nf(T.rate_h,2)+' ₺/sa','Kamyon spot saatlik kira','sm blue')+
@@ -1660,17 +1560,11 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
   '<table class="anim"><thead><tr><th class="n">Saat</th><th>Ne olur</th><th>Sayaçlara etkisi</th></tr></thead><tbody>'+
   rows.map(function(r){return '<tr><td class="n" style="color:'+r[3]+';font-weight:700">'+r[0]+
     '</td><td><b>'+r[1]+'</b></td><td style="color:var(--muted);font-size:12px">'+r[2]+'</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Jüri bunu üç ayrı soruda netleştirdi</b> ve tanım her seferinde aynı çıktı: süre <b>ilk yükleme başlangıcında</b> başlar, <b>son indirme bitişinde</b> durur, ve aradaki <b>bekleme dâhildir</b>. Yani "aracı yolda tutmak" ile "aracı merkezde bekletmek" aynı fiyata mal olur.')+
-  note('<b>İki ayrı saat, iki ayrı başlangıç.</b> SLA saati talebin tamamlanma anında (09:00 ya da 17:00) başlar; kullanım süresi ise aracın o yükü <b>fiilen yüklemeye başladığı</b> anda. Yukarıdaki seferde ikisi çakışıyor çünkü araç talebi bekletmeden aldı — ama konsolidasyon için bekleyen bir yükte SLA saati işlerken kullanım süresi henüz başlamamış olur.','hl')+
-  note('<b>Optimizasyona etkisi doğrudan:</b> bir aracı doldurmak için beklemek <b>iki kalemden birden</b> ödetir — bekleyen yükün SLA cezası artar, ve zincirdeki aracın kullanım penceresi uzar. Bu yüzden Stage 2’de zincir kabul kuralı "daha az araç" değil, <b>"toplam maliyet düştü mü"</b> sorusudur.')+
-  note('<b>Yuvarlama:</b> tüm süreler bir üst tam dakikaya çıkar. Elleçleme desi başına 0,01 dakikadır ve <b>yükleme ile indirme ayrı ayrı</b> hesaplanır — üstelik her talep parçası kendi içinde yuvarlanır, bu yüzden bir bacağın toplam elleçlemesi, toplam desinin yuvarlamasından biraz büyük olabilir.')+
-  note('<b>Faturaya girmeyenler:</b> boş dönüş yoktur — araç varışta bırakılır, geri getirme maliyeti yoktur. Sabit çağırma ücreti, günlük taban ücret ya da minimum süre de yoktur. Bir araç ne kadar kullanılırsa o kadar ödenir.'))}},
+  '</tbody></table>')}},
 
 'k-cost':{k:'Kurallar · maliyet',t:'Maliyet formülü — üç terim, dördüncüsü yok',b:()=>{
   const T=NET.trip, hrs=T.use/60, vc=hrs*T.rate_h, kc=T.km*T.rate_km;
-  return pdef('<b>Toplam maliyet</b> yalnız üç terimin toplamıdır: aracın <em>süre</em> maliyeti, aracın <em>mesafe</em> maliyeti, ve varsa <em>SLA gecikme cezası</em>. Şartnamede dördüncü bir kalem yoktur — bu, optimizasyonun neyi hedefleyeceğini tek başına belirler.')+
-  pcols(
+  return pcols(
   ps(nf(T.cost,2)+' ₺','Örnek seferin toplam maliyeti','sm brand')+
   ps(nf(vc,2)+' ₺','Süre terimi · %'+nf(100*vc/T.cost,1),'sm')+
   ps(nf(kc,2)+' ₺','Mesafe terimi · %'+nf(100*kc/T.cost,1),'sm blue')+
@@ -1683,11 +1577,7 @@ c289:{k:'Geçmiş veri',t:'289 hatta talep var — eksik 17\'nin tamamı Kocaeli
     return '<tr'+(t===T.type?' class="hi"':'')+'><td>'+t+'</td><td class="n">'+nf(v[1])+
       '</td><td class="n">'+nf(v[2],2)+'</td><td class="n">'+nf(v[3],0)+
       '</td><td class="n">'+nf(v[4],2)+'</td><td class="n">'+nf(v[5],0)+'</td></tr>'}).join('')+
-  '</tbody></table>'+
-  note('<b>Kiralık ve spot aynı aracı farklı fiyatlar.</b> Kiralık tarifeler daha ucuzdur ama seçim hakkımız yoktur: 12 zorunlu rota her gün çıkar. Spot tarifeler pahalıdır ama tamamen bizim kontrolümüzdedir — optimizasyonun oynadığı tek yer burasıdır.')+
-  note('<b>Kapasite başına maliyet, tür seçimini belirler.</b> Kamyon 12.000 desiyi '+nf(NET.vehicles.filter(function(x){return x[0]==='Kamyon'})[0][4],2)+' ₺/sa ile taşır; tır 22.400 desiyi '+nf(NET.vehicles.filter(function(x){return x[0]==='Tır'})[0][4],2)+' ₺/sa ile. Tır ancak <b>tam dolu</b> giderse desi başına öne geçer — ve yedi merkezde tır kotası sıfır olduğu için tam dolu bir tır rotası çoğu zaman kurulamaz.','hl')+
-  note('<b>SLA cezası neden yasak değil?</b> Şartnamede "en fazla şu kadar gecikebilir" diye bir kural yok. Ceza doğrusal ve hesaplanabilir: geciken desi × yukarı yuvarlanmış saat × 0,40 ₺. Dolayısıyla bir aracı yola çıkarmak, küçük bir gecikme cezasından pahalıysa <b>cezayı satın almak doğru karardır</b>. Nihai planımızda SLA cezası bilerek arttı, araç maliyeti daha fazla düştü.')+
-  note('<b>Kuruşu kuruşuna doğrulama:</b> yukarıdaki '+nf(T.cost,2)+' ₺ elle hesaplanmadı — teslim ettiğimiz Excel’in <span class="mono">Toplam maliyet</span> hücresiyle birebir aynı, ve hakem simülatörü aynı sayıyı ham veriden bağımsız olarak yeniden üretiyor.'))}}
+  '</tbody></table>')}}
 };
 
 /* ══════════════ slaytlar ══════════════ */
@@ -1756,7 +1646,7 @@ Sonucu baştan söyleyeyim: temel plandan yüzde 31,84 daha ucuz bir plan ürett
 `<b>Kullan:</b> Açılış. Dört KPI kartını tek tek gösterin, ekranda 20 saniyeden fazla kalmayın. <b>Ezberlenecek:</b> 11,23 M₺ · −%31,84 · 0 ihlal · 665 araç.`);
 
 add('Problem',`
-<p class="kicker">Problem</p><h2>Ne çözüyoruz <span class="pophint">kartlara ve maddelere tıklayın</span></h2>
+<p class="kicker">Problem</p><h2>Ne çözüyoruz</h2>
 <div class="body">
   <div class="g3">
     <div class="card kpi" data-pop="c18"><div class="v sm blue">18</div><div class="l">Transfer merkezi</div></div>
@@ -1792,7 +1682,7 @@ Ve kritik bir nokta: gizli bir SLA tavanı yok. Yani ceza ödemek yasak değil, 
 `<b>Kullan:</b> Kısıt/serbestlik ikilisini yan yana gösterin — sağdaki liste ilerideki Stage 2 ve Stage 3'ün kural dayanağı. <b>Vurgula:</b> "durak sayısına kural sınırı yok" ve "gizli SLA tavanı yok".`);
 
 add('Maliyet modeli',`
-<p class="kicker">Kurallar</p><h2>Maliyet modeli ve zaman aritmetiği <span class="pophint">iki kart da tıklanabilir</span></h2>
+<p class="kicker">Kurallar</p><h2>Maliyet modeli ve zaman aritmetiği</h2>
 <div class="body" style="gap:12px">
   <div class="card tight" style="flex:0 0 auto" data-pop="k-cost"><div class="chart" data-c="formula" style="height:168px"></div></div>
   <div class="card tight" style="flex:1" data-pop="k-use"><div class="chart" data-c="flow"></div></div>
@@ -1809,7 +1699,7 @@ Alttaki üç kutu jürinin verdiği birebir sayısal örnekler. Bunların üçü
 `<b>Kullan:</b> Akış şemasını soldan sağa parmakla takip edin. <b>Vurgula:</b> "kullanım süresi = tek sürekli pencere". <b>Ezberlenecek:</b> 55,2 → 56 · 3.000/7.000 · 2.400 ₺.`);
 
 add('Veri',`
-<p class="kicker">Veri</p><h2>66.024 satır geçmiş, 179 gün, 8 veri seti <span class="pophint">kartlara tıklayın</span></h2>
+<p class="kicker">Veri</p><h2>66.024 satır geçmiş, 179 gün, 8 veri seti</h2>
 <div class="body">
   <div class="card" style="flex:1.25" data-pop="d-hist"><h3>Günlük toplam desi · Ocak–Haziran 2026</h3><div class="chart" data-c="history"></div></div>
   <div class="row" style="flex:1">
@@ -1833,7 +1723,7 @@ Sağda veri temizleme var. Eğitim verisinden 23 tarihi dışlıyoruz: 15 resmî
 `<b>Kullan:</b> Ay sonu noktalarını turuncu daire olarak gösterin, beşini tek tek sayın. <b>Vurgula:</b> "beş ayda beş kez, istisnasız". <b>Ezberlenecek:</b> 66.024 satır · 179 gün · 23 dışlanan tarih.`);
 
 add('Tahmin modeli',`
-<p class="kicker">Talep tahmini</p><h2>İki katman: haftagünü tabanı × takvim çarpanı <span class="pophint">iki grafik de tıklanabilir</span></h2>
+<p class="kicker">Talep tahmini</p><h2>İki katman: haftagünü tabanı × takvim çarpanı</h2>
 <div class="body">
   <div class="card tight"><pre>tahmin = <b>DOW_medyan_tabanı</b>(çıkış, varış, slot, haftagünü; k=4, tatil/ay sonu hariç)  ×  <b>takvim_çarpanı</b>(gün)</pre></div>
   <div class="g2 grow">
@@ -1846,26 +1736,6 @@ Taban katman: her çıkış-varış-saat-haftagünü kombinasyonu için, hedef t
 İkinci katman takvim çarpanı. Solda gördüğünüz üç sayı uydurma değil, geçmiş ay sonlarından ölçüldü: ay sonundan bir önceki gün 0,68; ayın son günü 0,0198; ayın ilk günü 1,21. Her çarpan beş ay sonundan alınan beş oranın medyanı — o günün gerçekleşeni bölü aynı hücrelerin DOW taban toplamı. Tabana bölmek ay sonu etkisini haftagünü etkisinden ayırıyor.
 Sağdaki grafik katmanın nerede devreye girdiğini gösteriyor. 30 Haziran'da tahminimiz 24 bin desi, sıradan bir salı ortalaması 1 milyon 110 bin. Kalan dört gün ise düz ortalamaya çok yakın — yani model sadece gerekli yerde müdahale ediyor.`,
 `<b>Kullan:</b> Önce formül satırı, sonra soldaki çarpanlar, sonra sağdaki karşılaştırma. <b>Vurgula:</b> "çarpanlar ölçüldü, seçilmedi". <b>Ezberlenecek:</b> ×0,0198 · 24.040 desi vs 1.110.177.`);
-
-add('Backtest',`
-<p class="kicker">Doğrulama</p><h2>Model gerçekten daha iyi mi?</h2>
-<div class="body"><div class="row grow">
-  <div class="card" style="flex:1"><h3>Frozen backtest · WMAPE (düşük iyi)</h3><div class="chart" data-c="bt"></div></div>
-  <div class="col" style="flex:1">
-    <div class="card"><h3>Üç sızıntı koruması</h3><ul class="tick">
-      <li>Çarpan hesabında yalnız <b>tarih &lt; hedef</b> verisi kullanılır</li>
-      <li>Taban hesabından <b>olay günlerinin kendisi</b> dışlanır</li>
-      <li><span class="mono">forecast_horizon</span>, ufuk içi satır içeren bir talep tablosu alırsa <b>hata fırlatır</b></li>
-    </ul></div>
-    <div class="card tight"><h3>Frozen ne demek</h3><p class="sub">Eğitim penceresi hedeften önce kesilir ve ufuk içinde <b>yeniden eğitim yapılmaz</b> — gerçek yarışma koşulunun aynısı. Rolling backtest değil, tek atış.</p></div>
-  </div>
-</div></div>`,
-`Modelin işe yaradığını iddia etmek yetmez, ölçmek gerekir.
-Normal bir haftada — 15-21 Haziran — bizim model ile DOW medyanı birebir aynı: 0,2174. Bu tesadüf değil, o pencerede takvim etkisi olan bir gün yok, yani katman hiç devreye girmiyor. Zarar vermiyor.
-Ay sonu haftasında ise — 30 Mart, 5 Nisan — DOW medyanı 0,5328'den bizim model 0,4464'e iniyor. Naive yaklaşım 0,6972. Yani katman sadece gerektiğinde, ama ciddi biçimde kazandırıyor.
-Bu bir frozen backtest: eğitim penceresi hedeften önce kesiliyor ve ufuk içinde yeniden eğitim yok. Gerçek yarışma koşulunun aynısı.
-Sağda üç sızıntı koruması var. Üçüncüsü özellikle önemli: fonksiyon, ufuk içi veri görürse çalışmayı reddediyor. Yani gerçekleşen değerin modele sızması kazayla bile mümkün değil, yapısal olarak engellenmiş.`,
-`<b>Kullan:</b> Normal hafta ile ay sonu haftasını yan yana okuyun. <b>Vurgula:</b> "aynı sayı olması bir kusur değil, kanıt". <b>Ezberlenecek:</b> 0,5328 → 0,4464. <b>Dürüstlük notu:</b> sorulursa ay sonu haftasındaki bias +%28,3 açık kalemimiz.`);
 
 add('Merdiven',`
 <p class="kicker">Optimizasyon</p><h2>Dört aşamalı maliyet merdiveni</h2>
@@ -1931,7 +1801,7 @@ Ama bir duvara toslıyor: aynı hatta birleşecek eş bulamadığınızda yapabi
 `<b>Kullan:</b> Kısa tutun, 45 saniye. Bu aşama basit — asıl hikâye Stage 2. <b>Ezberlenecek:</b> 177 araç silindi · −1,80 M₺.`);
 
 add('Stage 2',`
-<p class="kicker">Stage 2 · en büyük kazanç</p><h2>Milk-run — k ayrı aracın işini tek araca bindir <span class="pophint">grafiklere tıklayın</span></h2>
+<p class="kicker">Stage 2 · en büyük kazanç</p><h2>Milk-run — k ayrı aracın işini tek araca bindir</h2>
 <div class="body"><div class="row grow">
   <div class="card" style="flex:1" data-pop="s2-arama"><h3>Arama uzayı — ne denendi, ne kaldı</h3>
     <div class="chart" data-c="milkf"></div></div>
@@ -1951,7 +1821,7 @@ Bunun kural dayanağı jüri soru-cevabında açık: "Spot araçlar için birden
 `<b>Kullan:</b> Hunide 96.369 → 227 kontrastını vurgulayın. Donut'ta 4 duraklı 72 zinciri gösterin. <b>Vurgula:</b> "segment sabit, araç düşüyor" ve jüri alıntısı. <b>Ezberlenecek:</b> 227 zincir · −3,37 M₺ · 693 araç.`);
 
 add('Stage 3',`
-<p class="kicker">Stage 3</p><h2>Rota ortasında yük alma (Tier A) <span class="pophint">arama kartına tıklayın</span></h2>
+<p class="kicker">Stage 3</p><h2>Rota ortasında yük alma (Tier A)</h2>
 <div class="body"><div class="row grow">
   <div class="card" style="flex:1"><h3>Fikir</h3>
     <p class="lead" style="font-size:16px">Zincir bir ara durakta sadece indirmesin — oradan kalkacak yükü de alsın. Alınan yükün varışı, rotanın <b>zaten uğradığı</b> bir durak olmak zorunda: rota topolojisi hiç değişmez.</p>
@@ -1977,7 +1847,7 @@ Soldaki kod kutusu önemli. Bir yük alma durağında iki ayrı zaman damgası v
 `<b>Kullan:</b> Jüri alıntısını (x+y) sesli okuyun — bu aşamanın meşruiyeti oradan geliyor. Kod kutusunu gösterin. <b>Ezberlenecek:</b> 135.660 çift → 28 kabul · −80.862 ₺.`);
 
 add('Filo',`
-<p class="kicker">Etki</p><h2>Filo yarıya indi, doluluk ikiye katlandı <span class="pophint">üç grafiğin üçü de tıklanabilir</span></h2>
+<p class="kicker">Etki</p><h2>Filo yarıya indi, doluluk ikiye katlandı</h2>
 <div class="body"><div class="g3 grow">
   <div class="card" data-pop="f-fleet"><h3>Fiziksel araç sayısı</h3><div class="chart" data-c="fleet"></div></div>
   <div class="card" data-pop="f-fill"><h3>Doluluk kümülatif dağılımı</h3><div class="chart" data-c="fill"></div></div>
@@ -1998,7 +1868,7 @@ Tır sayısı 99'da sabit — bilinçli. Tır kapasitesi kıt bir kaynak, yedi m
 `<b>Kullan:</b> Üç grafiği tek cümlede bağlayın: "daha az araç, daha dolu araç, daha doğru araç". <b>Ezberlenecek:</b> 480 → 30 · %48 → %79 · Tır 99 sabit.`);
 
 add('Hakem',`
-<p class="kicker">Kalite kapıları</p><h2>Hakem simülatörü — bağımsız ikinci uygulama <span class="pophint">detay için tıklayın</span></h2>
+<p class="kicker">Kalite kapıları</p><h2>Hakem simülatörü — bağımsız ikinci uygulama</h2>
 <div class="body">
   <div class="card grow" data-pop="q-hakem"><h3>Hakemin sıfırdan yeniden hesapladığı 17 kural</h3><div class="chart" data-c="rules"></div></div>
 </div>`,
@@ -2077,7 +1947,7 @@ Sunumda değinmediğimiz ama sorulursa cevaplamaya hazır olduğumuz konular var
 `<b>Kullan:</b> Bu slaytta kalın; soru-cevap boyunca ekranda dursun. Rozetler jürinin akılda tutmasını istediğimiz beş sayı. <b>Not:</b> açık kalemler sorulursa dürüstçe söyleyin — bias +%28,3, Tier B ~66 bin ₺, 5 durak budama gerektiriyor.`);
 
 /* ══════════════ kurulum ══════════════ */
-const CH={ladder:chartLadder,history:chartHistory,cal:chartCal,fc:chartFc,bt:chartBt,
+const CH={ladder:chartLadder,history:chartHistory,cal:chartCal,fc:chartFc,
           fleet:chartFleet,chains:()=>chartChains('Stage 2'),fill:chartFill,mix:chartMix,
           milkf:chartMilkFunnel,pickf:chartPickFunnel,clean:chartClean,flow:chartFlow,
           formula:chartFormula,rules:chartRules,pickstop:chartPickStop};

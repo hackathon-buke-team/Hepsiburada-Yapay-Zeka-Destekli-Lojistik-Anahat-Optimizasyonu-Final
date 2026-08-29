@@ -6,7 +6,7 @@ TEKNOFEST 2026 · Hepsiburada · Takım Büke · Final aşaması jüri sunumu.
 
 | Dosya | Ne işe yarar |
 |---|---|
-| [`v2.html`](v2.html) | **Ana sunum.** 16 slayt (1. slayt takım tanıtımı, son slayt soru-cevap), 16 gömülü SVG grafik, **28 interaktif pop-up**. Tek dosya, dış bağımlılık yok — çift tıklayıp tarayıcıda açın. |
+| [`v2.html`](v2.html) | **Ana sunum.** 15 slayt (1. slayt takım tanıtımı, son slayt soru-cevap), 15 gömülü SVG grafik, **28 interaktif pop-up**. Tek dosya, dış bağımlılık yok — çift tıklayıp tarayıcıda açın. |
 | [`../panel/`](../panel/README.md) | **Anahat Sevkiyat Panosu** — nihai planın harita tabanlı kontrol panosu. Hem web hem tek dosyalık `.exe` olarak çalışır. |
 | [`index.html`](index.html) | Önceki aşamadan kalan eski veri panosu (yerini `panel/` aldı). |
 | `dokumanlar/` | Jüri için hazırlanan Word dökümanları (`.docx`) ve markdown kaynakları. |
@@ -39,7 +39,7 @@ TEKNOFEST 2026 · Hepsiburada · Takım Büke · Final aşaması jüri sunumu.
 | `←` `PageUp` | Önceki slayt |
 | `Home` / `End` | İlk / son slayt |
 | **`N`** | **Konuşma metnini aç/kapat** — o slaytta ne söyleneceği ve hangi sayının vurgulanacağı |
-| **`O`** | **Slayt haritası** — 16 slaytın listesi, tıklayınca o slayta gider |
+| **`O`** | **Slayt haritası** — 15 slaytın listesi, tıklayınca o slayta gider |
 
 > `N` ve `O` ekranda **hiçbir ipucu göstermez** — jüri ekranı temiz kalsın diye
 > rozetler kaldırıldı. Tuşlar çalışmaya devam eder; prova sırasında kullanın.
@@ -56,10 +56,10 @@ Başlıkta `grafiklere tıklayın` gibi bir rozet varsa o slaytta tıklanabilir 
 |---|---|---|
 | 3 · Problem | 3 sayaç + 9 madde | Ağ yapısı, dört kısıt, beş serbestlik — harita ve tablolarla |
 | 5 · Veri | 5 kart | 179 günlük hacim (çizgi + rejim şeridi + takvim), veri eleme, veri setleri, **23 dışlanan tarihin her birinin gerekçesi**, metodoloji |
-| 11 · Stage 2 | Arama + zincir dağılımı | Huninin neden önce genişlediği, kabul kuralı, kimlik kontrolü (1.092 − 626 + 227 = 693), gerçek bir milk-run zinciri |
-| 12 · Stage 3 | Arama | Tier A'nın rotayı neden uzatmadığı, iki zaman damgası ayrımı, Tier B'nin neden dışarıda bırakıldığı |
-| 13 · Filo | 3 grafiğin üçü de | Fiziksel araç ≠ segment, kümülatif doluluk eğrisi nasıl okunur, karma neden değişti / tır neden sabit |
-| 14 · Hakem | 17 kural kartı | Hakem simülatörü nedir, neden yazıldı, beş kapı, yakaladığı üç hata |
+| 10 · Stage 2 | Arama + zincir dağılımı | Huninin neden önce genişlediği, kabul kuralı, kimlik kontrolü (1.092 − 626 + 227 = 693), gerçek bir milk-run zinciri |
+| 11 · Stage 3 | Arama | Tier A'nın rotayı neden uzatmadığı, iki zaman damgası ayrımı, Tier B'nin neden dışarıda bırakıldığı |
+| 12 · Filo | 3 grafiğin üçü de | Fiziksel araç ≠ segment, kümülatif doluluk eğrisi nasıl okunur, karma neden değişti / tır neden sabit |
+| 13 · Hakem | 17 kural kartı | Hakem simülatörü nedir, neden yazıldı, beş kapı, yakaladığı üç hata |
 
 ### Detay — 3. ve 5. slayt
 
@@ -109,7 +109,7 @@ istisnasıdır). Ekranın **sol ve sağ ortasında** birer gezinme oku vardır: 
 edince belirir, iki saniye hareketsizlikte kaybolur; ilk ve son slaytta ilgili ok
 gizlenir. Sağ alttaki sayaç o an kaçıncı slaytta olduğunuzu gösterir.
 
-Hepsiburada logosu kapak slaydında başlığın üstünde, kalan on beş slaytta ise sağ üst
+Hepsiburada logosu kapak slaydında başlığın üstünde, kalan on dört slaytta ise sağ üst
 köşede küçük bir işaret olarak durur (`kaynak/foto/hepsiburada.png`, derlemede gömülür).
 
 Tarayıcının **Yazdır** menüsünden PDF alınabilir (her slayt ayrı sayfa olur).
@@ -119,12 +119,12 @@ tek bir slayta hızlı dönmek için kullanışlıdır.
 
 ## Grafikler
 
-Sunumdaki 17 grafiğin tamamı **ölçülmüş gerçek veriden** üretilir; hiçbiri elle
+Sunumdaki 15 grafiğin tamamı **ölçülmüş gerçek veriden** üretilir; hiçbiri elle
 çizilmiş veya temsilî değildir. Kaynak:
 `../stage-2-step-3/docs/figures/chart_data.json` → `kaynak/deck_data.json`.
 
 Maliyet merdiveni · 179 günlük geçmiş hacim (ay sonu işaretli) · veri eleme ·
-takvim çarpanları · tahmin vs haftagünü ortalaması · frozen backtest WMAPE ·
+takvim çarpanları · tahmin vs haftagünü ortalaması ·
 milk-run arama hunisi · zincir dağılımı · yük alma hunisi ve durak şeması ·
 filo sayısı · doluluk kümülatif dağılımı · araç türü karması · 17 hakem kuralı ·
 maliyet akış şeması.
