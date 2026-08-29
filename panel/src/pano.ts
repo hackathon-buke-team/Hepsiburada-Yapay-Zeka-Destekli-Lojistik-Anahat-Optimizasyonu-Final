@@ -29,9 +29,11 @@ export interface PanoState {
   /** zaman kipinde ufuk başlangıcından dakika */
   t: number
   speed: number
-  zoom: number
-  panx: number
-  pany: number
+  /** harita viewBox'ı; vw = 0 "varsayılan görünüm" demektir (yükseklik
+      en-boy oranı sabit olduğu için genişlikten türetilir) */
+  vx: number
+  vy: number
+  vw: number
   layers: Record<string, boolean>
   /** filo arama kutusu */
   q: string
@@ -49,9 +51,9 @@ export const PANO0: PanoState = {
   mode: 'akis',
   t: 0,
   speed: 6,
-  zoom: 1,
-  panx: 0,
-  pany: 0,
+  vx: 0,
+  vy: 0,
+  vw: 0,
   layers: { kiralik: true, spot: true, zincir: true, pickup: true },
   q: '',
 }
@@ -68,9 +70,9 @@ const NUM: [keyof PanoState, string][] = [
   ['focus', 'f'],
   ['t', 't'],
   ['speed', 's'],
-  ['zoom', 'z'],
-  ['panx', 'px'],
-  ['pany', 'py'],
+  ['vx', 'vx'],
+  ['vy', 'vy'],
+  ['vw', 'vw'],
 ]
 const BOOL: [keyof PanoState, string][] = [
   ['chainsOnly', 'c'],

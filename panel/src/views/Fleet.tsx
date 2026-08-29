@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import {
   D,
   NAME,
@@ -56,19 +56,28 @@ const FillMeter = ({ fill }: { fill: number }) => (
 
 const lc = (s: string) => s.toLocaleLowerCase('tr')
 
-export default function Fleet({ filter, setFilter, go }: ViewProps) {
+export default function Fleet({ st, set, filter, setFilter, go }: ViewProps) {
   const slice = useSlice(filter)
   const tip = useTip()
 
-  // Yerel arama durumu — global süzgecin üstüne biner, onu değiştirmez.
-  const [q, setQ] = useState('')
-  const [kind, setKind] = useState<'all' | 'Kiralık' | 'Spot'>('all')
-  const [vt, setVt] = useState<string>('all')
-  const [onlyChains, setOnlyChains] = useState(false)
-  const [onlyPickup, setOnlyPickup] = useState(false)
+  /* Tek süzgeç sistemi. Eskiden Fleet'in kendi kind/vt/onlyChains/onlyPickup
+     state'i vardı ve global süzgecin ÜSTÜNE biniyordu: ÖZET donut'undan gelen
+     tür süzgeci listeyi daraltıyor ama buradaki çipler "tümü" görünüyordu.
+     Artık ikisi aynı durumu okuyup yazıyor; süzme işini useSlice yapıyor. */
+  const q = st.q
+  const setQ = (v: string) => set({ q: v })
+  const kind = filter.kind
+  const setKind = (v: 'all' | 'Kiralık' | 'Spot') => setFilter((f) => ({ ...f, kind: v }))
+  const vt = filter.vt
+  const setVt = (v: string) => setFilter((f) => ({ ...f, vt: v }))
+  const onlyChains = filter.chainsOnly
+  const setOnlyChains = (v: boolean) => setFilter((f) => ({ ...f, chainsOnly: v }))
+  const onlyPickup = filter.pickupOnly
+  const setOnlyPickup = (v: boolean) => setFilter((f) => ({ ...f, pickupOnly: v }))
   const [sort, setSort] = useState<SortKey>('cost')
   const [asc, setAsc] = useState(false)
-  const [selId, setSelId] = useState<string>('')
+  const selId = st.sel
+  const setSelId = (v: string) => set({ sel: v })
 
   const globalOn =
     !!filter.date || filter.kind !== 'all' || filter.vt !== 'all' || filter.chainsOnly || filter.pickupOnly
@@ -76,11 +85,9 @@ export default function Fleet({ filter, setFilter, go }: ViewProps) {
   /* ── süzülen küme + toplamları ─────────────────────────────── */
   const { base, tot } = useMemo(() => {
     const needle = lc(q.trim())
+    // kind/vt/zincir/yük-alma süzgeçlerini useSlice zaten uyguladı; burada
+    // yalnız serbest metin araması kalır.
     const arr = slice.vehicles.filter((v) => {
-      if (kind !== 'all' && v.kind !== kind) return false
-      if (vt !== 'all' && v.vt !== vt) return false
-      if (onlyChains && v.stops < 2) return false
-      if (onlyPickup && !v.pickup) return false
       if (needle) {
         const hit = lc(v.id).includes(needle) || v.path.some((i) => lc(NAME[i]).includes(needle))
         if (!hit) return false
@@ -104,7 +111,7 @@ export default function Fleet({ filter, setFilter, go }: ViewProps) {
       for (const l of vehicleLegs(v)) desi += l.desi
     }
     return { base: arr, tot: { legs, desi, km, cost, sla, chains, picks } }
-  }, [slice.vehicles, q, kind, vt, onlyChains, onlyPickup])
+  }, [slice.vehicles, q])
 
   /* ── sıralama ──────────────────────────────────────────────── */
   const rows = useMemo(() => {
@@ -119,6 +126,13 @@ export default function Fleet({ filter, setFilter, go }: ViewProps) {
   }, [base, sort, asc])
 
   const shown = rows.slice(0, CAP)
+
+  /* Harita ya da Kısıt görünümünden bir araçla gelindiğinde tabloda ona
+     kaydır — eskiden seçim taşınmadığı için kullanıcı aracı elle arıyordu. */
+  useEffect(() => {
+    if (!selId) return
+    document.getElementById('arac-' + selId)?.scrollIntoView({ block: 'center' })
+  }, [selId])
 
   // Süzgeç seçili aracı dışarıda bırakırsa detay paneli de kapanır.
   const sel = useMemo(() => base.find((v) => v.id === selId) ?? null, [base, selId])
@@ -258,6 +272,7 @@ export default function Fleet({ filter, setFilter, go }: ViewProps) {
                 {shown.map((v) => (
                   <tr
                     key={v.id}
+                    id={'arac-' + v.id}
                     className={'click' + (v.id === selId ? ' sel' : '')}
                     onClick={() => setSelId(v.id === selId ? '' : v.id)}
                   >

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ViewProps } from '../App'
+import { PANO0, type PanoState } from '../pano'
 import {
   BOX,
   D,
@@ -64,25 +65,39 @@ function layerOf(l: Leg, v: Vehicle): LayerKey {
 const VIEW0 = { x: 0, y: 0, w: BOX.w, h: BOX.h }
 const CAP_MAX = 22400
 
-export default function MapView({ filter, setFilter, go }: ViewProps) {
+/** viewBox'ı durumdan türet; vw = 0 varsayılan görünüm demektir. */
+const vbOf = (s: PanoState) =>
+  s.vw > 0 ? { x: s.vx, y: s.vy, w: s.vw, h: (s.vw / VIEW0.w) * VIEW0.h } : VIEW0
+
+export default function MapView({ st, set, filter, setFilter }: ViewProps) {
   const tip = useTip()
   const slice = useSlice(filter)
 
-  const [layers, setLayers] = useState<Record<LayerKey, boolean>>({
-    kiralik: true,
-    spot: true,
-    zincir: true,
-    pickup: true,
-  })
-  const [mode, setMode] = useState<'akis' | 'zaman'>('akis')
-  const [focus, setFocus] = useState<number | null>(null)
-  const [pick, setPick] = useState<Vehicle | null>(null)
+  /* Durumun tamamı App'in store'unda: sekme değişiminde korunur, adrese
+     yazılır ve Esc ile tek tuşta sıfırlanır. */
+  const layers = st.layers as Record<LayerKey, boolean>
+  const setLayers = useCallback(
+    (f: (p: Record<LayerKey, boolean>) => Record<LayerKey, boolean>) =>
+      set((s) => ({ layers: f(s.layers as Record<LayerKey, boolean>) })),
+    [set],
+  )
+  const mode = st.mode
+  const setMode = useCallback((m: 'akis' | 'zaman') => set({ mode: m }), [set])
+  const focus = st.focus < 0 ? null : st.focus
+  const setFocus = useCallback((i: number | null) => set({ focus: i ?? -1 }), [set])
+  const pick = useMemo(() => D.vehicles.find((v) => v.id === st.sel) ?? null, [st.sel])
+  const setPick = useCallback((v: Vehicle | null) => set({ sel: v ? v.id : '' }), [set])
 
   /* ── zaman kipi ────────────────────────────────────────────── */
   const span = useMemo(() => D.legs.reduce((a, l) => Math.max(a, l.t1), 0), [])
-  const [t, setT] = useState(0)
+  const t = st.t
+  const setT = useCallback(
+    (f: (p: number) => number) => set((s) => ({ t: f(s.t) })),
+    [set],
+  )
   const [play, setPlay] = useState(false)
-  const [speed, setSpeed] = useState(6)
+  const speed = st.speed
+  const setSpeed = useCallback((v: number) => set({ speed: v }), [set])
 
   useEffect(() => {
     if (!play || mode !== 'zaman') return
@@ -154,7 +169,15 @@ export default function MapView({ filter, setFilter, go }: ViewProps) {
   const hubMax = Math.max(1, ...hubFlow)
 
   /* ── yakınlaştırma / kaydırma ──────────────────────────────── */
-  const [vb, setVb] = useState(VIEW0)
+  const vb = vbOf(st)
+  const setVb = useCallback(
+    (f: typeof VIEW0 | ((p: typeof VIEW0) => typeof VIEW0)) =>
+      set((s) => {
+        const n = typeof f === 'function' ? f(vbOf(s)) : f
+        return { vx: n.x, vy: n.y, vw: n.w === VIEW0.w && n.x === 0 && n.y === 0 ? 0 : n.w }
+      }),
+    [set],
+  )
   const svgRef = useRef<SVGSVGElement>(null)
   const drag = useRef<{ cx: number; cy: number; vx: number; vy: number; s: number } | null>(null)
   const [grabbing, setGrabbing] = useState(false)
@@ -176,7 +199,7 @@ export default function MapView({ filter, setFilter, go }: ViewProps) {
           y: clampY(cy - ((cy - p.y) * h) / p.h, h),
         }
       }),
-    [],
+    [setVb],
   )
 
   const local = (e: { clientX: number; clientY: number }) => {
@@ -272,16 +295,20 @@ export default function MapView({ filter, setFilter, go }: ViewProps) {
           ))}
         </div>
 
-        {(focus !== null || filter.date !== '' || filter.vt !== 'all' || pick) && (
+        {(focus !== null ||
+          filter.date !== '' ||
+          filter.vt !== 'all' ||
+          pick ||
+          st.vw > 0 ||
+          !LAYERS.every((l) => layers[l.k])) && (
           <button
             type="button"
             className="btn"
             style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
-            onClick={() => {
-              setFocus(null)
-              setPick(null)
-              setFilter((q) => ({ ...q, date: '', vt: 'all' }))
-            }}
+            /* Tam sıfırlama: eskiden katman anahtarları ve yakınlaştırma
+               olduğu gibi kalıyordu, kullanıcı "temizledim" sanıp eksik bir
+               haritaya bakıyordu. */
+            onClick={() => set({ ...PANO0, layers: { ...PANO0.layers }, view: 'harita' })}
           >
             {Icon.reset} Seçimi temizle
           </button>
@@ -523,7 +550,8 @@ export default function MapView({ filter, setFilter, go }: ViewProps) {
               value={Math.round(t)}
               onChange={(e) => {
                 setPlay(false)
-                setT(+e.target.value)
+                const v = +e.target.value
+                setT(() => v)
               }}
               style={{ flex: 1 }}
               aria-label="Plan zamanı"
@@ -539,7 +567,7 @@ export default function MapView({ filter, setFilter, go }: ViewProps) {
 
       {/* ══════════════ sağ ray: seçime göre detay ══════════════ */}
       {pick ? (
-        <VehicleCard v={pick} onClose={() => setPick(null)} go={go} />
+        <VehicleCard v={pick} onClose={() => setPick(null)} set={set} />
       ) : focus !== null ? (
         <CentreCard i={focus} onClose={() => setFocus(null)} slice={slice} hub={hubFlow[focus]} />
       ) : (
@@ -695,7 +723,15 @@ function CentreCard({
   )
 }
 
-function VehicleCard({ v, onClose, go }: { v: Vehicle; onClose: () => void; go: ViewProps['go'] }) {
+function VehicleCard({
+  v,
+  onClose,
+  set,
+}: {
+  v: Vehicle
+  onClose: () => void
+  set: ViewProps['set']
+}) {
   const ls = vehicleLegs(v)
   const lane = laneOf(ls[0].a, ls[0].b)
   /** durak listesi: çıkış + her bacağın varışı */
@@ -793,7 +829,14 @@ function VehicleCard({ v, onClose, go }: { v: Vehicle; onClose: () => void; go: 
         </p>
       )}
 
-      <button type="button" className="btn" style={{ marginTop: 12, width: '100%', justifyContent: 'center' }} onClick={() => go('filo')}>
+      {/* Seçim taşınır: eskiden yalnız sekme değişiyordu ve filo tablosu
+          seçimsiz açılıyordu; kullanıcı aracı elle aramak zorunda kalıyordu. */}
+      <button
+        type="button"
+        className="btn"
+        style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
+        onClick={() => set({ view: 'filo', sel: v.id })}
+      >
         {Icon.truck} Filo tablosunda aç
       </button>
     </div>

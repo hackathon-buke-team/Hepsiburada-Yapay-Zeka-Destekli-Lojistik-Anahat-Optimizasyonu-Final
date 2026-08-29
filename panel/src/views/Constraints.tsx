@@ -68,7 +68,7 @@ const heat = (t: number, faded: boolean) => {
 const CELL = 34
 const ROWW = 116
 
-export default function Constraints({ filter, setFilter, go }: ViewProps) {
+export default function Constraints({ set, filter, setFilter }: ViewProps) {
   const [mode, setMode] = useState<Mode>('defter')
   const grid = mode === 'ust' ? D.loadgrid_ust : LEDGER
 
@@ -167,8 +167,14 @@ export default function Constraints({ filter, setFilter, go }: ViewProps) {
         <Kpi
           v={n0(tir.over)}
           l="tır ziyaret kotası ihlali"
-          tone="ok"
-          d={`${n0(tir.visits)} ziyaretin tamamı kota içinde`}
+          /* Ton koşullu: eskiden sabit 'ok' idi, gerçek bir ihlalde bile kart
+             yeşil kalırdı — elleçleme kartında koşulluyken burada değildi. */
+          tone={tir.over ? 'bad' : 'ok'}
+          d={
+            tir.over
+              ? `${n0(tir.over)} merkez-gün kotayı aşıyor`
+              : `${n0(tir.visits)} ziyaretin tamamı kota içinde`
+          }
         />
         <Kpi
           v={n0(tir.full)}
@@ -445,10 +451,9 @@ export default function Constraints({ filter, setFilter, go }: ViewProps) {
                 <tr
                   key={l.v + '-' + i}
                   className="click"
-                  onClick={() => {
-                    setFilter((p) => ({ ...p, date: l.dd }))
-                    go('filo')
-                  }}
+                  /* Aracı da taşı: eskiden yalnız tarih gidiyordu ve filo
+                     tablosu seçimsiz açılıyordu. */
+                  onClick={() => set({ view: 'filo', date: l.dd, sel: l.v })}
                 >
                   <td className="mono">{l.v}</td>
                   <td>

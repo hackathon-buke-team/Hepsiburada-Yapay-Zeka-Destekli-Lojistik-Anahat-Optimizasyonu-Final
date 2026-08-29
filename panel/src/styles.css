@@ -157,12 +157,24 @@ body {
 .kstrip .k.bad .v { color: var(--bad); }
 
 /* ── içerik ─────────────────────────────────────────────────── */
+/* Görünümler sökülmez, saklanır: her biri KENDİ kaydırma kabıdır, böylece
+   sekme değişiminde kaydırma konumu da korunur. */
+.viewhost { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.viewhost > .view[hidden] { display: none; }
+
 .view {
   flex: 1; min-height: 0; overflow: auto;
   padding: 16px 20px 26px;
   scrollbar-gutter: stable;
 }
 .view.flush { padding: 0; overflow: hidden; }
+
+/* Kalıcı kısayol ipucu — sunucunun "nereye tıkladım" anını kısaltır. */
+.hint-esc {
+  position: fixed; right: 12px; bottom: 7px; z-index: 30;
+  font-size: 10.5px; color: var(--faint); pointer-events: none;
+  letter-spacing: 0.02em;
+}
 
 /* ══════════════ kartlar ══════════════ */
 .card {

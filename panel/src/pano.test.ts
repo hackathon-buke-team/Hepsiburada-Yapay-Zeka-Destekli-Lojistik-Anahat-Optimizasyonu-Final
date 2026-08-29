@@ -39,8 +39,8 @@ describe('fromHash', () => {
   })
 
   it('sayısal alanları çözer, bozuk sayıda varsayılana düşer', () => {
-    expect(fromHash('#harita?z=2.5').zoom).toBe(2.5)
-    expect(fromHash('#harita?z=abc').zoom).toBe(PANO0.zoom)
+    expect(fromHash('#harita?vw=2.5').vw).toBe(2.5)
+    expect(fromHash('#harita?vw=abc').vw).toBe(PANO0.vw)
   })
 
   it('katman anahtarlarını çözer', () => {
@@ -83,9 +83,9 @@ describe('gidiş-dönüş', () => {
       mode: 'zaman',
       t: 1830,
       speed: 16,
-      zoom: 2.4,
-      panx: -120,
-      pany: 40,
+      vx: -120,
+      vy: 40,
+      vw: 2.4,
       layers: { kiralik: false, spot: true, zincir: true, pickup: false },
       q: 'mersin',
     }
@@ -100,7 +100,7 @@ describe('gidiş-dönüş', () => {
 
 describe('toFilter', () => {
   it('yalnız süzgeç alanlarını çıkarır', () => {
-    const s = { ...PANO0, date: '01.07.2026', vt: 'Tır', sel: 'V0001', zoom: 3 }
+    const s = { ...PANO0, date: '01.07.2026', vt: 'Tır', sel: 'V0001', vw: 3 }
     expect(toFilter(s)).toEqual({
       date: '01.07.2026',
       kind: 'all',
