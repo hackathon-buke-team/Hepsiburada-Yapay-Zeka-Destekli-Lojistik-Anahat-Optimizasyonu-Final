@@ -1,6 +1,6 @@
-# Hepsiburada — Yapay Zekâ Destekli Lojistik Anahat Optimizasyonu
+# Hepsiburada — Yapay Zekâ Destekli Lojistik Anahat Optimizasyonu / Teknofest 6.lığı
 
-**TEKNOFEST 2026 · Takım Büke · Final Aşaması (Backtest)**
+**TEKNOFEST 2026 · Takım Büke · Final Aşaması (Backtest)** https://hb-sunum.melihekizce.com/#1
 
 Bu depo, yarışmanın **Final Backtest** aşaması için hazırlanan çalıştırılabilir teslim
 paketini, onu üreten Gelişmiş Çözüm aşaması çalışma deposunu, jüri sunum materyallerini
